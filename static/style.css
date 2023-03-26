@@ -1,8 +1,30 @@
+/* Background Animation */
 body {
-  height: 100%;
-  width: 100%;
-  background-color: #1c1c1c;
+  --s:67px;
+  --m:4px; 
+
+  --v1: #000000 119.5deg, #0000 120.5deg;
+  --v2: #000000  119.5deg, #0000 120.5deg;
+  background:
+    conic-gradient(at var(--m)              calc(var(--s)*0.5777), transparent 270deg, #000 0deg),
+    conic-gradient(at calc(100% - var(--m)) calc(var(--s)*0.5777), #000 90deg,  transparent 0deg),
+    conic-gradient(from -60deg at 50% calc(var(--s)*0.8662)             , var(--v1)),
+    conic-gradient(from -60deg at 50% calc(var(--s)*0.8662 + 2*var(--m)), var(--v2)),
+    conic-gradient(from 120deg at 50% calc(var(--s)*1.4435 + 3*var(--m)), var(--v1)),
+    conic-gradient(from 120deg at 50% calc(var(--s)*1.4435 +   var(--m)), var(--v2)),
+    linear-gradient(90deg, #000000 calc(50% - var(--m)),#000 0 calc(50% + var(--m)), #000000 0);
+  background-size: calc(var(--s) + 2*var(--m)) calc(var(--s)*1.732 + 3*var(--m)); 
+  mix-blend-mode:lighten;
 }
+body:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:linear-gradient(90deg,black,#121212,black) left/400% 100%;
+  animation:f 2s infinite alternate linear;
+}
+
+/* Menubar */
 .menubar {
   position: fixed;
   top: 50%;
@@ -10,74 +32,103 @@ body {
   transform: translate(-50%, -50%);
   z-index: 999;
   border-radius: 25px;
-  border: 2px solid #363636;
-  background-color: #fafafa00;
-  padding: 10px;
-  display: flex;  
+  border: 2px solid #737373;
+  display: flex;
   justify-content: center;
+  padding: 10px;
+  height: 70px;
+  width: 500px;
+  background: rgba(28, 28, 28, .2);
+  animation: xpro-isbest 3s ease-in-out infinite;
 }
-.menubar a img{
-  width: 50px;
-  height: 50px;
-  padding: 4px;
-  border-radius: 25px;
+
+.menubar:hover {
+  border: 2px solid #b3b3b3;
 }
-.nebula:hover img{
-  filter: brightness(1.1);
-  background-color: #5E17EB;
+
+.menubar a img {
+  width: 75%;
+  height: 75%;
+  padding: 10px;
+  border-radius: 40px;
+  border: none;
 }
-.incognito:hover img{
+
+/* Menubar Icons */
+.incognito:hover img {
   filter: brightness(1.1);
   background-color: #00A1FF;
+  transform: scale(1.1);
 }
-.terbium:hover img{
+
+.terbium:hover img {
   filter: brightness(1.1);
   background-color: #38B253;
+  transform: scale(1.1);
 }
-.elixer:hover img{
-  filter: brightness(1.1);
-  background-color: #F59521;
-}
-.utopia:hover img{
+
+.utopia:hover img {
   filter: brightness(1.1);
   background-color: #607D8B;
+  transform: scale(1.1);
 }
-.fracital:hover img{
+
+.fracital:hover img {
   filter: brightness(1.1);
   background-color: #CB6CE6;
+  transform: scale(1.1);
 }
-.imperium:hover img{
+
+.imperium:hover img {
   filter: brightness(1.1);
   background-color: #9F2424;
+  transform: scale(1.1);
 }
-.generalmath:hover img{
+
+.generalmath:hover img {
   filter: brightness(1.1);
   background-color: #012421;
+  transform: scale(1.1);
 }
-.abyss:hover img{
+
+.elixir:hover img {
+  filter: brightness(1.1);
+  background-color: #F59521;
+  transform: scale(1.1);
+}
+.abyss:hover img {
   filter: brightness(1.1);
   background-color: #000000;
-}
-.search{
-  height: 20px;
-  width: 100px;
-}
-.dropdown {
-  position: relative;
+  transform: scale(1.1);
 }
 
-.dropdown-content {
-  position: absolute;
+/* Searchbox */
+.searchbox {
+  background: rgba(28, 28, 28, .8);
+  top: calc(50% + 90px);
+  left: 50%;
+  position: fixed;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  border-radius: 25px;
   display: none;
-  background-color: #f9f9f9;
-  min-width: 120px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: 2px solid #737373;
+  height: 20px;
+  width: 300px;
+  overflow: hidden;
 }
-
-.dropdown-content p {
-  padding: 10px;
-  margin: 0;
+.searchbox:hover {
+  border: 2px solid #b3b3b3;
+}
+.searchbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  animation: xpro-isbest 3s ease-in-out infinite;
 }
 
 .searchbox input[type="text"] {
@@ -91,66 +142,19 @@ body {
   text-align: center;
 }
 
-.searchbox button {
-  background-color: transparent;
-  border: none;
-  outline: none;
-  cursor: pointer;
-}
-
-.searchbox button:hover {
-  filter: brightness(1.1);
-}
-.searchbox {
-  position: fixed;
-  top: calc(50% + 90px);
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 998;
-  border-radius: 25px;
-  border: 2px solid #363636;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-  border: 2px solid #363636;
-  height: 20px;
-  width: 300px;
-  overflow: hidden;
-  transition: height 0.5s ease-in-out;
-}
-.searchbox:hover{
-  filter: brightness(2.0);
-}
-.searchbox.show{
-  display: block;
-  animation: fade-in-from-top;
-}
-@keyframes fade-in-from-top{
-  from {
-    top:-50px
-    opacity: 0;
+/* Floating Animation */
+@keyframes xpro-isbest {
+  0%{
+    transformation: translate(-50%, -50%) translateY(0);
   }
-  to {
-    top: 0;
-    opacity: 1;
+  50%{
+    transform: translate(-50%,-50%) translateY(-3px);
+  }
+  100%{
+    transform: translate(-50%, -50%) translateY(0);
   }
 }
-
-.footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  background-color: #2b2b2b;
-  border-top: 2px solid #363636;
-  color: #ffffff;
-  text-align: center;
-  font-family: sans-serif;
-}
-.footer a {
-  color: #c4c4c4;
-}
-.footer a:hover {
-  color: #ffffff;
+/* Gradient Animation */
+@keyframes f {
+  100% {background-position:right}
 }
