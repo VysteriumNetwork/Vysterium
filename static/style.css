@@ -101,7 +101,11 @@ body:before {
   background-color: #000000;
   transform: scale(1.1);
 }
-
+.Interstellar:hover img {
+  filter: brightness(1.1);
+  background-color: #808080;
+  transform: scale(1.1);
+}
 /* Searchbox */
 .searchbox {
   background: rgba(28, 28, 28, .8);
