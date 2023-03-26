@@ -103,7 +103,7 @@ body:before {
 }
 .Interstellar:hover img {
   filter: brightness(1.1);
-  background-color: #808080;
+  background-color: #525252;
   transform: scale(1.1);
 }
 /* Searchbox */
