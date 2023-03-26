@@ -114,11 +114,12 @@ margin: 0px 2px;
 </script>
 </head>
 <body>
-<img class="home-icon" src="/assets/images/icons/homeicon.svg">
-<img class="fullscreen-icon" src="/assets/images/icons/fullscreen.svg">
+
+<img class="home-icon" src="./assets/images/icons/homeicon.svg">
+<img class="fullscreen-icon" src="./assets/images/icons/fullscreen.svg">
 <div style="" class="controlpanel">
             <div class="controls">
-                <img class="icon" src="/assets/images/branding/favicon/interstellar.ico">
+                <img class="icon" src="./assets/images/branding/favicon/interstellar.ico">
                   <form>
                 <input style="font-size: 24px" enabled="disabled" value="">
                   </form>
@@ -130,7 +131,7 @@ margin: 0px 2px;
 <script>
 const homeButton = document.getElementById("home-button");
 homeButton.addEventListener("click", function() {
-    window.location.href = "/web.html";
+    window.location.href = "./web.html";
 });
 </script>
 <script>
@@ -147,7 +148,7 @@ fullscreenButton.addEventListener("click", function() {
 	     
 <html>
 
-<iframe src="/loading.html" id="iframeId" style="bottom: 0;" style="border:0px #ffffff none;" name="myiFrame" scrolling="yes" frameborder="0" marginheight="0px" marginwidth="0px" height="100%" width="100%" allowfullscreen ></iframe>
+<iframe src="./loading.html" id="iframeId" style="bottom: 0;" style="border:0px #ffffff none;" name="myiFrame" scrolling="yes" frameborder="0" marginheight="0px" marginwidth="0px" height="100%" width="100%" allowfullscreen ></iframe>
 <script>
 window.onload = function() {
   let encodedUrl = sessionStorage.getItem("encodedUrl");
