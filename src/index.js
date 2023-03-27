@@ -17,7 +17,7 @@ if(existsSync("../ssl/key.pem") && existsSync("../ssl/cert.pem")) {
     cert: readFileSync("../ssl/cert.pem")
   });
   PORT = 443;
-} else { server = createHttpServer(); PORT = (process.env.PORT || 80);}
+} else { server = createHttpServer(); PORT = (process.env.PORT || 8080);}
 
 server.on("request", (req, res) => {
   if(bare.shouldRoute(req)) return bare.routeRequest(req, res);
@@ -45,4 +45,4 @@ server.on('listening', () => {
   if(process.env.REPL_SLUG && process.env.REPL_OWNER) console.log(`Replit: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
 });
 
-server.listen({ port: 8080 })
+server.listen({ port: PORT })
