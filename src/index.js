@@ -44,4 +44,4 @@ server.on('listening', () => {
   if(process.env.REPL_SLUG && process.env.REPL_OWNER) console.log(`Replit: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
 });
 
-server.listen({ port: 80 })
+server.listen({ port: PORT })
