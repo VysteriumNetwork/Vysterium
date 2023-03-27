@@ -15,7 +15,7 @@ if(ssl) {
     cert: readFileSync("../ssl/cert.pem")
   });
   PORT = (PORT || 80);
-} else { server = createHttpServer(); PORT = (PORT || 80);}
+} else { server = createHttpServer(); PORT = (PORT || 443);}
 
 server.on("request", (req, res) => {
   if(bare.shouldRoute(req)) return bare.routeRequest(req, res);
