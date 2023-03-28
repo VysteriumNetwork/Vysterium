@@ -2,7 +2,6 @@
 body {
   --s:67px;
   --m:4px; 
-
   --v1: #000000 119.5deg, #0000 120.5deg;
   --v2: #000000  119.5deg, #0000 120.5deg;
   background:
@@ -14,14 +13,15 @@ body {
     conic-gradient(from 120deg at 50% calc(var(--s)*1.4435 +   var(--m)), var(--v2)),
     linear-gradient(90deg, #000000 calc(50% - var(--m)),#000 0 calc(50% + var(--m)), #000000 0);
   background-size: calc(var(--s) + 2*var(--m)) calc(var(--s)*1.732 + 3*var(--m)); 
-  mix-blend-mode:lighten;
+  mix-blend-mode:lighten; 
 }
+
 body:before {
   content: "";
   position: absolute;
   inset: 0;
   background:linear-gradient(90deg,black,#121212,black) left/400% 100%;
-  animation:f 2s infinite alternate linear;
+  animation:things-ispoop 2s infinite alternate linear;
 }
 
 /* Menubar */
@@ -37,7 +37,7 @@ body:before {
   justify-content: center;
   padding: 10px;
   height: 70px;
-  width: 500px;
+  width: 600px;
   background: rgba(28, 28, 28, .2);
   animation: xpro-isbest 3s ease-in-out infinite;
 }
@@ -47,65 +47,60 @@ body:before {
 }
 
 .menubar a img {
-  width: 75%;
-  height: 75%;
-  padding: 10px;
-  border-radius: 40px;
+  width: 35px;
+  height: 35px;
+  padding: 15px;
+  border-radius: 50%;
   border: none;
+  border-radius:50%;
+  -moz-border-radius:50%;
+  -webkit-border-radius:50%;
 }
 
 /* Menubar Icons */
 .incognito:hover img {
-  filter: brightness(1.1);
   background-color: #00A1FF;
   transform: scale(1.1);
 }
 
 .terbium:hover img {
-  filter: brightness(1.1);
   background-color: #38B253;
   transform: scale(1.1);
 }
 
 .utopia:hover img {
-  filter: brightness(1.1);
   background-color: #607D8B;
   transform: scale(1.1);
 }
 
 .fracital:hover img {
-  filter: brightness(1.1);
   background-color: #CB6CE6;
   transform: scale(1.1);
 }
 
 .imperium:hover img {
-  filter: brightness(1.1);
   background-color: #9F2424;
   transform: scale(1.1);
 }
 
 .generalmath:hover img {
-  filter: brightness(1.1);
   background-color: #012421;
   transform: scale(1.1);
 }
 
 .elixir:hover img {
-  filter: brightness(1.1);
   background-color: #F59521;
   transform: scale(1.1);
 }
 .abyss:hover img {
-  filter: brightness(1.1);
   background-color: #000000;
   transform: scale(1.1);
 }
 .Interstellar:hover img {
-  filter: brightness(1.1);
-  background-color: #525252;
+  background-color: #292929;
   transform: scale(1.1);
 }
+
 /* Searchbox */
 .searchbox {
   background: rgba(28, 28, 28, .8);
@@ -124,9 +119,11 @@ body:before {
   width: 300px;
   overflow: hidden;
 }
+
 .searchbox:hover {
   border: 2px solid #b3b3b3;
 }
+
 .searchbox {
   display: flex;
   justify-content: center;
@@ -144,21 +141,5 @@ body:before {
   background-color: transparent;
   color: white;
   text-align: center;
-}
-
-/* Floating Animation */
-@keyframes xpro-isbest {
-  0%{
-    transformation: translate(-50%, -50%) translateY(0);
-  }
-  50%{
-    transform: translate(-50%,-50%) translateY(-3px);
-  }
-  100%{
-    transform: translate(-50%, -50%) translateY(0);
-  }
-}
-/* Gradient Animation */
-@keyframes f {
-  100% {background-position:right}
+  width: 300px;
 }
