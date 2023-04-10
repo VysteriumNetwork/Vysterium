@@ -19,8 +19,8 @@ if(inFrame() != true && usingFirefox() != true && localStorage.getItem("auto_clo
     console.log("Popup blocked");
     window.top.location.replace(window.location.origin + '?url=' + window.location.pathname); //changeSrc handles the rest
   } else { // Finish tab b‍y‍p‍a‍s‍s
-    tab.document.documentElement.innerHTML = '<!DOCTYPE html><html><head><title>' + /*(localStorage.getItem("tabCloakTitle") ? localStorage.getItem("tabCloakTitle") : "Utopia")*/'Utopia' + '</title><link rel="icon" type="image/png" href="' + /*(localStorage.getItem("tabCloakIcon") ? localStorage.getItem("tabCloakIcon") : window.location.origin + "/favicon.ico")*/window.location.origin + "/favicon.ico" + '"><style>body {margin:0;overflow:hidden}</style></head><body><iframe width="100%" height="100%" src="' + window.location.href + '" frameborder="0"></iframe></body></html>';
-    tab.document.close();
+    tab.document.documentElement.innerHTML = '<!DOCTYPE html><html><head><title>' + /*(localStorage.getItem("tabCloakTitle") ? localStorage.getItem("tabCloakTitle") : "Utopia")*/'Utopia' + '</title><link rel="icon" type="image/png" href="' + /*(localStorage.getItem("tabCloakIcon") ? localStorage.getItem("tabCloakIcon") : window.location.origin + 
+    tab.document.close();"/utopia/favicon.ico")*/window.location.origin + "/utopia/favicon.ico" + '"><style>body {margin:0;overflow:hidden}</style></head><body><iframe width="100%" height="100%" src="' + window.location.href + '" frameborder="0"></iframe></body></html>';
     window.location.replace(redirectSite);
   }
 }
@@ -58,7 +58,7 @@ document.addEventListener('visibilitychange', function (event) {
     }
   } else {
     parent.document.title = originalTitle;
-    parent.document.querySelector("link[rel~='icon']").href = window.location.origin + "/favicon.ico";
+    parent.document.querySelector("link[rel~='icon']").href = window.location.origin + "/utopia/favicon.ico";
   }
 
 });

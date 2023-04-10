@@ -85,6 +85,10 @@ body:before {
     background-color: #607D8B;
 }
 
+.delta:hover img {
+  background-color: #607D8B;
+}
+
 .fracital:hover img {
     background-color: #CB6CE6;
 }
