@@ -14,6 +14,7 @@ body {
     linear-gradient(90deg, #000000 calc(50% - var(--m)),#000 0 calc(50% + var(--m)), #000000 0);
   background-size: calc(var(--s) + 2*var(--m)) calc(var(--s)*1.732 + 3*var(--m)); 
   mix-blend-mode:lighten; 
+  cursor: url('./icons/help/cursor.png'),auto;
 }
 
 body:before {
@@ -22,6 +23,7 @@ body:before {
   inset: 0;
   background:linear-gradient(90deg,black,#121212,black) left/400% 100%;
   animation:things-ispoop 2s infinite alternate linear;
+  cursor: url('./icons/help/cursor.png'),auto;
 }
 
 /* Menubar */
@@ -37,13 +39,15 @@ body:before {
   justify-content: center;
   padding: 10px;
   height: 70px;
-  width: 600px;
+  width: 700px;
   background: rgba(28, 28, 28, .2);
-  animation: xpro-isbest 3s ease-in-out infinite;
+  animation: animations 3s ease-in-out infinite;
+  cursor: url('./icons/help/cursor.png'),auto;
 }
 
 .menubar:hover {
   border: 2px solid #b3b3b3;
+  cursor: url('./icons/help/cursor.png'),auto;
 }
 
 .menubar a img {
@@ -55,52 +59,55 @@ body:before {
   border-radius:50%;
   -moz-border-radius:50%;
   -webkit-border-radius:50%;
+  cursor: url('./icons/help/cursor.png'),auto;
+}
+.menubar a img:hover{
+  cursor: url('./icons/help/cursor.png'),auto;
 }
 
 /* Menubar Icons */
+.icon:hover img {
+    transform: scale(1.1);
+}
+
 .incognito:hover img {
-  background-color: #00A1FF;
-  transform: scale(1.1);
+    background-color: #00A1FF;
+}
+.hypertabs:hover img {
+  background-color: #Ff3521;
 }
 
 .terbium:hover img {
-  background-color: #38B253;
-  transform: scale(1.1);
+    background-color: #38B253;
 }
 
 .utopia:hover img {
-  background-color: #607D8B;
-  transform: scale(1.1);
+    background-color: #607D8B;
 }
 
 .fracital:hover img {
-  background-color: #CB6CE6;
-  transform: scale(1.1);
+    background-color: #CB6CE6;
 }
 
 .imperium:hover img {
-  background-color: #9F2424;
-  transform: scale(1.1);
+    background-color: #9F2424;
 }
 
 .generalmath:hover img {
-  background-color: #012421;
-  transform: scale(1.1);
+    background-color: #012421;
 }
 
 .elixir:hover img {
-  background-color: #F59521;
-  transform: scale(1.1);
-}
-.abyss:hover img {
-  background-color: #000000;
-  transform: scale(1.1);
-}
-.Interstellar:hover img {
-  background-color: #292929;
-  transform: scale(1.1);
+    background-color: #F59521;
 }
 
+.abyss:hover img {
+    background-color: #000000;
+}
+
+.interstellar:hover img {
+    background-color: #696969;
+}
 /* Searchbox */
 .searchbox {
   background: rgba(28, 28, 28, .8);
@@ -118,10 +125,12 @@ body:before {
   height: 20px;
   width: 300px;
   overflow: hidden;
+  cursor: url('./icons/help/cursor.png'),auto;
 }
 
 .searchbox:hover {
   border: 2px solid #b3b3b3;
+  cursor: url('./icons/help/cursor.png'),auto;
 }
 
 .searchbox {
@@ -129,7 +138,8 @@ body:before {
   justify-content: center;
   align-items: center;
   position: absolute;
-  animation: xpro-isbest 3s ease-in-out infinite;
+  animation: animations 3s ease-in-out infinite;
+  cursor: url('./icons/help/cursor.png'),auto;
 }
 
 .searchbox input[type="text"] {
@@ -142,6 +152,7 @@ body:before {
   color: white;
   text-align: center;
   width: 300px;
+  cursor: url('./icons/help/cursor.png'),auto;
 }
 
 /* Floating Animation */
@@ -157,6 +168,41 @@ body:before {
   }
 }
 /* Gradient Animation */
-@keyframes backround {
+@keyframes things-ispoop {
   100% {background-position:right}
+}
+#panel {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 300px;
+  height: 100%;
+  background-color: #fff;
+  transition: all 0.3s ease-in-out;
+}
+
+#panel.open {
+  right: 0;
+}
+
+.tab button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #3e8e41;
+}
+
+button:active {
+  background-color: #2f6f33;
 }
