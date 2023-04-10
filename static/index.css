@@ -143,3 +143,20 @@ body:before {
   text-align: center;
   width: 300px;
 }
+
+/* Floating Animation */
+@keyframes animations {
+  0%{
+    transformation: translate(-50%, -50%) translateY(0);
+  }
+  50%{
+    transform: translate(-50%,-50%) translateY(-3px);
+  }
+  100%{
+    transform: translate(-50%, -50%) translateY(0);
+  }
+}
+/* Gradient Animation */
+@keyframes backround {
+  100% {background-position:right}
+}

@@ -1,7 +1,7 @@
 {
-  "name": "incognito",
+  "name": "Vysterium",
   "version": "1.0.0",
-  "description": "Unofficial Incognito easy deployment version with TompHTTP bare server included.",
+  "description": "Vysterium",
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
