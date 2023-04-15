@@ -7,8 +7,6 @@
  */
 function search(input, template) {
   try {
-    // input is a valid URL:
-    // eg: https://example.com, https://example.com/test?q=param
     return new URL(input).toString();
   } catch (err) {
     // input was not a valid URL
@@ -23,10 +21,5 @@ function search(input, template) {
   } catch (err) {
     // input was not valid URL
   }
-
-  // input may have been a valid URL, however the hostname was invalid
-
-  // Attempts to convert the input to a fully qualified URL have failed
-  // Treat the input as a search query
   return template.replace("%s", encodeURIComponent(input));
 }
