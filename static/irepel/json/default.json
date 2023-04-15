@@ -1,7 +1,7 @@
 [
     ["Among Us", "Crewmates work together to complete tasks before you as the imposter kill them.", "images/among-us.png", "./game/among-us"],
     ["Slope", "Speed down on a randomized slope. The farther you go, the faster your ball travels!", "images/slope.jpg", "./game/slope"], 
-    ["Minecraft", "Play single player Minecraft right from your browser!", "images/mc.png", "./game/minecraft"], 
+    ["Minecraft", "Play single player Minecraft right from your browser!", "images/mc.png", "./proxy.html?url=https://classic.minecraft.net"], 
     ["Temple Run", "Test your reflexes as you race down ancient temple walls and along sheer cliffs.", "images/temple-run.png", "./game/temple-run"],
     ["Krunker", "Krunker.io is a fast-paced pixelated first-person shooter game.", "images/krk.png", "./game/krunker"],
     ["Subway Surfers", "DASH as fast as you can! DODGE the oncoming trains!", "images/subway-surfer.jpg", "./game/subway-surfers"],
