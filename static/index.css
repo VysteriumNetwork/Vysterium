@@ -37,8 +37,10 @@ body:before {
   border: 2px solid #737373;
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   padding: 10px;
-  height: 70px;
+  height: 120px;
   width: 800px;
   background: rgba(28, 28, 28, .2);
   animation: animations 3s ease-in-out infinite;
