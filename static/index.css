@@ -41,7 +41,7 @@ body:before {
   flex-wrap: wrap;
   padding: 10px;
   height: 120px;
-  width: 800px;
+  width: 500px;
   background: rgba(28, 28, 28, .2);
   animation: animations 3s ease-in-out infinite;
   cursor: url('./icons/help/cursor.png'),auto;
