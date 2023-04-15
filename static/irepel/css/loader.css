@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Poppins&display=swap');
+
+body {
+    background-color: #181818;
+    overflow: hidden;
+    font-family: 'Montserrat', sans-serif;
+    width: 100vw;
+    height: 100vh;
+    background: url('../backgrounds/mountain.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #181818;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.loader h1 {
+    font-size: 5vw;
+    color: #fff;
+    font-weight: 900;
+    font-family: 'Poppins', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .2rem;
+}
+
+.loader .spinner {
+    width: 10vw;
+    height: 5vh;
+    background-color: #181818;
+    display: flex;
+    padding-left: .5vw;
+    margin-top: 1vw;
+    align-items: flex-end;
+    justify-content: left;
+    z-index: 100;
+}
+
+.loader .spinner .dot {
+    width: 1.2vw;
+    height: 1.2vw;
+    background-color: #fff;
+    border-radius: 50%;
+    margin: 0 .5vw;
+    animation: dots 5s infinite;
+}
+
+@keyframes dots {
+    0% {
+        background-color: #ff8b8b;
+    }
+    10% {
+        background-color: #ff3434;
+    }
+    20% {
+        background-color: #ff7e34;
+    }
+    30% {
+        background-color: #ffbf34;
+    }
+    40% {
+        background-color: #fff834;
+    }
+    50% {
+        background-color: #bfff34;
+    }
+    60% {
+        background-color: #ffbf34;
+    }
+    70% {
+        background-color: #ff7e34;
+    }
+    80% {
+        background-color: #ff3434;
+    }
+    90% {
+        background-color: #ff0f0f;
+    }
+    100% {
+        background-color: #ffa9a9;
+    }
+}

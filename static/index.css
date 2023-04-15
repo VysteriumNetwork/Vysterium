@@ -39,7 +39,7 @@ body:before {
   justify-content: center;
   padding: 10px;
   height: 70px;
-  width: 700px;
+  width: 800px;
   background: rgba(28, 28, 28, .2);
   animation: animations 3s ease-in-out infinite;
   cursor: url('./icons/help/cursor.png'),auto;
@@ -72,6 +72,9 @@ body:before {
 
 .incognito:hover img {
     background-color: #00A1FF;
+}
+.irepel:hover img {
+  background-color: #00A1FF;
 }
 .hypertabs:hover img {
   background-color: #Ff3521;
