@@ -120,6 +120,9 @@ body:before {
 .interstellar:hover img {
     background-color: #696969;
 }
+.nebula:hover img {
+  background-color: #702963;
+}
 /* Searchbox */
 .searchbox {
   background: rgba(28, 28, 28, .8);
