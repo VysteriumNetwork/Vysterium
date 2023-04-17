@@ -76,10 +76,10 @@ body:before {
     background-color: #00A1FF;
 }
 .irepel:hover img {
-  background-color: #00A1FF;
+  background-color: #0160D1;
 }
 .hypertabs:hover img {
-  background-color: #Ff3521;
+  background-color: #B500A2;
 }
 
 .terbium:hover img {
@@ -91,10 +91,10 @@ body:before {
 }
 
 .delta:hover img {
-  background-color: #607D8B;
+  background-color: #1193B2;
 }
 .cosmic:hover img {
-  background-color: #607D8B;
+  background-color: #562473;
 }
 
 .fracital:hover img {
@@ -121,7 +121,7 @@ body:before {
     background-color: #696969;
 }
 .nebula:hover img {
-  background-color: #702963;
+  background-color: #5E17EB;
 }
 /* Searchbox */
 .searchbox {
