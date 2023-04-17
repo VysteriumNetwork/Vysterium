@@ -1,0 +1,224 @@
+/* Background Animation */
+body {
+    --s:67px;
+    --m:4px; 
+    --v1: #000000 119.5deg, #0000 120.5deg;
+    --v2: #000000  119.5deg, #0000 120.5deg;
+    background:
+      conic-gradient(at var(--m)              calc(var(--s)*0.5777), transparent 270deg, #000 0deg),
+      conic-gradient(at calc(100% - var(--m)) calc(var(--s)*0.5777), #000 90deg,  transparent 0deg),
+      conic-gradient(from -60deg at 50% calc(var(--s)*0.8662)             , var(--v1)),
+      conic-gradient(from -60deg at 50% calc(var(--s)*0.8662 + 2*var(--m)), var(--v2)),
+      conic-gradient(from 120deg at 50% calc(var(--s)*1.4435 + 3*var(--m)), var(--v1)),
+      conic-gradient(from 120deg at 50% calc(var(--s)*1.4435 +   var(--m)), var(--v2)),
+      linear-gradient(90deg, #000000 calc(50% - var(--m)),#000 0 calc(50% + var(--m)), #000000 0);
+    background-size: calc(var(--s) + 2*var(--m)) calc(var(--s)*1.732 + 3*var(--m)); 
+    mix-blend-mode:lighten; 
+    cursor: url('./icons/help/cursor.png'),auto;
+  }
+  
+  body:before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:linear-gradient(90deg,black,#121212,black) left/400% 100%;
+    animation:things-ispoop 2s infinite alternate linear;
+    cursor: url('./icons/help/cursor.png'),auto;
+  }
+  
+  /* Menubar */
+  .menubar {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    border-radius: 25px;
+    border: 2px solid #737373;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px;
+    height: 120px;
+    width: 500px;
+    background: rgba(28, 28, 28, .2);
+    animation: animations 3s ease-in-out infinite;
+    cursor: url('./icons/help/cursor.png'),auto;
+  }
+  
+  .menubar:hover {
+    border: 2px solid #b3b3b3;
+    cursor: url('./icons/help/cursor.png'),auto;
+  }
+  
+  .menubar a img {
+    width: 35px;
+    height: 35px;
+    padding: 15px;
+    border-radius: 50%;
+    border: none;
+    border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;
+    cursor: url('./icons/help/cursor.png'),auto;
+  }
+  .menubar a img:hover{
+    cursor: url('./icons/help/cursor.png'),auto;
+  }
+  
+  /* Menubar Icons */
+  .icon:hover img {
+      transform: scale(1.1);
+  }
+  
+  .incognito:hover img {
+      background-color: #00A1FF;
+  }
+  .irepel:hover img {
+    background-color: #0160D1;
+  }
+  .hypertabs:hover img {
+    background-color: #B500A2;
+  }
+  
+  .terbium:hover img {
+      background-color: #38B253;
+  }
+  
+  .utopia:hover img {
+      background-color: #607D8B;
+  }
+  
+  .delta:hover img {
+    background-color: #1193B2;
+  }
+  .cosmic:hover img {
+    background-color: #562473;
+  }
+  
+  .fracital:hover img {
+      background-color: #CB6CE6;
+  }
+  
+  .imperium:hover img {
+      background-color: #9F2424;
+  }
+  
+  .generalmath:hover img {
+      background-color: #012421;
+  }
+  
+  .elixir:hover img {
+      background-color: #F59521;
+  }
+  
+  .abyss:hover img {
+      background-color: #000000;
+  }
+  
+  .interstellar:hover img {
+      background-color: #696969;
+  }
+  .nebula:hover img {
+    background-color: #5E17EB;
+  }
+  /* Searchbox */
+  .searchbox {
+    background: rgba(28, 28, 28, .8);
+    top: calc(50% + 90px);
+    left: 50%;
+    position: fixed;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    border-radius: 25px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border: 2px solid #737373;
+    height: 20px;
+    width: 300px;
+    overflow: hidden;
+    cursor: url('./icons/help/cursor.png'),auto;
+  }
+  
+  .searchbox:hover {
+    border: 2px solid #b3b3b3;
+    cursor: url('./icons/help/cursor.png'),auto;
+  }
+  
+  .searchbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    animation: animations 3s ease-in-out infinite;
+    cursor: url('./icons/help/cursor.png'),auto;
+  }
+  
+  .searchbox input[type="text"] {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    padding: 5px;
+    background-color: transparent;
+    color: white;
+    text-align: center;
+    width: 300px;
+    cursor: url('./icons/help/cursor.png'),auto;
+  }
+  
+  /* Floating Animation */
+  @keyframes animations {
+    0%{
+      transformation: translate(-50%, -50%) translateY(0);
+    }
+    50%{
+      transform: translate(-50%,-50%) translateY(-3px);
+    }
+    100%{
+      transform: translate(-50%, -50%) translateY(0);
+    }
+  }
+  /* Gradient Animation */
+  @keyframes things-ispoop {
+    100% {background-position:right}
+  }
+  #panel {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100%;
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  #panel.open {
+    right: 0;
+  }
+  
+  .tab button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  button:hover {
+    background-color: #3e8e41;
+  }
+  
+  button:active {
+    background-color: #2f6f33;
+  }
+  
