@@ -1,4 +1,7 @@
-/* Background Animation */
+
+.nebula:hover img {
+  background-color: #702963;
+}
 body {
   --s:67px;
   --m:4px; 
@@ -119,9 +122,6 @@ body:before {
 
 .interstellar:hover img {
     background-color: #696969;
-}
-.nebula:hover img {
-  background-color: #702963;
 }
 /* Searchbox */
 .searchbox {
