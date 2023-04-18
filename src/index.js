@@ -10,7 +10,6 @@ import { hostname } from "node:os";
 import serveStatic from "serve-static";
 import serveIndex from "serve-index";
 import connect from "connect";
-import analytics from "./analytics.js";
 const app = connect();
 const bare = createBareServer("/bare/");
 const ssl = existsSync("../ssl/key.pem") && existsSync("../ssl/cert.pem");
