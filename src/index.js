@@ -37,7 +37,6 @@ app.use((req, res, next) => {
 app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
 
 app.use("/uv/", serveStatic(uvPath));
-analytics(app);
 
 app.use((req, res) => {
   res.writeHead(500, null, {
