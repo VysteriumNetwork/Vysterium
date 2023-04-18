@@ -1,14 +1,12 @@
 import createBareServer from "@tomphttp/bare-server-node";
 import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
-
 import { fileURLToPath } from "node:url";
 import { createServer as createHttpsServer } from "node:https";
 import { createServer as createHttpServer } from "node:http";
 import { readFileSync, existsSync } from "node:fs";
 import { hostname } from "node:os";
-
-import serveStatic from "serve-static";
 import connect from "connect";
+import serveStatic from "serve-static";
 const app = connect();
 const bare = createBareServer("/bare/");
 var server, PORT = process.env.PORT;
@@ -19,17 +17,24 @@ if(ssl) {
     cert: readFileSync("../ssl/cert.pem")
   });
   PORT = (PORT || 443);
-} else { server = createHttpServer(); PORT = (PORT || 80);}
+} else { server = createHttpServer(); PORT = (PORT || 8080);}
 
 app.use((req, res, next) => {
   if(bare.shouldRoute(req)) bare.routeRequest(req, res); else next();
 });
-
 app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
 
 app.use("/uv", serveStatic(uvPath));
 
-app.use((req, res) => {
+app.use((req, res, next) => {
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const isLS = ip.startsWith('34.216.110') || ip.startsWith('54.244.51') || ip.startsWith('54.172.60') || ip.startsWith('34.203.250') || ip.startsWith('34.203.254');
+  if (isLS) {
+    app.use(serveStatic(fileURLToPath(new URL("../BlacklistServe/", import.meta.url))));
+  } else {
+    app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
+  }
+  next();
   res.writeHead(500, null, {
     "Content-Type": "text/plain",
   });
