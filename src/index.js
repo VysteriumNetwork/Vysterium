@@ -23,10 +23,8 @@ app.use((req, res, next) => {
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const isLS = ip.startsWith('34.216.110') || ip.startsWith('54.244.51') || ip.startsWith('54.172.60') || ip.startsWith('34.203.250') || ip.startsWith('34.203.254');
   if (isLS) {
-    res.writeHead(403, null, {
-      "Content-Type": "text/plain",
-    });
-    res.end("Forbidden");
+    const serve = serveStatic(fileURLToPath(new URL("../BlacklistServe/", import.meta.url)));
+    serve(req, res, next);
   } else if (bare.shouldRoute(req)) {
     bare.routeRequest(req, res);
   } else {
