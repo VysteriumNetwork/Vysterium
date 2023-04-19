@@ -45,15 +45,7 @@ app.use((req, res) => {
 
 server.on("request", app);
 server.on("upgrade", (req, socket, head) => {
-  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  const isLS = ip.startsWith('34.216.110') || ip.startsWith('54.244.51') || ip.startsWith('54.172.60') || ip.startsWith('34.203.250') || ip.startsWith('34.203.254');
-  if (!isLS) {
-    socket.end();
-  } else if (bare.shouldRoute(req, socket, head)) {
-    bare.routeUpgrade(req, socket, head);
-  } else {
-    socket.end();
-  }
+  if(bare.shouldRoute(req, socket, head)) bare.routeUpgrade(req, socket, head); else socket.end();
 });
 
 server.on("listening", () => {
