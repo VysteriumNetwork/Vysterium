@@ -13,7 +13,7 @@ import connect from "connect";
 const app = connect();
 const bare = createBareServer("/bare/");
 const ssl = existsSync("../ssl/key.pem") && existsSync("../ssl/cert.pem");
-const PORT = process.env.PORT || ssl ? 443 : 8080;
+const PORT = process.env.PORT || ssl ? 80 : 8080;
 const server = ssl ? createHttpsServer({
   key: readFileSync("../ssl/key.pem"),
   cert: readFileSync("../ssl/cert.pem")
@@ -65,9 +65,9 @@ server.on("listening", () => {
   console.log("");
   console.log("You can now view it in your browser.")
   /* Code for listing IPS from website-aio */
-  console.log(`Local: http${ssl ? "s" : ""}://${addr.family === "IPv6" ? `[${addr.address}]` : addr.address}${(addr.port === 80 || ssl && addr.port === 443)? "" : ":" + addr.port}`);
-  console.log(`Local: http${ssl ? "s" : ""}://localhost${(addr.port === 80 || ssl && addr.port === 443)? "" : ":" + addr.port}`);
-  try { console.log(`On Your Network: http${ssl ? "s" : ""}://${hostname()}${(addr.port === 80 || ssl && addr.port === 443)? "" : ":" + addr.port}`); } catch (err) {/* Can't find LAN interface */};
+  console.log(`Local: http${ssl ? "s" : ""}://${addr.family === "IPv6" ? `[${addr.address}]` : addr.address}${(addr.port === 80 || ssl && addr.port === 80)? "" : ":" + addr.port}`);
+  console.log(`Local: http${ssl ? "s" : ""}://localhost${(addr.port === 80 || ssl && addr.port === 80)? "" : ":" + addr.port}`);
+  try { console.log(`On Your Network: http${ssl ? "s" : ""}://${hostname()}${(addr.port === 80 || ssl && addr.port === 80)? "" : ":" + addr.port}`); } catch (err) {/* Can't find LAN interface */};
   if(process.env.REPL_SLUG && process.env.REPL_OWNER) console.log(`Replit: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
 });
 
