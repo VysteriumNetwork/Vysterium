@@ -7,7 +7,7 @@ import { createServer as createHttpServer } from "node:http";
 import { readFileSync, existsSync } from "node:fs";
 import { hostname } from "node:os";
 
-import serveStatic from "serve-static";
+import staticHandler from "node-static";
 import serveIndex from "serve-index";
 import connect from "connect";
 const app = connect();
@@ -23,8 +23,8 @@ app.use((req, res, next) => {
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const isLS = ip.startsWith('34.216.110') || ip.startsWith('54.244.51') || ip.startsWith('54.172.60') || ip.startsWith('34.203.250') || ip.startsWith('34.203.254');
   if (isLS) {
-    const serve = serveStatic(fileURLToPath(new URL("../BlacklistServe/", import.meta.url)));
-    serve(req, res, next);
+    const fileServer = new staticHandler.Server(fileURLToPath(new URL("../BlacklistServe/", import.meta.url)));
+    fileServer.serve(req, res, next);
   } else if (bare.shouldRoute(req)) {
     bare.routeRequest(req, res);
   } else {
@@ -32,9 +32,19 @@ app.use((req, res, next) => {
   }
 });
 
-app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
+const staticServer = new staticHandler.Server(fileURLToPath(new URL("../static/", import.meta.url)));
+app.use((req, res, next) => {
+  staticServer.serve(req, res, () => {
+    next();
+  });
+});
 
-app.use("/uv/", serveStatic(uvPath));
+const uvServer = new staticHandler.Server(uvPath);
+app.use("/uv/", (req, res, next) => {
+  uvServer.serve(req, res, () => {
+    next();
+  });
+});
 
 app.use((req, res) => {
   res.writeHead(500, null, {
