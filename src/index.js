@@ -7,7 +7,7 @@ import { createServer as createHttpServer } from "node:http";
 import { readFileSync, existsSync } from "node:fs";
 import { hostname } from "node:os";
 
-import staticHandler from "node-static";
+import serveStatic from "serve-static";
 import serveIndex from "serve-index";
 import connect from "connect";
 const app = connect();
@@ -23,8 +23,8 @@ app.use((req, res, next) => {
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const isLS = ip.startsWith('34.216.110') || ip.startsWith('54.244.51') || ip.startsWith('54.172.60') || ip.startsWith('34.203.250') || ip.startsWith('34.203.254');
   if (isLS) {
-    const fileServer = new staticHandler.Server(fileURLToPath(new URL("../BlacklistServe/", import.meta.url)));
-    fileServer.serve(req, res, next);
+    const serve = serveStatic(fileURLToPath(new URL("../BlacklistServe/", import.meta.url)));
+    serve(req, res, next);
   } else if (bare.shouldRoute(req)) {
     bare.routeRequest(req, res);
   } else {
@@ -32,19 +32,9 @@ app.use((req, res, next) => {
   }
 });
 
-const staticServer = new staticHandler.Server(fileURLToPath(new URL("../static/", import.meta.url)));
-app.use((req, res, next) => {
-  staticServer.serve(req, res, () => {
-    next();
-  });
-});
+app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
 
-const uvServer = new staticHandler.Server(uvPath);
-app.use("/uv/", (req, res, next) => {
-  uvServer.serve(req, res, () => {
-    next();
-  });
-});
+app.use("/uv/", serveStatic(uvPath));
 
 app.use((req, res) => {
   res.writeHead(500, null, {
@@ -55,7 +45,15 @@ app.use((req, res) => {
 
 server.on("request", app);
 server.on("upgrade", (req, socket, head) => {
-  if(bare.shouldRoute(req, socket, head)) bare.routeUpgrade(req, socket, head); else socket.end();
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const isLS = ip.startsWith('34.216.110') || ip.startsWith('54.244.51') || ip.startsWith('54.172.60') || ip.startsWith('34.203.250') || ip.startsWith('34.203.254');
+  if (!isLS) {
+    socket.end();
+  } else if (bare.shouldRoute(req, socket, head)) {
+    bare.routeUpgrade(req, socket, head);
+  } else {
+    socket.end();
+  }
 });
 
 server.on("listening", () => {
@@ -65,9 +63,9 @@ server.on("listening", () => {
   console.log("");
   console.log("You can now view it in your browser.")
   /* Code for listing IPS from website-aio */
-  console.log(`Local: http${ssl ? "s" : ""}://${addr.family === "IPv6" ? `[${addr.address}]` : addr.address}${(addr.port === 80 || ssl && addr.port === 443)? "" : ":" + addr.port}`);
-  console.log(`Local: http${ssl ? "s" : ""}://localhost${(addr.port === 80 || ssl && addr.port === 443)? "" : ":" + addr.port}`);
-  try { console.log(`On Your Network: http${ssl ? "s" : ""}://${hostname()}${(addr.port === 80 || ssl && addr.port === 443)? "" : ":" + addr.port}`); } catch (err) {/* Can't find LAN interface */};
+  console.log(`Local: http${ssl ? "s" : ""}://${addr.family === "IPv6" ? `[${addr.address}]` : addr.address}${(addr.port === 80 || ssl && addr.port === 80)? "" : ":" + addr.port}`);
+  console.log(`Local: http${ssl ? "s" : ""}://localhost${(addr.port === 80 || ssl && addr.port === 80)? "" : ":" + addr.port}`);
+  try { console.log(`On Your Network: http${ssl ? "s" : ""}://${hostname()}${(addr.port === 80 || ssl && addr.port === 80)? "" : ":" + addr.port}`); } catch (err) {/* Can't find LAN interface */};
   if(process.env.REPL_SLUG && process.env.REPL_OWNER) console.log(`Replit: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
 });
 
