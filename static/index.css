@@ -169,7 +169,30 @@ body {
     width: 300px;
     cursor: url('./icons/help/cursor.png'),auto;
   }
-  
+  /* Widget CSS */
+#widget button img{
+  width: 50px;
+  height: 50px;
+  z-index: 999;
+  border: none;
+  background: transparent;
+}
+#widget button:hover{
+  background: #5864F1;
+}
+#widget{
+  position: relative;
+  height: 700px;
+}
+#widget button{
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background: transparent;
+  border: none;
+  padding: 15px;
+  border-radius: 50%;
+}
   /* Floating Animation */
   @keyframes animations {
     0%{
@@ -186,39 +209,3 @@ body {
   @keyframes things-ispoop {
     100% {background-position:right}
   }
-  #panel {
-    position: fixed;
-    top: 0;
-    right: -300px;
-    width: 300px;
-    height: 100%;
-    background-color: #fff;
-    transition: all 0.3s ease-in-out;
-  }
-  
-  #panel.open {
-    right: 0;
-  }
-  
-  .tab button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-  button:hover {
-    background-color: #3e8e41;
-  }
-  
-  button:active {
-    background-color: #2f6f33;
-  }
-  
