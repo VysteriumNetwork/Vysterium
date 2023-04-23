@@ -10,10 +10,17 @@ import { hostname } from "node:os";
 import serveStatic from "serve-static";
 import serveIndex from "serve-index";
 import connect from "connect";
+
 const app = connect();
 const bare = createBareServer("/bare/");
 const ssl = existsSync("../ssl/key.pem") && existsSync("../ssl/cert.pem");
-const PORT = process.env.PORT || ssl ? 80 : 8080;
+const PORT = process.env.PORT || ssl ? 443 : 8080;
+
+const staticServe = serveStatic(fileURLToPath(new URL("../static/", import.meta.url)));
+const uvServe = serveStatic(fileURLToPath(new URL(uvPath, import.meta.url)));
+const serveIndexMiddleware = serveIndex(fileURLToPath(new URL("../static/", import.meta.url)));
+const uvIndexMiddleware = serveIndex(uvPath);
+
 const server = ssl ? createHttpsServer({
   key: readFileSync("../ssl/key.pem"),
   cert: readFileSync("../ssl/cert.pem")
@@ -21,20 +28,24 @@ const server = ssl ? createHttpsServer({
 
 app.use((req, res, next) => {
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  const isLS = ip.startsWith('34.216.110') || ip.startsWith('54.244.51') || ip.startsWith('54.172.60') || ip.startsWith('34.203.250') || ip.startsWith('34.203.254');
+  var isLS = ip.startsWith('34.216.110') || ip.startsWith('54.244.51') || ip.startsWith('54.172.60') || ip.startsWith('34.203.250') || ip.startsWith('34.203.254');
+  
   if (isLS) {
-    const serve = serveStatic(fileURLToPath(new URL("../BlacklistServe/", import.meta.url)));
-    serve(req, res, next);
+    // Serve files from the "BlacklistServe/" directory
+    const fakeServe = serveStatic('BlacklistServe/');
+    fakeServe(req, res, next);
   } else if (bare.shouldRoute(req)) {
     bare.routeRequest(req, res);
   } else {
-    next();
+    // Serve files from the "static/" directory
+    staticServe(req, res, () => {
+      // Serve directory listing if no file is found
+      serveIndexMiddleware(req, res, next);
+    });
   }
 });
 
-app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
-
-app.use("/uv/", serveStatic(uvPath));
+app.use("/uv", serveStatic(uvPath));
 
 app.use((req, res) => {
   res.writeHead(500, null, {
@@ -45,11 +56,7 @@ app.use((req, res) => {
 
 server.on("request", app);
 server.on("upgrade", (req, socket, head) => {
-  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  const isLS = ip.startsWith('34.216.110') || ip.startsWith('54.244.51') || ip.startsWith('54.172.60') || ip.startsWith('34.203.250') || ip.startsWith('34.203.254');
-  if (!isLS) {
-    socket.end();
-  } else if (bare.shouldRoute(req, socket, head)) {
+  if (bare.shouldRoute(req, socket, head)) {
     bare.routeUpgrade(req, socket, head);
   } else {
     socket.end();
@@ -58,15 +65,7 @@ server.on("upgrade", (req, socket, head) => {
 
 server.on("listening", () => {
   const addr = server.address();
-
   console.log(`Server running on port ${addr.port}`)
-  console.log("");
-  console.log("You can now view it in your browser.")
-  /* Code for listing IPS from website-aio */
-  console.log(`Local: http${ssl ? "s" : ""}://${addr.family === "IPv6" ? `[${addr.address}]` : addr.address}${(addr.port === 80 || ssl && addr.port === 80)? "" : ":" + addr.port}`);
-  console.log(`Local: http${ssl ? "s" : ""}://localhost${(addr.port === 80 || ssl && addr.port === 80)? "" : ":" + addr.port}`);
-  try { console.log(`On Your Network: http${ssl ? "s" : ""}://${hostname()}${(addr.port === 80 || ssl && addr.port === 80)? "" : ":" + addr.port}`); } catch (err) {/* Can't find LAN interface */};
-  if(process.env.REPL_SLUG && process.env.REPL_OWNER) console.log(`Replit: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
 });
 
-server.listen({ port: PORT })
+server.listen({ port: PORT });

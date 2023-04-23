@@ -78,15 +78,17 @@ if(closeA) {
 const parent = window.parent.document;
 const siteFrame = parent.querySelector(".iframething");
 const urlbar = parent.querySelector("#urlbar");
-const urlToOpen = window.parent.parent.document.querySelector(".winFocus").getAttribute("urltoopen");
-
+window.onload = function() {
+    const urlToOpen = window.parent.parent.document.querySelector(".winFocus").getAttribute("urltoopen");
+}
+if (urltoOpen == null) {
+    siteFrame.setAttribute("src", `https://${parentDomain}/service/${xor.encode(urlToOpen)}`);
+        urlbar.value = urlToOpen;
+}
 if (urlToOpen != "undefined") {
     const parentDomain = window.parent.parent.document.location.hostname;
     if(parentDomain === "localhost") {
-        siteFrame.setAttribute("src", `//${parentDomain}:${window.parent.document.location.port}/sw/${xor.encode(urlToOpen)}`);
-        urlbar.value = urlToOpen;
-    } else {
-        siteFrame.setAttribute("src", `https://${parentDomain}/sw/${xor.encode(urlToOpen)}`);
+        siteFrame.setAttribute("src", `//${parentDomain}:${window.parent.document.location.port}/service/${xor.encode(urlToOpen)}`);
         urlbar.value = urlToOpen;
     }
 }

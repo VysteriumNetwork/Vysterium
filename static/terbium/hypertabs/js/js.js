@@ -75,7 +75,7 @@ function getIcon(id) {
       xor.encode(
         "http://" +
         CONTENT_WINDOW(id).document.domain +
-        "/favicon.ico"
+        "./favicon.ico"
       )
     );
 }

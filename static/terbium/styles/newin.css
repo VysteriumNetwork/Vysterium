@@ -1,16 +1,16 @@
 @font-face {
     font-family: Metro;
-    src: url(../resources/metropolis-extra-bold.otf);
+    src: url(/terbium/resources/metropolis-extra-bold.otf);
 }
 
 @font-face {
     font-family: Ubuntu;
-    src: url(../resources/Ubuntu-Medium.ttf);
+    src: url(/terbium/resources/Ubuntu-Medium.ttf);
 }
 
 @font-face {
     font-family: Roboto;
-    src: url(../resources/Roboto.ttf);
+    src: url(/terbium/resources/Roboto.ttf);
 }
 
 [data-theme="dark"] {
