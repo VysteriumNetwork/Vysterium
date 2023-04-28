@@ -351,6 +351,6 @@ function link(_link) {
     }, 200);
   } else {
     location.href =
-      "service/" + __uv$config.encodeUrl("https://radon.games/");
+      "/service/" + __uv$config.encodeUrl("https://radon.games/");
   }
 }

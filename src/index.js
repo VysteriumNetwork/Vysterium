@@ -8,60 +8,93 @@ import { readFileSync, existsSync } from "node:fs";
 import { hostname } from "node:os";
 
 import serveStatic from "serve-static";
-import serveIndex from "serve-index";
 import connect from "connect";
+import createRammerhead from 'rammerhead/src/server/index.js';
+import dotenv from 'dotenv';
+import compression from 'compression';
 
 const app = connect();
 const bare = createBareServer("/bare/");
 const ssl = existsSync("../ssl/key.pem") && existsSync("../ssl/cert.pem");
-const PORT = process.env.PORT || ssl ? 443 : 8080;
-
-const staticServe = serveStatic(fileURLToPath(new URL("../static/", import.meta.url)));
-const uvServe = serveStatic(fileURLToPath(new URL(uvPath, import.meta.url)));
-const serveIndexMiddleware = serveIndex(fileURLToPath(new URL("../static/", import.meta.url)));
-const uvIndexMiddleware = serveIndex(uvPath);
-
+const PORT = process.env.PORT || (ssl ? 443 : 80);
 const server = ssl ? createHttpsServer({
   key: readFileSync("../ssl/key.pem"),
   cert: readFileSync("../ssl/cert.pem")
 }) : createHttpServer();
 
+dotenv.config();
+
+function shouldRouteRh(req) {
+	const url = new URL(req.url, 'http://0.0.0.0');
+	return (
+		rammerheadScopes.includes(url.pathname) ||
+		rammerheadSession.test(url.pathname)
+	);
+}
+
+function routeRhUpgrade(req, res) {
+	rh.emit('upgrade', req, res);
+}
+
+const rh = createRammerhead();
+
+// used when forwarding the script
+const rammerheadScopes = [
+	'/rammerhead.js',
+	'/hammerhead.js',
+	'/transport-worker.js',
+	'/task.js',
+	'/iframe-task.js',
+	'/worker-hammerhead.js',
+	'/messaging',
+	'/sessionexists',
+	'/deletesession',
+	'/newsession',
+	'/editsession',
+	'/needpassword',
+	'/syncLocalStorage',
+	'/api/shuffleDict',
+];
+
+const rammerheadSession = /^\/[a-z0-9]{32}/;
+
+
+app.use(compression());
 app.use((req, res, next) => {
-  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  var isLS = ip.startsWith('34.216.110') || ip.startsWith('54.244.51') || ip.startsWith('54.172.60') || ip.startsWith('34.203.250') || ip.startsWith('34.203.254');
-  
-  if (isLS) {
-    // Serve files from the "BlacklistServe/" directory
-    const fakeServe = serveStatic('BlacklistServe/');
-    fakeServe(req, res, next);
-  } else if (bare.shouldRoute(req)) {
+  if (bare.shouldRoute(req)) {
     bare.routeRequest(req, res);
+  } else if (shouldRouteRh(req)) {
+    try {
+      routeRhUpgrade(req, res.socket, res.head);
+    } catch(error) {
+      console.error(error);
+    }
   } else {
-    // Serve files from the "static/" directory
-    staticServe(req, res, () => {
-      // Serve directory listing if no file is found
-      serveIndexMiddleware(req, res, next);
-    });
+    next();
   }
 });
 
-app.use("/uv", serveStatic(uvPath));
+app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
+app.use("/uv/", serveStatic(uvPath));
 
-app.use((req, res) => {
-  res.writeHead(500, null, {
-    "Content-Type": "text/plain",
-  });
-  res.end("Error");
-});
 
 server.on("request", app);
-server.on("upgrade", (req, socket, head) => {
-  if (bare.shouldRoute(req, socket, head)) {
-    bare.routeUpgrade(req, socket, head);
-  } else {
-    socket.end();
+server.on('upgrade', (req, socket, head) => {
+  if (bare.shouldRoute(req)) {
+      bare.routeUpgrade(req, socket, head);
+  } 
+  else if (shouldRouteRh(req)) {
+      try {
+          routeRhUpgrade(req, socket, head);
+      }
+      catch (error) {}
+  }
+  else {
+      socket.end();
   }
 });
+
+
 
 server.on("listening", () => {
   const addr = server.address();
