@@ -13,14 +13,6 @@
     ".gitignore",
     "app.json"
   ],
-  "keywords": [
-    "unoffical",
-    "ultraviolet",
-    "unblock",
-    "titaniumnetwork",
-    "bypass-filter",
-    "amethystnetwork-dev"
-  ],
   "author": "",
   "license": "GPL-3.0-or-later",
   "dependencies": {
@@ -30,8 +22,6 @@
     "compression": "^1.7.4",
     "connect": "^3.7.0",
     "fs": "^0.0.1-security",
-    "node-static": "^0.7.11",
-    "rammerhead": "https://github.com/holy-unblocker/rammerhead/releases/download/v1.2.41-holy.5/rammerhead-1.2.41-holy.5.tgz",
     "serve-index": "^1.9.1",
     "serve-static": "^1.15.0"
   },
