@@ -5,14 +5,12 @@ import { fileURLToPath } from "node:url";
 import { createServer as createHttpsServer } from "node:https";
 import { createServer as createHttpServer } from "node:http";
 import { readFileSync, existsSync } from "node:fs";
-import { hostname } from "node:os";
-
 import serveStatic from "serve-static";
 import connect from "connect";
 import createRammerhead from 'rammerhead/src/server/index.js';
 import dotenv from 'dotenv';
 import compression from 'compression';
-
+import fs from 'fs';
 const app = connect();
 const bare = createBareServer("/bare/");
 const ssl = existsSync("../ssl/key.pem") && existsSync("../ssl/cert.pem");
@@ -77,7 +75,26 @@ app.use((req, res, next) => {
 app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
 app.use("/uv/", serveStatic(uvPath));
 
+const shuttleroutes = {
+  '/shuttle/': 'index.html',
+  '/shuttle/games': 'games.html',
+  '/shuttle/settings': 'settings.html',
+  '/shuttle/apps': 'apps.html',
+  '/shuttle/discord': 'discord.html',
+  '/shuttle/chat': 'chat.html'
+};
 
+function handleRoutes(req, res, next) {
+  const filename = shuttleroutes[req.url];
+
+  if (filename) {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(fs.readFileSync(`./src/html/shuttle/${filename}`));
+  } else {
+    next();
+  }
+}
+app.use(handleRoutes);
 server.on("request", app);
 server.on('upgrade', (req, socket, head) => {
   if (bare.shouldRoute(req)) {
