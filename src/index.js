@@ -1,13 +1,11 @@
 import createBareServer from "@tomphttp/bare-server-node";
 import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
-
 import { fileURLToPath } from "node:url";
 import { createServer as createHttpsServer } from "node:https";
 import { createServer as createHttpServer } from "node:http";
 import { readFileSync, existsSync } from "node:fs";
 import serveStatic from "serve-static";
 import connect from "connect";
-import dotenv from 'dotenv';
 import compression from 'compression';
 import fs from 'fs';
 const app = connect();
@@ -19,18 +17,9 @@ const server = ssl ? createHttpsServer({
   cert: readFileSync("../ssl/cert.pem")
 }) : createHttpServer();
 
-dotenv.config();
-
- 
-
 app.use(compression());
 app.use((req, res, next) => {
-  if (bare.shouldRoute(req)) {
-    bare.routeRequest(req, res);
-
-  } else {
-    next();
-  }
+  if(bare.shouldRoute(req)) bare.routeRequest(req, res); else next();
 });
 
 app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
@@ -68,12 +57,8 @@ function handleRoutes(req, res, next) {
 
 app.use(handleRoutes);
 server.on("request", app);
-server.on('upgrade', (req, socket, head) => {
-  if (bare.shouldRoute(req)) {
-      bare.routeUpgrade(req, socket, head);
-  } else {
-      socket.end();
-  }
+server.on("upgrade", (req, socket, head) => {
+  if(bare.shouldRoute(req, socket, head)) bare.routeUpgrade(req, socket, head); else socket.end();
 });
 
 
