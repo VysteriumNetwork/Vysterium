@@ -14,7 +14,7 @@ body {
       linear-gradient(90deg, #000000 calc(50% - var(--m)),#000 0 calc(50% + var(--m)), #000000 0);
     background-size: calc(var(--s) + 2*var(--m)) calc(var(--s)*1.732 + 3*var(--m)); 
     mix-blend-mode:lighten; 
-    cursor: url('./icons/help/cursor.png'),auto;
+    
   }
   
   body:before {
@@ -23,7 +23,7 @@ body {
     inset: 0;
     background:linear-gradient(90deg,black,#121212,black) left/400% 100%;
     animation:things-ispoop 2s infinite alternate linear;
-    cursor: url('./icons/help/cursor.png'),auto;
+    
   }
   
   /* Menubar */
@@ -40,16 +40,16 @@ body {
     align-items: center;
     flex-wrap: wrap;
     padding: 10px;
-    height: 120px;
-    width: 550px;
+    height: 140px;
+    width: 525px;
     background: rgba(28, 28, 28, .2);
     animation: animations 3s ease-in-out infinite;
-    cursor: url('./icons/help/cursor.png'),auto;
+    
   }
   
   .menubar:hover {
     border: 2px solid #b3b3b3;
-    cursor: url('./icons/help/cursor.png'),auto;
+    
   }
   
   .menubar a img {
@@ -61,11 +61,13 @@ body {
     border-radius:50%;
     -moz-border-radius:50%;
     -webkit-border-radius:50%;
-    cursor: url('./icons/help/cursor.png'),auto;
+    transition: transform 0.7s ease-in-out; 
   }
-  .menubar a img:hover{
-    cursor: url('./icons/help/cursor.png'),auto;
+  
+  .menubar a img:hover {
+    transform: scale(1.1);
   }
+  
   
   /* Menubar Icons */
   .icon:hover img {
@@ -90,7 +92,7 @@ body {
       background-color: #607D8B;
   }
   .shuttle:hover img {
-    background-color: #607699;
+    background-color: #696999;
 }
   .delta:hover img {
     background-color: #1193B2;
@@ -142,12 +144,12 @@ body {
     height: 20px;
     width: 300px;
     overflow: hidden;
-    cursor: url('./icons/help/cursor.png'),auto;
+    top: calc(50% + 120px);
   }
-  
+
   .searchbox:hover {
     border: 2px solid #b3b3b3;
-    cursor: url('./icons/help/cursor.png'),auto;
+    
   }
   
   .searchbox {
@@ -156,7 +158,7 @@ body {
     align-items: center;
     position: absolute;
     animation: animations 3s ease-in-out infinite;
-    cursor: url('./icons/help/cursor.png'),auto;
+    
   }
   
   .searchbox input[type="text"] {
@@ -169,7 +171,7 @@ body {
     color: white;
     text-align: center;
     width: 300px;
-    cursor: url('./icons/help/cursor.png'),auto;
+    
   }
   /* Widget CSS */
 #widget button img{
