@@ -8,7 +8,6 @@ import serveStatic from "serve-static";
 import connect from "connect";
 import compression from 'compression';
 import fs from 'fs';
-import path from 'path';
 const app = connect();
 const bare = createBareServer("/bare/");
 const ssl = existsSync("../ssl/key.pem") && existsSync("../ssl/cert.pem");
@@ -25,11 +24,6 @@ app.use((req, res, next) => {
 
 app.use("/uv/", serveStatic(uvPath));
 app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
-app.use((req, res) => {
-  res.statusCode = 404;
-  res.setHeader("Content-Type", "text/html");
-  res.end(fs.readFileSync('src/html/404.html'));
-});
 const shuttleroutes = {
   '/shuttle/': 'index.html',
   '/shuttle/games': 'games.html',
@@ -44,6 +38,7 @@ const nebularoutes = {
   '/nebula/privacy': 'privacy.html',
   '/nebula/unv': 'unv.html',
 };
+
 function handleRoutes(req, res, next) {
   const nfilename = nebularoutes[req.url];
   if (nfilename) {
@@ -54,7 +49,13 @@ function handleRoutes(req, res, next) {
     if (filename) {
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(fs.readFileSync(`./src/html/shuttle/${filename}`));
+    } else if (req.url.startsWith('/shuttle/') || req.url.startsWith('/nebula/')) {
+      // If the requested URL starts with '/shuttle/' or '/nebula/', but does not match any of the routes,
+      // redirect to the 404 page
+      res.writeHead(404, { 'Content-Type': 'text/html' });
+      res.end(fs.readFileSync('src/html/404.html'));
     } else {
+      // If the requested URL does not match any of the routes, pass the request to the next middleware function
       next();
     }
   }
@@ -66,7 +67,11 @@ server.on("upgrade", (req, socket, head) => {
   if(bare.shouldRoute(req, socket, head)) bare.routeUpgrade(req, socket, head); else socket.end();
 });
 
-
+app.use((req, res) => {
+  res.statusCode = 404;
+  res.setHeader("Content-Type", "text/html");
+  res.end(fs.readFileSync('src/html/404.html'));
+});
 
 server.on("listening", () => {
   const addr = server.address();
