@@ -29,115 +29,25 @@ form.addEventListener("submit", async (event) => {
   }
 
   const url = search(address.value, searchEngine.value);
-  location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+  const popup = open("about:blank", "_blank")
+        if (!popup || popup.closed) {
+            alert("Popups are disabled!")
+        } else {
+            const doc = popup.document
+            const iframe = doc.createElement("iframe")
+            const style = iframe.style
+            const link = doc.createElement("link")
+    
+            doc.title = "My Drive - Google Drive"
+            link.rel = "icon";
+            link.href = "https://ssl.gstatic.com/images/branding/product/2x/hh_drive_36dp.png";
+            iframe.src = location.href + 'service/' + __uv$config.encodeUrl(url);
+            style.position = "fixed"
+            style.top = style.bottom = style.left = style.right = 0
+            style.border = style.outline = "none"
+            style.width = style.height = "100%"
+    
+            doc.body.appendChild(iframe)
+            location.replace("https://google.com")
+        }
 });
-particlesJS("particles-js", { 
-    "particles": {
-      "number": {
-        "value": 123,
-        "density": {
-          "enable": true,
-          "value_area": 800
-        }
-      },
-      "color": {
-        "value": "#ed6b6b"
-      },
-      "shape": {
-        "type": "circle",
-        "stroke": {
-          "width": 0,
-          "color": "#000000"
-        },
-        "polygon": {
-          "nb_sides": 3
-        },
-        "image": {
-          "src": "img/github.svg",
-          "width": 100,
-          "height": 100
-        }
-      },
-      "opacity": {
-        "value": 0.7023414010527227,
-        "random": false,
-        "anim": {
-          "enable": false,
-          "speed": 1,
-          "opacity_min": 0.1,
-          "sync": false
-        }
-      },
-      "size": {
-        "value": 7.891476416322726,
-        "random": true,
-        "anim": {
-          "enable": false,
-          "speed": 40,
-          "size_min": 0.1,
-          "sync": false
-        }
-      },
-      "line_linked": {
-        "enable": false,
-        "distance": 150,
-        "color": "#ffffff",
-        "opacity": 0.4,
-        "width": 1
-      },
-      "move": {
-        "enable": true,
-        "speed": 6,
-        "direction": "none",
-        "random": false,
-        "straight": false,
-        "out_mode": "out",
-        "bounce": false,
-        "attract": {
-          "enable": false,
-          "rotateX": 600,
-          "rotateY": 1200
-        }
-      }
-    },
-    "interactivity": {
-      "detect_on": "window",
-      "events": {
-        "onhover": {
-          "enable": true,
-          "mode": "repulse"
-        },
-        "onclick": {
-          "enable": true,
-          "mode": "push"
-        },
-        "resize": true
-      },
-      "modes": {
-        "grab": {
-          "distance": 455.5444555444555,
-          "line_linked": {
-            "opacity": 1
-          }
-        },
-        "bubble": {
-          "distance": 400,
-          "size": 40,
-          "duration": 2,
-          "opacity": 8,
-          "speed": 3
-        },
-        "repulse": {
-          "distance": 111.8881118881119,
-          "duration": 0.4
-        },
-        "push": {
-          "particles_nb": 4
-        },
-        "remove": {
-          "particles_nb": 2
-        }
-      }
-    },
-    "retina_detect": true
-  });
