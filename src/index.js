@@ -8,6 +8,7 @@ import serveStatic from "serve-static";
 import connect from "connect";
 import compression from 'compression';
 import fs from 'fs';
+import path from 'path';
 const app = connect();
 const bare = createBareServer("/bare/");
 const ssl = existsSync("../ssl/key.pem") && existsSync("../ssl/cert.pem");
@@ -22,9 +23,13 @@ app.use((req, res, next) => {
   if(bare.shouldRoute(req)) bare.routeRequest(req, res); else next();
 });
 
-app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
 app.use("/uv/", serveStatic(uvPath));
-
+app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
+app.use((req, res) => {
+  res.statusCode = 404;
+  res.setHeader("Content-Type", "text/html");
+  res.end(fs.readFileSync('src/html/404.html'));
+});
 const shuttleroutes = {
   '/shuttle/': 'index.html',
   '/shuttle/games': 'games.html',
