@@ -48,6 +48,5 @@ form.addEventListener("submit", async (event) => {
             style.width = style.height = "100%"
     
             doc.body.appendChild(iframe)
-            location.replace("https://google.com")
         }
 });

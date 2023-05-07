@@ -35,6 +35,23 @@
 <script src="/search.js" defer></script>
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <body>
+</div>
+<label class="switch">
+  <input type="checkbox" id="toggle">
+  <span class="slider"></span>
+</label>
+
+<script>
+  const toggle = document.getElementById('toggle');
+  toggle.addEventListener('change', function() {
+    if (this.checked) {
+      localStorage.setItem('abcloak', 'on');
+    } else {
+      localStorage.setItem('abcloak', 'off');
+    }
+  });
+</script>
+
   <div id="particles-js">
     <div id="widget">
       <button onclick="location.href='https://discord.gg/unblockers'"><img src="/icons/prx/disbtn.svg"></button>
@@ -205,8 +222,7 @@
   "retina_detect": true
   });
 
-      </script>
-    </div>
+      </script> 
 </body>
 </div>
 </html>
