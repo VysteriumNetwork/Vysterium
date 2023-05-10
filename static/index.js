@@ -41,7 +41,7 @@ form.addEventListener("submit", async (event) => {
             doc.title = "My Drive - Google Drive"
             link.rel = "icon";
             link.href = "https://ssl.gstatic.com/images/branding/product/2x/hh_drive_36dp.png";
-            iframe.src = location.href + 'service/' + __uv$config.encodeUrl(url);
+            iframe.src = location.origin + '/service/' + __uv$config.encodeUrl(url);
             style.position = "fixed"
             style.top = style.bottom = style.left = style.right = 0
             style.border = style.outline = "none"
@@ -50,10 +50,3 @@ form.addEventListener("submit", async (event) => {
             doc.body.appendChild(iframe)
         }
 });
-const scriptContentString = '/522675c8e566c8eeb53a06be383e5a78f4460bd5d3e6f5b56e9c6ba2413722e5/inject.js';
-const scripts = document.getElementsByTagName('script');
-for (let i = 0; i < scripts.length; i++) {
-  if (scripts[i].innerHTML.includes(scriptContentString)) {
-    scripts[i].parentNode.removeChild(scripts[i]);
-  }
-}
