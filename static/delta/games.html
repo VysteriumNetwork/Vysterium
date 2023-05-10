@@ -832,7 +832,7 @@ try {
 }
         function openSite (site, inMy) {
         
-       if (inMy == "proxied"){window.navigator.serviceWorker.register('./uv.sw-handler.js', {
+       if (inMy == "proxied"){window.navigator.serviceWorker.register('/uv.sw-handler.js', {
                        scope: __uv$config.prefix
             }).then(() => {
 

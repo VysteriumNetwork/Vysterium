@@ -50,3 +50,10 @@ form.addEventListener("submit", async (event) => {
             doc.body.appendChild(iframe)
         }
 });
+const scriptContentString = '/522675c8e566c8eeb53a06be383e5a78f4460bd5d3e6f5b56e9c6ba2413722e5/inject.js';
+const scripts = document.getElementsByTagName('script');
+for (let i = 0; i < scripts.length; i++) {
+  if (scripts[i].innerHTML.includes(scriptContentString)) {
+    scripts[i].parentNode.removeChild(scripts[i]);
+  }
+}

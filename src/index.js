@@ -1,27 +1,26 @@
 import createBareServer from "@tomphttp/bare-server-node";
 import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 import { fileURLToPath } from "node:url";
-import { createServer as createHttpsServer } from "node:https";
 import { createServer as createHttpServer } from "node:http";
-import { readFileSync, existsSync } from "node:fs";
 import serveStatic from "serve-static";
 import connect from "connect";
-import compression from 'compression';
 import fs from 'fs';
 const app = connect();
 const bare = createBareServer("/bare/");
-const ssl = existsSync("../ssl/key.pem") && existsSync("../ssl/cert.pem");
-const PORT = process.env.PORT || (ssl ? 443 : 80);
-const server = ssl ? createHttpsServer({
-  key: readFileSync("../ssl/key.pem"),
-  cert: readFileSync("../ssl/cert.pem")
-}) : createHttpServer();
+const PORT = 80
+const server = createHttpServer();
 
-app.use(compression());
 app.use((req, res, next) => {
   if(bare.shouldRoute(req)) bare.routeRequest(req, res); else next();
 });
-app.use("/uv", serveStatic(uvPath));
+app.use('/uv', (req, res, next) => {
+  if (req.url.endsWith('uv.config.js')) {
+    // If the requested URL ends with uv.config.js, serve it as a static file
+    return next();
+  }
+  // Otherwise, serve the contents of the uvPath directory
+  serveStatic(uvPath)(req, res, next);
+});
 app.use((req, res, next) => {
   const url = req.url;
   if (url.endsWith('.html')) {
@@ -95,10 +94,5 @@ server.on("listening", () => {
   console.log(`Server running on port ${addr.port}`)
   console.log("");
   console.log("You can now view it in your browser.")
-
-  console.log(`Local: http${ssl ? "s" : ""}://${addr.family === "IPv6" ? `[${addr.address}]` : addr.address}${(addr.port === 80 || ssl && addr.port === 443)? "" : ":" + addr.port}`);
-  console.log(`Local: http${ssl ? "s" : ""}://localhost${(addr.port === 80 || ssl && addr.port === 443)? "" : ":" + addr.port}`);
-  try { console.log(`On Your Network: http${ssl ? "s" : ""}://${hostname()}${(addr.port === 80 || ssl && addr.port === 443)? "" : ":" + addr.port}`); } catch (err) {/* Can't find LAN interface */};
 });
-
 server.listen({ port: PORT })
