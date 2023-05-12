@@ -171,6 +171,9 @@ body {
   .abyss:hover img {
       background-color: #000000;
   }
+  .rammerhead:hover img {
+    background-color: #111111;
+}
   
   .interstellar:hover img {
       background-color: #696969;
