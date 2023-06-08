@@ -230,7 +230,6 @@ function getUnauthorizedResponse(req) {
         <a href="https://www.khanacademy.org/" target="_blank">Khan Academy</a>
         <a href="https://www.mheducation.com/" target="_blank">McGraw Hill</a>
         <a href="https://formative.com/" target="_blank">Formative</a>
-        <!-- Add more links as needed -->
       </div>
     </div>
   </body>
