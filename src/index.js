@@ -3,15 +3,34 @@ import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 import { fileURLToPath } from "node:url";
 import { createServer as createHttpServer } from "node:http";
 import serveStatic from "serve-static";
-import connect from "connect";
+import express from "express";
 import fs from 'fs';
-const app = connect();
+const app = express();
 const bare = createBareServer("/bare/");
 const PORT = 80
 const server = createHttpServer();
+import basicAuth from 'express-basic-auth';
 import createRammerhead from 'rammerhead/src/server/index.js';
 app.use((req, res, next) => {
-  if(bare.shouldRoute(req)) bare.routeRequest(req, res); else next();
+  if(req.path.startsWith('/bare/')) {
+    bare.routeRequest(req, res);
+  } else {
+    next();
+  }
+});
+
+app.use((req, res, next) => {
+  if (!req.path.startsWith('/bare/')) {
+      // If the path does not start with /bare, use the basicAuth middleware
+      basicAuth({
+          users: { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena'},
+          challenge: true,
+          realm: 'Imb4T3st4pp',
+          unauthorizedResponse: getUnauthorizedResponse
+      })(req, res, next);
+  } else {
+      next();
+  }
 });
 app.use('/uv', (req, res, next) => {
   if (req.url.endsWith('uv.config.js')) {
@@ -147,7 +166,11 @@ app.use((req, res) => {
   res.setHeader("Content-Type", "text/html");
   res.end(fs.readFileSync('src/html/404.html'));
 });
-
+function getUnauthorizedResponse(req) {
+  return req.auth
+      ? ('Credentials ' + req.auth.user + ':' + req.auth.password + ' rejected')
+      : 'No credentials provided, please contact your district administrators to get a teacher account.'
+}
 
 server.on("listening", () => {
   const addr = server.address();
