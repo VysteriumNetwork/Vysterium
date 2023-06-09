@@ -21,7 +21,6 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   if (!req.path.startsWith('/bare/')) {
-      // If the path does not start with /bare, use the basicAuth middleware
       basicAuth({
           users: { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena'},
           challenge: true,
