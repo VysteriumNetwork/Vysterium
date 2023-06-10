@@ -147,7 +147,17 @@ fullscreenButton.addEventListener("click", function() {
 </body>
 	     
 <html>
-
+  <script>
+    fetch("/server/")
+.then(response => response.text())
+.then(data => {
+localStorage.setItem("bare", data);
+console.log("Successfully fetched and set 'bare' value in localStorage.");
+})
+.catch(error => {
+console.log("Error fetching 'bare' from server:", error);
+});
+</script>
 <iframe src="./loading.html" id="iframeId" style="bottom: 0;" style="border:0px #ffffff none;" name="myiFrame" scrolling="yes" frameborder="0" marginheight="0px" marginwidth="0px" height="100%" width="100%" allowfullscreen ></iframe>
 <script>
 window.onload = function() {

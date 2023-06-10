@@ -47,6 +47,17 @@
             })();
             */
         </script>
+           <script>
+            fetch("/server/")
+      .then(response => response.text())
+      .then(data => {
+      ocalStorage.setItem("bare", '/' + data + '/');
+        console.log("Successfully fetched and set 'bare' value in localStorage.");
+      })
+      .catch(error => {
+        console.log("Error fetching 'bare' from server:", error);
+      });
+        </script>
     </head>
     <body>
         <script>document.body.setAttribute('data-appearance', (localStorage.getItem('incog||appearance')))</script>

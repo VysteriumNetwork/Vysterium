@@ -1,6 +1,6 @@
-self.__uv$config = {
+  self.__uv$config = {
     prefix: "/security/flaws/xor/learn/",
-    bare: "/api/versions/security/",
+    bare: "/security/api/protection/",
     encodeUrl: Ultraviolet.codec.xor.encode,
     decodeUrl: Ultraviolet.codec.xor.decode,
     handler: "/uv/uv.handler.js",
@@ -9,3 +9,4 @@ self.__uv$config = {
     config: "/uv/uv.config.js",
     sw: "/uv/uv.sw.js",
   };
+

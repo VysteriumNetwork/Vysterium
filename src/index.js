@@ -4,19 +4,32 @@ import { fileURLToPath } from "node:url";
 import { createServer as createHttpServer } from "node:http";
 import serveStatic from "serve-static";
 import express from "express";
-import path from 'path';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import fs from 'fs';
 const app = express();
-const bare = createBareServer("/api/versions/security/");
 const PORT = 80
 const server = createHttpServer();
 import basicAuth from 'express-basic-auth';
 import createRammerhead from 'rammerhead/src/server/index.js';
+//function generateRandomString(length) {
+ // let result = '';
+ // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+ // for (let i = 0; i < length; i++) {
+ //   const randomIndex = Math.floor(Math.random() * characters.length);
+ //   result += characters.charAt(randomIndex);
+ // }
+
+//  return result;
+//}
+
+// Usage example: Generate a random string of 10 characters
+//const randomString = generateRandomString(10);
+//app.get('/server/', (req, res) => { 
+//  res.json({ bare: '/' + randomString + '/' });
+//});
+const bare = createBareServer('/security/api/protection/');
 app.use((req, res, next) => {
-  if (req.path.startsWith('/api/versions/security/')) {
+  if (req.path.startsWith('/security/api/protection/')) {
       bare.routeRequest(req, res);
   } else {
       const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena' };
@@ -24,14 +37,13 @@ app.use((req, res, next) => {
       // middleware for handling authentication
       const authMiddleware = basicAuth({
         users,
-        challenge: req.path !== '/', // challenge only for routes other than '/'
+        challenge: req.path === '/login', // challenge only for routes other than '/'
         unauthorizedResponse: getUnauthorizedResponse,
       });
 
       authMiddleware(req, res, (err) => {
         if (err || !req.auth) {
-          if (req.path === '/' ) {
-            // The user is not authenticated, send the unauthorized response.
+          if (req.path !== '/login' ) {
             res.send(getUnauthorizedResponse(req));
           } else {
             next(err);
@@ -240,8 +252,20 @@ function getUnauthorizedResponse(req) {
           <p>If you believe you've reached this page in error, please go back to the previous page or contact the site administrator.</p>
           <div class="resources">
             <h2>Resources for Students</h2>
-            <a href="https://clever.com" target="_blank">Clever</a>
-            <a href="https://desmos.com" target="_blank">Desmos</a>
+            <a href="https://www.khanacademy.org/" target="_blank">Khan Academy</a>
+            <a href="https://www.edX.org/" target="_blank">edX</a>
+            <a href="https://www.coursera.org/" target="_blank">Coursera</a>
+            <a href="https://www.udemy.com/" target="_blank">Udemy</a>
+            <a href="https://www.codecademy.com/" target="_blank">Codecademy</a>
+            <a href="https://www.duolingo.com/" target="_blank">Duolingo</a>
+            <a href="https://www.memrise.com/" target="_blank">Memrise</a>
+            <a href="https://www.brainpop.com/" target="_blank">BrainPOP</a>
+            <a href="https://www.quizlet.com/" target="_blank">Quizlet</a>
+            <a href="https://www.mathway.com/" target="_blank">Mathway</a>
+            <a href="https://www.sparknotes.com/" target="_blank">SparkNotes</a>
+            <a href="https://www.grammarly.com/" target="_blank">Grammarly</a>
+            <a href="https://www.scribd.com/" target="_blank">Scribd</a>
+            <a href="https://www.wolframalpha.com/" target="_blank">Wolfram Alpha</a>
             <!-- Add more links as needed -->
           </div>
         </div>
