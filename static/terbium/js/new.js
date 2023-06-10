@@ -26,13 +26,13 @@ function ser() {
     window.parent.document.getElementById("searchbar").value = url;
     let safeSearch = localStorage.getItem("ss");
     if(safeSearch === null) {
-        if (!isUrl(url)) url = `https://searx.priv.pw/search?q=${url}&safesearch=0`;
+        if (!isUrl(url)) url = `https://bing.com/search?q=%s`;
     } else if(safeSearch === "ss_0") {
-        if (!isUrl(url)) url = `https://searx.priv.pw/search?q=${url}&safesearch=0`;
+        if (!isUrl(url)) url = `https://bing.com/search?q=%s`;
     } else if(safeSearch === "ss_1") {
-        if (!isUrl(url)) url = `https://searx.priv.pw/search?q=${url}&safesearch=1`;
+        if (!isUrl(url)) url = `https://bing.com/search?q=%s`;
     } else if(safeSearch === "ss_2") {
-        if (!isUrl(url)) url = `https://searx.priv.pw/search?q=${url}&safesearch=2`;
+        if (!isUrl(url)) url = `https://bing.com/search?q=%s`;
     }
     window.open("/service" + "/" + xor.encode(url), "_self");
 }
@@ -82,13 +82,13 @@ window.onload = function() {
     const urlToOpen = window.parent.parent.document.querySelector(".winFocus").getAttribute("urltoopen");
 }
 if (urltoOpen == null) {
-    siteFrame.setAttribute("src", `https://${parentDomain}/service/${xor.encode(urlToOpen)}`);
+    siteFrame.setAttribute("src", `https://${parentDomain}' + __uv$config.prefix + ${xor.encode(urlToOpen)}`);
         urlbar.value = urlToOpen;
 }
 if (urlToOpen != "undefined") {
     const parentDomain = window.parent.parent.document.location.hostname;
     if(parentDomain === "localhost") {
-        siteFrame.setAttribute("src", `//${parentDomain}:${window.parent.document.location.port}/service/${xor.encode(urlToOpen)}`);
+        siteFrame.setAttribute("src", `//${parentDomain}:${window.parent.document.location.port}`  + __uv$config.prefix + `${xor.encode(urlToOpen)}`);
         urlbar.value = urlToOpen;
     }
 }

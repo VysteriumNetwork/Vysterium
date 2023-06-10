@@ -1,4 +1,4 @@
-const prefix = "/service/";
+const prefix = __uv$config.prefix;
 const URL_BAR = document.getElementById("urlbar");
 const ACTIVE_WINDOW = () => { return document.getElementById(getActiveFrameId()).contentWindow; }
 const CONTENT_WINDOW = (n) => { return document.getElementById(n).contentWindow }
@@ -433,7 +433,7 @@ document.cookie = `cua=${localStorage.getItem("ua")}`; // custom User Agent (TOD
 
 window.searchEngine =
   localStorage.getItem("htsearchEngine") ||
-  "https://searx.priv.pw/search?q=";
+  "https://bing.com/search?q=%s";
 document.getElementById("customSearch").value = window.searchEngine;
 
 //bookmarks

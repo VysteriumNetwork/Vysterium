@@ -4,33 +4,49 @@ import { fileURLToPath } from "node:url";
 import { createServer as createHttpServer } from "node:http";
 import serveStatic from "serve-static";
 import express from "express";
+import path from 'path';
+import { dirname } from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 import fs from 'fs';
 const app = express();
-const bare = createBareServer("/bare/");
+const bare = createBareServer("/api/versions/security/");
 const PORT = 80
 const server = createHttpServer();
 import basicAuth from 'express-basic-auth';
 import createRammerhead from 'rammerhead/src/server/index.js';
 app.use((req, res, next) => {
-  if(req.path.startsWith('/bare/')) {
-    bare.routeRequest(req, res);
+  if (req.path.startsWith('/api/versions/security/')) {
+      bare.routeRequest(req, res);
   } else {
-    next();
+      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena' };
+
+      // middleware for handling authentication
+      const authMiddleware = basicAuth({
+        users,
+        challenge: req.path !== '/', // challenge only for routes other than '/'
+        unauthorizedResponse: getUnauthorizedResponse,
+      });
+
+      authMiddleware(req, res, (err) => {
+        if (err || !req.auth) {
+          if (req.path === '/' ) {
+            // The user is not authenticated, send the unauthorized response.
+            res.send(getUnauthorizedResponse(req));
+          } else {
+            next(err);
+          }
+        } else {
+          // The user is authenticated, proceed to next middleware or route handler
+          next();
+        }
+      });
   }
 });
 
-app.use((req, res, next) => {
-  if (!req.path.startsWith('/bare/')) {
-      basicAuth({
-          users: { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena'},
-          challenge: true,
-          realm: 'Imb4T3st4pp',
-          unauthorizedResponse: getUnauthorizedResponse
-      })(req, res, next);
-  } else {
-      next();
-  }
-});
+
+
+
 app.use('/uv', (req, res, next) => {
   if (req.url.endsWith('uv.config.js')) {
     // If the requested URL ends with uv.config.js, serve it as a static file
@@ -167,72 +183,70 @@ app.use((req, res) => {
 });
 function getUnauthorizedResponse(req) {
   return `
-  <html>
-  <head>
-    <style>
-      body {
-        font-family: Roboto, sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #89CFF0;
-        color: #333;
-        text-align: center;
-      }
-      div {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-      }
-      h1 {
-        font-size: 2em;
-        margin-bottom: 20px;
-      }
-      p {
-        font-size: 1.2em;
-        line-height: 1.6;
-      }
-      .resources {
-        margin-top: 30px;
-      }
-      .resources h2 {
-        margin-bottom: 20px;
-      }
-      .resources a {
-        display: inline-block;
-        margin: 10px;
-        padding: 10px 20px;
-        background-color: #89CFF0;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-      }
-      .resources a:hover {
-        background-color: #6fb8df;
-      }
-    </style>
-  </head>
-  <body>
-    <div>
-      <h1>You seem to be lost!</h1>
-      <p>This is a restricted area intended only for teachers.</p>
-      <p>If you believe you've reached this page in error, please go back to the previous page or contact the site administrator.</p>
-      <div class="resources">
-        <h2>Resources for Students</h2>
-        <a href="https://clever.com" target="_blank">Clever</a>
-        <a href="https://desmos.com" target="_blank">Desmos</a>
-        <a href="https://www.khanacademy.org/" target="_blank">Khan Academy</a>
-        <a href="https://www.mheducation.com/" target="_blank">McGraw Hill</a>
-        <a href="https://formative.com/" target="_blank">Formative</a>
-      </div>
-    </div>
-  </body>
-</html>
+    <html>
+      <head>
+        <style>
+          body {
+            font-family: Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #89CFF0;
+            color: #333;
+            text-align: center;
+          }
+          div {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+          }
+          h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+          }
+          p {
+            font-size: 1.2em;
+            line-height: 1.6;
+          }
+          .resources {
+            margin-top: 30px;
+          }
+          .resources h2 {
+            margin-bottom: 20px;
+          }
+          .resources a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #89CFF0;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+          }
+          .resources a:hover {
+            background-color: #6fb8df;
+          }
+        </style>
+      </head>
+      <body>
+        <div>
+          <h1>You seem to be lost!</h1>
+          <p>This is a restricted area intended only for teachers.</p>
+          <p>If you believe you've reached this page in error, please go back to the previous page or contact the site administrator.</p>
+          <div class="resources">
+            <h2>Resources for Students</h2>
+            <a href="https://clever.com" target="_blank">Clever</a>
+            <a href="https://desmos.com" target="_blank">Desmos</a>
+            <!-- Add more links as needed -->
+          </div>
+        </div>
+      </body>
+    </html>
   `;
 }
 

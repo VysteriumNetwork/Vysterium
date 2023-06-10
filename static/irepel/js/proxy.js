@@ -7,7 +7,7 @@ function proxy(url) {
 }
 
 async function worker() {
-	var a = await navigator.serviceWorker.register('/uv.sw-handler.js', {scope: '/service'});
+	var a = await navigator.serviceWorker.register('/uv.sw-handler.js', {scope:  __uv$config.prefix });
 	return a;
 }
 

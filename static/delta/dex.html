@@ -109,7 +109,7 @@ if (bookmarksLocal == null ) {localStorage.setItem("allbookmarks", "[ ]"); bookm
 
         } else {
          
-         const urlit = __uv$config.decodeUrl(ife.src.split("/service/")[1]);
+         const urlit = __uv$config.decodeUrl(ife.src.split(__uv$config.prefix)[1]);
           const icont =  `https://www.google.com/s2/favicons?domain=${urlit}`; bookmarkthing.push([ife.contentDocument.title,urlit,icont])
                   localStorage.setItem('allbookmarks', JSON.stringify(bookmarkthing));
                   updateBook(false,[ife.contentDocument.title,urlit,icont]);

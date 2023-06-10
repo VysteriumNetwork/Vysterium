@@ -44,7 +44,7 @@ window.addEventListener("load", () => {
   // This is a better method than registering onsubmit because this allows the ability to use proxied links on the main page.
 
   navigator.serviceWorker.register("/uv.sw-handler.js", {
-    scope: "/service/"
+    scope: __uv$config.prefix
   });
 
   // Link evaluation
@@ -89,7 +89,7 @@ window.addEventListener("load", () => {
       // Re-register the service worker incase it failed to onload
       navigator.serviceWorker
         .register("/uv.sw-handler.js", {
-          scope: "/service/"
+          scope: __uv$config.prefix
         })
         .then(() => {
           const value = event.target.firstElementChild.value;
@@ -339,7 +339,7 @@ function link(_link) {
           var currentLink = _link.slice(0, _link.length - 1);
           iframe.src =
             location.origin +
-            "/service/" +
+            __uv$config.prefix +
             __uv$config.encodeUrl(currentLink);
           style.position = "fixed";
           style.top = style.bottom = style.left = style.right = 0;
@@ -351,6 +351,6 @@ function link(_link) {
     }, 200);
   } else {
     location.href =
-      "/service/" + __uv$config.encodeUrl("https://radon.games/");
+      __uv$config.prefix + __uv$config.encodeUrl("https://radon.games/");
   }
 }

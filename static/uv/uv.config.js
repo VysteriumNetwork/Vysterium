@@ -1,6 +1,6 @@
 self.__uv$config = {
-    prefix: "/service/",
-    bare: "/bare/",
+    prefix: "/security/flaws/xor/learn/",
+    bare: "/api/versions/security/",
     encodeUrl: Ultraviolet.codec.xor.encode,
     decodeUrl: Ultraviolet.codec.xor.decode,
     handler: "/uv/uv.handler.js",

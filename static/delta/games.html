@@ -840,7 +840,7 @@ try {
          if (true) {
     var oklol = window.open("about:blank", "_blank")
       if (!oklol || oklol.closed && !inFrame) {
-        window.location.href = window.location.origin + '/service/' + __uv$config.encodeUrl(site); // Geo Gebra
+        window.location.href = window.location.origin + __uv$config.prefix + __uv$config.encodeUrl(site); // Geo Gebra
         
        
       } else {
@@ -853,7 +853,7 @@ try {
         link.rel = "icon";
         link.href = "https://ssl.gstatic.com/classroom/favicon.png";
         
-        iframe.src = window.location.origin + '/service/' + __uv$config.encodeUrl(site);  
+        iframe.src = window.location.origin + __uv$config.prefix + __uv$config.encodeUrl(site);  
         
         style.position = "fixed"
         style.top = style.bottom = style.left = style.right = 0
@@ -865,7 +865,7 @@ try {
         
     }
   } else {
-                    window.location.href = window.location.origin + '/service/' + __uv$config.encodeUrl(site); // Geo Gebra
+                    window.location.href = window.location.origin + __uv$config.prefix + __uv$config.encodeUrl(site); // Geo Gebra
  
   }
             });

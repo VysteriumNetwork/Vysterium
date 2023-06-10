@@ -29,11 +29,11 @@ function go(value) {
       iframe.style.display = "block"
       iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
       //var iframeurl = __uv$config.decodeUrl(iframe.src)
-      var iframeurl = iframe.src.substring(iframe.src.indexOf("/service/") + 9);
-      //document.querySelector("#urlbartop input").value = iframeurl.substring(iframeurl.indexOf("/service/") + 0);
+      var iframeurl = iframe.src.substring(iframe.src.indexOf(__uv$config.prefix) + 9);
+      //document.querySelector("#urlbartop input").value = iframeurl.substring(iframeurl.indexOf(__uv$config.prefix) + 0);
       document.querySelector("#urlbartop input").value = __uv$config.decodeUrl(iframeurl)
 
-      //getIframeFavicon(iframeurl.substring(iframeurl.indexOf("/service/") + 0))
+      //getIframeFavicon(iframeurl.substring(iframeurl.indexOf(__uv$config.prefix) + 0))
       getIframeFavicon(__uv$config.decodeUrl(iframeurl))
     });
 }

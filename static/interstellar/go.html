@@ -152,8 +152,8 @@ fullscreenButton.addEventListener("click", function() {
 <script>
 window.onload = function() {
   let encodedUrl = sessionStorage.getItem("encodedUrl");
-  // add the prefix "/service/" to the encoded URL
-  encodedUrl = "/service/" + encodedUrl;
+  // add the prefix __uv$config.prefix to the encoded URL
+  encodedUrl = __uv$config.prefix + encodedUrl;
   document.querySelector("#iframeid").src = encodedUrl;
 }
 </script>

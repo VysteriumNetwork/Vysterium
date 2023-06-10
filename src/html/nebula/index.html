@@ -40,9 +40,9 @@
     <!-- Scripts -->
     <script src="resources/preload.js"></script>
     <script src="resources/theme.js"></script>
-    <script src="resources/nebulamain.js"></script>
-    <script src="resources/nebulaclock.js"></script>
-    <script src="resources/stealthEngine.js"></script>
+    <script src="resources/main.js"></script>
+    <script src="resources/clock.js"></script>
+    <script src="resources/Engine.js"></script>
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style/main.css" />
     <!-- Embed -->
@@ -394,7 +394,7 @@
       <a
         class="tos"
         href="#"
-        onclick='location.origin = "/service/" + __uv$config.encodeUrl("https://static.nebulacdn.xyz/content/other/nebula-privacy-policy/index.html")'
+        onclick='location.origin = __uv$config.prefix + __uv$config.encodeUrl("https://static.nebulacdn.xyz/content/other/nebula-privacy-policy/index.html")'
         >Privacy</a
       >
     </div>
