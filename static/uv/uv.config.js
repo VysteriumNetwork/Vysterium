@@ -1,11 +1,10 @@
-
 async function init() {
   try {
-    const module = await import('./dynamic.js');
-    const bare = await module.DynamicBare();
+    const response = await fetch('/server/');
+    const data = await response.json();
     self.__uv$config = {
       prefix: "/security/flaws/xor/learn/",
-      bare: bare,
+      bare: data.bare,
       encodeUrl: Ultraviolet.codec.xor.encode,
       decodeUrl: Ultraviolet.codec.xor.decode,
       handler: "/uv/uv.handler.js",

@@ -2,6 +2,7 @@
 /**
  * @type {HTMLFormElement}
  */
+
 const stockSW = "/uv.sw-handler.js";
 const swAllowedHostnames = ["localhost", "127.0.0.1"];
 async function registerSW() {
