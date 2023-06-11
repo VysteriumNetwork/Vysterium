@@ -59,6 +59,11 @@ app.use((req, res, next) => {
 
 
 app.use('/uv', (req, res, next) => {
+  if (req.url.endsWith('uv.config.js')) {
+    // If the requested URL ends with uv.config.js, serve it as a static file
+    return next();
+  }
+  // Otherwise, serve the contents of the uvPath directory
   serveStatic(uvPath)(req, res, next);
 });
 const rh = createRammerhead();
