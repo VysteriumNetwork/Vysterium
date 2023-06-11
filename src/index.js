@@ -21,7 +21,7 @@ function generateRandomString(length) {
 
   return result;
 }
-const randomString = '/' + generateRandomString(10) + '/' + generateRandomString(10) + '/'
+const randomString = '/' + generateRandomString(50) + '/' + generateRandomString(50) + '/'
 app.get('/server/', (req, res) => { 
   res.json({ bare: randomString });
 });
