@@ -3,6 +3,7 @@
  * @type {HTMLFormElement}
  */
 
+
 const stockSW = "/uv.sw-handler.js";
 const swAllowedHostnames = ["localhost", "127.0.0.1"];
 async function registerSW() {
@@ -43,7 +44,13 @@ const error = document.getElementById("uv-error");
       await registerSW();
     } catch (err) {
     }
-  
+    if(!localStorage.getItem('firstVisit')) {
+      localStorage.setItem('firstVisit', 'true');
+      await registerSW();
+      alert('We have registered the service worker! You are good to go.');
+      
+      location.reload();
+    }
     const url = search(address.value, searchEngine.value);
     location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
   });
