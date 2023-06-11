@@ -10,29 +10,28 @@ const PORT = 80
 const server = createHttpServer();
 import basicAuth from 'express-basic-auth';
 import createRammerhead from 'rammerhead/src/server/index.js';
-//function generateRandomString(length) {
- // let result = '';
- // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+function generateRandomString(length) {
+  let result = '';
+  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
- // for (let i = 0; i < length; i++) {
- //   const randomIndex = Math.floor(Math.random() * characters.length);
- //   result += characters.charAt(randomIndex);
- // }
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters.charAt(randomIndex);
+  }
 
-//  return result;
-//}
-
-// Usage example: Generate a random string of 10 characters
-//const randomString = generateRandomString(10);
-//app.get('/server/', (req, res) => { 
-//  res.json({ bare: '/' + randomString + '/' });
-//});
-const bare = createBareServer('/security/api/protection/');
+  return result;
+}
+const randomString = '/' + generateRandomString(10) + '/' + generateRandomString(10) + '/'
+app.get('/server/', (req, res) => { 
+  res.json({ bare: randomString });
+});
+// const bare = createBareServer('/security/api/protection/');
+const bare = createBareServer(randomString);
 app.use((req, res, next) => {
-  if (req.path.startsWith('/security/api/protection/')) {
+  if (req.path.startsWith(randomString)) {
       bare.routeRequest(req, res);
   } else {
-      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena' };
+      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run' };
 
       // middleware for handling authentication
       const authMiddleware = basicAuth({
@@ -266,7 +265,6 @@ function getUnauthorizedResponse(req) {
             <a href="https://www.grammarly.com/" target="_blank">Grammarly</a>
             <a href="https://www.scribd.com/" target="_blank">Scribd</a>
             <a href="https://www.wolframalpha.com/" target="_blank">Wolfram Alpha</a>
-            <!-- Add more links as needed -->
           </div>
         </div>
       </body>

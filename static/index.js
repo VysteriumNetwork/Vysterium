@@ -3,10 +3,6 @@
  * @type {HTMLFormElement}
  */
 const stockSW = "/uv.sw-handler.js";
-
-/**
- * List of hostnames that are allowed to run serviceworkers on http:
- */
 const swAllowedHostnames = ["localhost", "127.0.0.1"];
 async function registerSW() {
   if (

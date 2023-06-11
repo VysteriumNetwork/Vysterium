@@ -40,8 +40,6 @@ function setLoaderText() {
 window.stealthEngineLoaded = false;
 
 window.addEventListener("load", () => {
-  // Register the service workers for Osana and Ultraviolet proxy protocols
-  // This is a better method than registering onsubmit because this allows the ability to use proxied links on the main page.
 
   navigator.serviceWorker.register("/uv.sw-handler.js", {
     scope: __uv$config.prefix
