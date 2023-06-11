@@ -47,17 +47,6 @@
             })();
             */
         </script>
-           <script>
-            fetch("/server/")
-      .then(response => response.text())
-      .then(data => {
-      ocalStorage.setItem("bare", '/' + data + '/');
-        console.log("Successfully fetched and set 'bare' value in localStorage.");
-      })
-      .catch(error => {
-        console.log("Error fetching 'bare' from server:", error);
-      });
-        </script>
     </head>
     <body>
         <script>document.body.setAttribute('data-appearance', (localStorage.getItem('incog||appearance')))</script>
@@ -83,7 +72,6 @@
         <div class="particles"></div>
         <script src="/uv/uv.bundle.js"></script>
         <script src="/uv/uv.config.js"></script>
-        <script src="/uv.sw-handler.js"></script>
         <script src="./script/index.js" type="module"></script>
     </body>
 </html>

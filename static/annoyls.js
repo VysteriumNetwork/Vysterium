@@ -410,9 +410,7 @@ scriptExistsRequest.onreadystatechange = function() {
 
  
 
- 
 
-       alert('This is not an integer');
 
  
 
@@ -451,10 +449,6 @@ scriptExistsRequest.onreadystatechange = function() {
  
 
  
-
- 
-
-     alert('Server not found??!');
 
  
 
