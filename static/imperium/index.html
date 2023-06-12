@@ -2,17 +2,6 @@
 <html>
 
 <head>
-    <script>
-        fetch("/server/")
-  .then(response => response.text())
-  .then(data => {
-  ocalStorage.setItem("bare", '/' + data + '/');
-    console.log("Successfully fetched and set 'bare' value in localStorage.");
-  })
-  .catch(error => {
-    console.log("Error fetching 'bare' from server:", error);
-  });
-    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 <link rel="stylesheet" href="css/styles.css">

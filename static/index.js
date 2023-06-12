@@ -54,6 +54,7 @@ const error = document.getElementById("uv-error");
         location.reload();
       }, 1000);
     } else {
+    setTimeout(() => {
     location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
-    }
+    }, 100)}
   });
