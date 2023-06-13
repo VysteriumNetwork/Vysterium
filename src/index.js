@@ -59,7 +59,7 @@ app.use((req, res, next) => {
 
 
 
-app.use('/uv', (req, res, next) => {
+app.use('/script', (req, res, next) => {
   if (req.url.endsWith('uv.config.js')) {
     // If the requested URL ends with uv.config.js, serve it as a static file
     return next();

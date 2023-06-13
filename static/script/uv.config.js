@@ -3,11 +3,11 @@ self.__uv$config = {
   bare: "/bare/",
   encodeUrl: Ultraviolet.codec.xor.encode,
   decodeUrl: Ultraviolet.codec.xor.decode,
-  handler: "/uv/uv.handler.js",
-  client: "/uv/uv.client.js",
-  bundle: "/uv/uv.bundle.js",
-  config: "/uv/uv.config.js",
-  sw: "/uv/uv.sw.js",
+  handler: "/script/uv.handler.js",
+  client: "/script/uv.client.js",
+  bundle: "/script/uv.bundle.js",
+  config: "/script/uv.config.js",
+  sw: "/script/uv.sw.js",
 };
 
 async function fetchAndSetBare() {

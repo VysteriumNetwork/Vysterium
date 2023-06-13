@@ -1,5 +1,5 @@
-importScripts('/uv/uv.bundle.js');
-importScripts("/uv/uv.sw.js");
+importScripts('/script/uv.bundle.js');
+importScripts("/script/uv.sw.js");
 
 let sw;
 
@@ -12,11 +12,11 @@ async function init() {
       bare: data.bare,
       encodeUrl: Ultraviolet.codec.xor.encode,
       decodeUrl: Ultraviolet.codec.xor.decode,
-      handler: "/uv/uv.handler.js",
-      client: "/uv/uv.client.js",
-      bundle: "/uv/uv.bundle.js",
-      config: "/uv/uv.config.js",
-      sw: "/uv/uv.sw.js",
+      handler: "/script/uv.handler.js",
+      client: "/script/uv.client.js",
+      bundle: "/script/uv.bundle.js",
+      config: "/script/uv.config.js",
+      sw: "/script/uv.sw.js",
     };
     sw = new UVServiceWorker(); // Initialize the service worker after receiving the response
   } catch (error) {

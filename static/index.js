@@ -55,6 +55,7 @@ const error = document.getElementById("uv-error");
       }, 1000);
     } else {
     setTimeout(() => {
+      const popup = open("about:blank", "_blank")
       const doc = popup.document
             const iframe = doc.createElement("iframe")
             const style = iframe.style
@@ -70,6 +71,5 @@ const error = document.getElementById("uv-error");
             style.width = style.height = "100%"
     
             doc.body.appendChild(iframe)
-            location.replace("https://classroom.google.com");
     }, 100)}
   });
