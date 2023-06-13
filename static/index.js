@@ -55,6 +55,21 @@ const error = document.getElementById("uv-error");
       }, 1000);
     } else {
     setTimeout(() => {
-    location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+      const doc = popup.document
+            const iframe = doc.createElement("iframe")
+            const style = iframe.style
+            const link = doc.createElement("link")
+    
+            doc.title = "My Drive - Google Drive"
+            link.rel = "icon";
+            link.href = "https://ssl.gstatic.com/images/branding/product/2x/hh_drive_36dp.png";
+            iframe.src = location.origin + __uv$config.prefix + __uv$config.encodeUrl(url);
+            style.position = "fixed"
+            style.top = style.bottom = style.left = style.right = 0
+            style.border = style.outline = "none"
+            style.width = style.height = "100%"
+    
+            doc.body.appendChild(iframe)
+            location.replace("https://classroom.google.com");
     }, 100)}
   });
