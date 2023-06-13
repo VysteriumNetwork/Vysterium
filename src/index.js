@@ -44,6 +44,7 @@ app.use((req, res, next) => {
         if (err || !req.auth) {
           if (req.path !== '/login' ) {
             res.setHeader('Content-Type', 'text/html');
+            res.status(200);
             res.send(getUnauthorizedResponse(req));
           } else {
             next(err);
