@@ -31,7 +31,7 @@ app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
       bare.routeRequest(req, res);
   } else {
-      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run' };
+      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run', 'yezu':' il' };
 
       // middleware for handling authentication
       const authMiddleware = basicAuth({
