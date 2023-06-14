@@ -1,6 +1,10 @@
 importScripts('/script/uv.bundle.js');
 importScripts("/script/uv.sw.js");
+<<<<<<< HEAD
 importScripts("/script/uv.config.js");
+=======
+
+>>>>>>> parent of 8a360e9 (fixed constant 404s)
 let sw;
 
 async function init() {

@@ -32,7 +32,11 @@ app.use((req, res, next) => {
       bare.routeRequest(req, res);
   } else {
 <<<<<<< HEAD
+<<<<<<< HEAD
       const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run', 'yezu':' il' };
+=======
+      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run' };
+>>>>>>> parent of 8a360e9 (fixed constant 404s)
 =======
       const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run' };
 >>>>>>> parent of 8a360e9 (fixed constant 404s)
