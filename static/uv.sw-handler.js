@@ -1,7 +1,11 @@
 importScripts('/script/uv.bundle.js');
 importScripts("/script/uv.sw.js");
 <<<<<<< HEAD
+<<<<<<< HEAD
 importScripts("/script/uv.config.js");
+=======
+
+>>>>>>> parent of 8a360e9 (fixed constant 404s)
 =======
 
 >>>>>>> parent of 8a360e9 (fixed constant 404s)

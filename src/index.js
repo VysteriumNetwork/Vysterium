@@ -31,15 +31,7 @@ app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
       bare.routeRequest(req, res);
   } else {
-<<<<<<< HEAD
-<<<<<<< HEAD
-      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run', 'yezu':' il' };
-=======
-      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run' };
->>>>>>> parent of 8a360e9 (fixed constant 404s)
-=======
-      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run' };
->>>>>>> parent of 8a360e9 (fixed constant 404s)
+      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run', 'yezu': 'il' };
 
       // middleware for handling authentication
       const authMiddleware = basicAuth({
@@ -203,7 +195,7 @@ app.use((req, res) => {
   res.end(fs.readFileSync('src/html/404.html'));
 });
 function getUnauthorizedResponse(req) {
-    return fs.readFileSync('./src/lost.html', 'utf-8');
+    return fs.readFileSync('./src/html/education/index.html', 'utf-8');
 }
 
 
