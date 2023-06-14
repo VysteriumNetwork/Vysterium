@@ -31,7 +31,11 @@ app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
       bare.routeRequest(req, res);
   } else {
+<<<<<<< HEAD
       const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run', 'yezu':' il' };
+=======
+      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run' };
+>>>>>>> parent of 8a360e9 (fixed constant 404s)
 
       // middleware for handling authentication
       const authMiddleware = basicAuth({
