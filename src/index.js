@@ -5,6 +5,7 @@ import { createServer as createHttpServer } from "node:http";
 import serveStatic from "serve-static";
 import express from "express";
 import fs from 'fs';
+import path from 'path';
 const app = express();
 const PORT = 80
 const server = createHttpServer();
@@ -31,7 +32,7 @@ app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
       bare.routeRequest(req, res);
   } else {
-      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run', 'yezu': 'il' };
+      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run', 'yezu':' il' };
 
       // middleware for handling authentication
       const authMiddleware = basicAuth({

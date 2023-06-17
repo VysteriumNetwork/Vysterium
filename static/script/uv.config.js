@@ -16,7 +16,3 @@ const data = await response.json();
 __uv$config.bare = data.bare;
 sw = new UVServiceWorker();
 }
-
-fetchAndSetBare().then(() => {
-console.log(__uv$config);
-});

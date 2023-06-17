@@ -34,7 +34,7 @@ function ser() {
     } else if(safeSearch === "ss_2") {
         if (!isUrl(url)) url = `https://bing.com/search?q=%s`;
     }
-    window.open("/service" + "/" + xor.encode(url), "_self");
+    window.open(__uv$config.prefix + xor.encode(url), "_self");
 }
 
 searchi.addEventListener("focus", () => {

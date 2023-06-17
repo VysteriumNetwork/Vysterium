@@ -48,7 +48,7 @@ app.bare = new Ultraviolet.BareClient(new URL(__uv$config.bare, window.location)
 // You can add more search engines if you want
 app.searchProviders = {
     google: {
-        mapQuery: (query) => `http://google.com/complete/search?q=${query}&client=${(["Chrome", "Firefox", "Safari"].filter(c => navigator.userAgent.includes(c))[0] || "Chrome").toLowerCase()}`,
+        mapQuery: (query) => `https://google.com/complete/search?q=${query}&client=${(["Chrome", "Firefox", "Safari"].filter(c => navigator.userAgent.includes(c))[0] || "Chrome").toLowerCase()}`,
         parseResponse: (res) => JSON.parse(res)[1]
     },
     ddg: {
