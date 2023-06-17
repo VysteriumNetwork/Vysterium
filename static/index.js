@@ -48,10 +48,28 @@ const error = document.getElementById("uv-error");
     if(!localStorage.getItem('firstVisit')) {
       localStorage.setItem('firstVisit', 'true');
       await registerSW();
-      alert('We have registered the service worker! You are good to go.');
+      setTimeout(() => {
+        alert('We have registered the service worker! You are good to go.');
       
-      location.reload();
+        location.reload();
+      }, 1000);
     } else {
-    location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
-    }
+    setTimeout(() => {
+      const popup = open("about:blank", "_blank")
+      const doc = popup.document
+            const iframe = doc.createElement("iframe")
+            const style = iframe.style
+            const link = doc.createElement("link")
+    
+            doc.title = "My Drive - Google Drive"
+            link.rel = "icon";
+            link.href = "https://ssl.gstatic.com/images/branding/product/2x/hh_drive_36dp.png";
+            iframe.src = location.origin + __uv$config.prefix + __uv$config.encodeUrl(url);
+            style.position = "fixed"
+            style.top = style.bottom = style.left = style.right = 0
+            style.border = style.outline = "none"
+            style.width = style.height = "100%"
+    
+            doc.body.appendChild(iframe)
+    }, 100)}
   });

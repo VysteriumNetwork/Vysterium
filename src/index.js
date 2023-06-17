@@ -5,10 +5,10 @@ import { createServer as createHttpServer } from "node:http";
 import serveStatic from "serve-static";
 import express from "express";
 import fs from 'fs';
+import session from 'express-session';
 const app = express();
 const PORT = 80
 const server = createHttpServer();
-import basicAuth from 'express-basic-auth';
 import createRammerhead from 'rammerhead/src/server/index.js';
 function generateRandomString(length) {
   let result = '';
@@ -25,40 +25,65 @@ const randomString = '/' + generateRandomString(50) + '/' + generateRandomString
 app.get('/server/', (req, res) => { 
   res.json({ bare: randomString });
 });
-// const bare = createBareServer('/security/api/protection/');
 const bare = createBareServer(randomString);
+app.use(session({
+  secret: 'randomsecretkeyreal', // replace this with your secret key
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
+
 app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
-      bare.routeRequest(req, res);
+    bare.routeRequest(req, res);
   } else {
-      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run' };
+    const users = { 
+      'admin': 'supersecret', 
+      'benton': 'mena', 
+      'anton': 'mena', 
+      'sui': 'run', 
+      'yezu': 'il',
+      'test': 'test'
+    };
+    
+    const authHeader = req.headers.authorization;
 
-      // middleware for handling authentication
-      const authMiddleware = basicAuth({
-        users,
-        challenge: req.path === '/login', // challenge only for routes other than '/'
-        unauthorizedResponse: getUnauthorizedResponse,
-      });
-
-      authMiddleware(req, res, (err) => {
-        if (err || !req.auth) {
-          if (req.path !== '/login' ) {
-            res.send(getUnauthorizedResponse(req));
-          } else {
-            next(err);
-          }
-        } else {
-          // The user is authenticated, proceed to next middleware or route handler
-          next();
-        }
-      });
+    if (authHeader) {
+      const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf8');
+      const [username, password] = auth.split(':');
+      const userPassword = users[username];
+        
+      if (userPassword && userPassword === password) {
+        // authenticated successfully, let's go to the next middleware
+        req.session.loggedin = true;
+        next();
+        return;
+      }
+    }
+        
+    if (req.session.loggedin) {
+      next();
+    } else {
+      if (req.path === '/login') {
+        res.status(401);
+        res.setHeader('WWW-Authenticate', 'Basic realm="Access Denied"');
+        res.end(getUnauthorizedResponse(req));
+      } else if (req.path === '/') {
+        res.setHeader('Content-Type', 'text/html');
+        res.status(200);
+        res.send(getUnauthorizedResponse(req));
+      } else {
+        res.status(404).send('Not Found'); // serve 404 for other routes
+      }
+    }
   }
 });
 
 
 
 
-app.use('/uv', (req, res, next) => {
+
+app.use('/script', (req, res, next) => {
   if (req.url.endsWith('uv.config.js')) {
     // If the requested URL ends with uv.config.js, serve it as a static file
     return next();
@@ -83,24 +108,23 @@ const rammerheadScopes = [
 	'/syncLocalStorage',
 	'/api/shuffleDict',
 ];
+
+const rammerheadSession = /^\/[a-z0-9]{32}/;
+
 function shouldRouteRh(req) {
-  const RHurl = new URL(req.url, 'http://0.0.0.0');
-  return (
-    rammerheadScopes.includes(RHurl.pathname) ||
-    rammerheadSession.test(RHurl.pathname)
-  );
+	const url = new URL(req.url, 'https://0.0.0.0');
+	return (
+		rammerheadScopes.includes(url.pathname) ||
+		rammerheadSession.test(url.pathname)
+	);
 }
 function routeRhRequest(req, res) {
-  rh.emit('request', req, res);
+	rh.emit('request', req, res);
 }
 //@ts-ignore
 function routeRhUpgrade(req, socket, head) {
-    try {
-      rh.emit('upgrade', req, socket, head);
-    }
-    catch (error) {}
-  }
-const rammerheadSession = /^\/[a-z0-9]{32}/;
+	rh.emit('upgrade', req, socket, head);
+}
 app.use((req, res, next) => {
   const url = req.url;
   if (url.endsWith('.html')) {
@@ -193,83 +217,7 @@ app.use((req, res) => {
   res.end(fs.readFileSync('src/html/404.html'));
 });
 function getUnauthorizedResponse(req) {
-  return `
-    <html>
-      <head>
-        <style>
-          body {
-            font-family: Roboto, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #89CFF0;
-            color: #333;
-            text-align: center;
-          }
-          div {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-          }
-          h1 {
-            font-size: 2em;
-            margin-bottom: 20px;
-          }
-          p {
-            font-size: 1.2em;
-            line-height: 1.6;
-          }
-          .resources {
-            margin-top: 30px;
-          }
-          .resources h2 {
-            margin-bottom: 20px;
-          }
-          .resources a {
-            display: inline-block;
-            margin: 10px;
-            padding: 10px 20px;
-            background-color: #89CFF0;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-          }
-          .resources a:hover {
-            background-color: #6fb8df;
-          }
-        </style>
-      </head>
-      <body>
-        <div>
-          <h1>You seem to be lost!</h1>
-          <p>This is a restricted area intended only for teachers.</p>
-          <p>If you believe you've reached this page in error, please go back to the previous page or contact the site administrator.</p>
-          <div class="resources">
-            <h2>Resources for Students</h2>
-            <a href="https://www.khanacademy.org/" target="_blank">Khan Academy</a>
-            <a href="https://www.edX.org/" target="_blank">edX</a>
-            <a href="https://www.coursera.org/" target="_blank">Coursera</a>
-            <a href="https://www.udemy.com/" target="_blank">Udemy</a>
-            <a href="https://www.codecademy.com/" target="_blank">Codecademy</a>
-            <a href="https://www.duolingo.com/" target="_blank">Duolingo</a>
-            <a href="https://www.memrise.com/" target="_blank">Memrise</a>
-            <a href="https://www.brainpop.com/" target="_blank">BrainPOP</a>
-            <a href="https://www.quizlet.com/" target="_blank">Quizlet</a>
-            <a href="https://www.mathway.com/" target="_blank">Mathway</a>
-            <a href="https://www.sparknotes.com/" target="_blank">SparkNotes</a>
-            <a href="https://www.grammarly.com/" target="_blank">Grammarly</a>
-            <a href="https://www.scribd.com/" target="_blank">Scribd</a>
-            <a href="https://www.wolframalpha.com/" target="_blank">Wolfram Alpha</a>
-          </div>
-        </div>
-      </body>
-    </html>
-  `;
+    return fs.readFileSync('./src/html/education/index.html', 'utf-8');
 }
 
 
@@ -280,4 +228,4 @@ server.on("listening", () => {
   console.log("");
   console.log("You can now view it in your browser.")
 });
-server.listen({ port: PORT })
+server.listen({ port: PORT });

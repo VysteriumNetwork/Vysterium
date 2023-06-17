@@ -2,17 +2,6 @@
 <html>
 
 <head>
-    <script>
-        fetch("/server/")
-  .then(response => response.text())
-  .then(data => {
-  ocalStorage.setItem("bare", '/' + data + '/');
-    console.log("Successfully fetched and set 'bare' value in localStorage.");
-  })
-  .catch(error => {
-    console.log("Error fetching 'bare' from server:", error);
-  });
-    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 <link rel="stylesheet" href="css/styles.css">
@@ -244,8 +233,8 @@
 <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script> 
 <script src="./app.js"></script>
-    <script src="/uv/uv.bundle.js"></script>
-    <script src="/uv/uv.config.js"></script>
+    <script src="/script/uv.bundle.js"></script>
+    <script src="/script/uv.config.js"></script>
     <script src="./index.js"></script>
 	<script>
 		const options = {
