@@ -107,11 +107,9 @@ const rammerheadScopes = [
 	'/needpassword',
 	'/syncLocalStorage',
 	'/api/shuffleDict',
-    '/rammerhead.js',
-    '/hammerhead.js',
 ];
 function shouldRouteRh(req) {
-  const RHurl = new URL(req.url, 'http://0.0.0.0');
+  const RHurl = new URL(req.url, 'https://0.0.0.0');
   return (
     rammerheadScopes.includes(RHurl.pathname) ||
     rammerheadSession.test(RHurl.pathname)
