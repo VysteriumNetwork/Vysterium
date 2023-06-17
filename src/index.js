@@ -5,11 +5,10 @@ import { createServer as createHttpServer } from "node:http";
 import serveStatic from "serve-static";
 import express from "express";
 import fs from 'fs';
-import path from 'path';
+import session from 'express-session';
 const app = express();
 const PORT = 80
 const server = createHttpServer();
-import basicAuth from 'express-basic-auth';
 import createRammerhead from 'rammerhead/src/server/index.js';
 function generateRandomString(length) {
   let result = '';
@@ -28,35 +27,59 @@ app.get('/server/', (req, res) => {
 });
 // const bare = createBareServer('/security/api/protection/');
 const bare = createBareServer(randomString);
+
+app.use(session({
+  secret: 'randomsecretkeyreal', // replace this with your secret key
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}));
+
 app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
-      bare.routeRequest(req, res);
+    bare.routeRequest(req, res);
   } else {
-      const users = { 'admin': 'supersecret', 'benton': 'mena', 'anton': 'mena', 'sui': 'run', 'yezu':'il' };
+    const users = { 
+      'admin': 'supersecret', 
+      'benton': 'mena', 
+      'anton': 'mena', 
+      'sui': 'run', 
+      'yezu': 'il' 
+    };
+    
+    const authHeader = req.headers.authorization;
 
-      // middleware for handling authentication
-      const authMiddleware = basicAuth({
-        users,
-        challenge: req.path === '/login', // challenge only for routes other than '/'
-        unauthorizedResponse: getUnauthorizedResponse,
-      });
-
-      authMiddleware(req, res, (err) => {
-        if (err || !req.auth) {
-          if (req.path !== '/login' ) {
-            res.setHeader('Content-Type', 'text/html');
-            res.status(200);
-            res.send(getUnauthorizedResponse(req));
-          } else {
-            next(err);
-          }
-        } else {
-          // The user is authenticated, proceed to next middleware or route handler
-          next();
-        }
-      });
+    if (authHeader) {
+      const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf8');
+      const [username, password] = auth.split(':');
+      const userPassword = users[username];
+        
+      if (userPassword && userPassword === password) {
+        // authenticated successfully, let's go to the next middleware
+        req.session.loggedin = true;
+        next();
+        return;
+      }
+    }
+        
+    if (req.session.loggedin) {
+      next();
+    } else {
+      if (req.path === '/login') {
+        res.status(401);
+        res.setHeader('WWW-Authenticate', 'Basic realm="Access Denied"');
+        res.end(getUnauthorizedResponse(req));
+      } else if (req.path === '/') {
+        res.setHeader('Content-Type', 'text/html');
+        res.status(200);
+        res.send(getUnauthorizedResponse(req));
+      } else {
+        res.status(404).send('Not Found'); // serve 404 for other routes
+      }
+    }
   }
 });
+
 
 
 
@@ -207,4 +230,4 @@ server.on("listening", () => {
   console.log("");
   console.log("You can now view it in your browser.")
 });
-server.listen({ port: PORT })
+server.listen({ port: PORT });
