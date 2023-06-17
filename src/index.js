@@ -25,14 +25,12 @@ const randomString = '/' + generateRandomString(50) + '/' + generateRandomString
 app.get('/server/', (req, res) => { 
   res.json({ bare: randomString });
 });
-// const bare = createBareServer('/security/api/protection/');
 const bare = createBareServer(randomString);
-
 app.use(session({
   secret: 'randomsecretkeyreal', // replace this with your secret key
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: true }
+  cookie: { secure: false }
 }));
 
 app.use((req, res, next) => {
@@ -44,7 +42,8 @@ app.use((req, res, next) => {
       'benton': 'mena', 
       'anton': 'mena', 
       'sui': 'run', 
-      'yezu': 'il' 
+      'yezu': 'il',
+      'test': 'test'
     };
     
     const authHeader = req.headers.authorization;
@@ -108,6 +107,8 @@ const rammerheadScopes = [
 	'/needpassword',
 	'/syncLocalStorage',
 	'/api/shuffleDict',
+    '/rammerhead.js',
+    '/hammerhead.js',
 ];
 function shouldRouteRh(req) {
   const RHurl = new URL(req.url, 'http://0.0.0.0');
