@@ -6,14 +6,9 @@ import serveStatic from "serve-static";
 import express from "express";
 import fs from 'fs';
 import session from 'express-session';
-import { existsSync } from 'node:fs'
 const app = express();
-const PORT = 443
-const ssl = existsSync("../ssl/key.pem") && existsSync("../ssl/cert.pem");
-const server = ssl ? createHttpsServer({
-    key: readFileSync("../ssl/key.pem"),
-    cert: readFileSync("../ssl/cert.pem")
-  }) : createHttpServer();
+const PORT = 80
+const server = createHttpServer();
 import createRammerhead from 'rammerhead/src/server/index.js';
 function generateRandomString(length) {
   let result = '';
@@ -98,8 +93,6 @@ app.use('/script', (req, res, next) => {
 });
 const rh = createRammerhead();
 const rammerheadScopes = [
-	'/rammerhead.js',
-	'/hammerhead.js',
 	'/transport-worker.js',
 	'/task.js',
 	'/iframe-task.js',
@@ -114,7 +107,7 @@ const rammerheadScopes = [
 	'/api/shuffleDict',
 ];
 function shouldRouteRh(req) {
-  const RHurl = new URL(req.url, 'https://0.0.0.0');
+  const RHurl = new URL(req.url, 'http://0.0.0.0');
   return (
     rammerheadScopes.includes(RHurl.pathname) ||
     rammerheadSession.test(RHurl.pathname)
