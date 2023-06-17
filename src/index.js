@@ -93,8 +93,8 @@ app.use('/script', (req, res, next) => {
 });
 const rh = createRammerhead();
 const rammerheadScopes = [
-	'/rammerhead.js',
-	'/hammerhead.js',
+    '/hammerhead.js',
+    '/rammerhead.js',
 	'/transport-worker.js',
 	'/task.js',
 	'/iframe-task.js',
@@ -108,23 +108,24 @@ const rammerheadScopes = [
 	'/syncLocalStorage',
 	'/api/shuffleDict',
 ];
-
-const rammerheadSession = /^\/[a-z0-9]{32}/;
-
 function shouldRouteRh(req) {
-	const url = new URL(req.url, 'https://0.0.0.0');
-	return (
-		rammerheadScopes.includes(url.pathname) ||
-		rammerheadSession.test(url.pathname)
-	);
+  const RHurl = new URL(req.url, 'http://0.0.0.0');
+  return (
+    rammerheadScopes.includes(RHurl.pathname) ||
+    rammerheadSession.test(RHurl.pathname)
+  );
 }
 function routeRhRequest(req, res) {
-	rh.emit('request', req, res);
+  rh.emit('request', req, res);
 }
 //@ts-ignore
 function routeRhUpgrade(req, socket, head) {
-	rh.emit('upgrade', req, socket, head);
-}
+    try {
+      rh.emit('upgrade', req, socket, head);
+    }
+    catch (error) {}
+  }
+const rammerheadSession = /^\/[a-z0-9]{32}/;
 app.use((req, res, next) => {
   const url = req.url;
   if (url.endsWith('.html')) {
