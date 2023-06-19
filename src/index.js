@@ -1,4 +1,4 @@
-import createBareServer from "@tomphttp/bare-server-node";
+import { createBareServer } from "@tomphttp/bare-server-node";
 import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 import { fileURLToPath } from "node:url";
 import { createServer as createHttpServer } from "node:http";
@@ -7,6 +7,12 @@ import express from "express";
 import fs from 'fs';
 import session from 'express-session';
 const app = express();
+app.use(session({
+  secret: 'randomsecretkeyreal',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
 const PORT = 80
 const server = createHttpServer();
 import createRammerhead from 'rammerhead/src/server/index.js';
@@ -22,16 +28,16 @@ function generateRandomString(length) {
   return result;
 }
 const randomString = '/' + generateRandomString(50) + '/' + generateRandomString(50) + '/'
-app.get('/server/', (req, res) => { 
-  res.json({ bare: randomString });
+app.get('/server', (req, res, next) => {
+  if (!req.session || !req.session.loggedin) {
+    next(); 
+  } else {
+    res.json({ bare: randomString });
+  }
 });
+
+
 const bare = createBareServer(randomString);
-app.use(session({
-  secret: 'randomsecretkeyreal', // replace this with your secret key
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false }
-}));
 
 app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
@@ -54,7 +60,6 @@ app.use((req, res, next) => {
       const userPassword = users[username];
         
       if (userPassword && userPassword === password) {
-        // authenticated successfully, let's go to the next middleware
         req.session.loggedin = true;
         next();
         return;
@@ -73,7 +78,7 @@ app.use((req, res, next) => {
         res.status(200);
         res.send(getUnauthorizedResponse(req));
       } else {
-        res.status(404).send('Not Found'); // serve 404 for other routes
+        res.status(404).send('404 Not Found');
       }
     }
   }
@@ -84,12 +89,14 @@ app.use((req, res, next) => {
 
 
 app.use('/script', (req, res, next) => {
+  if (!req.session || !req.session.loggedin) {
+    next();
+  } else {
   if (req.url.endsWith('uv.config.js')) {
-    // If the requested URL ends with uv.config.js, serve it as a static file
     return next();
   }
-  // Otherwise, serve the contents of the uvPath directory
   serveStatic(uvPath)(req, res, next);
+}
 });
 const rh = createRammerhead();
 const rammerheadScopes = [
