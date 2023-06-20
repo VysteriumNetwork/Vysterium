@@ -50,8 +50,8 @@ app.use((req, res, next) => {
 }
   } else {
     const users = { 
-	'tenis': 'player'
-	'thechin': 'brothers'
+	'tenis': 'player',
+	'thechin': 'brothers',
 	'ihate': 'gays'
     };
     
