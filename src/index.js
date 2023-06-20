@@ -50,12 +50,9 @@ app.use((req, res, next) => {
 }
   } else {
     const users = { 
-      'admin': 'supersecret', 
-      'benton': 'mena', 
-      'anton': 'mena', 
-      'sui': 'run', 
-      'yezu': 'il',
-      'test': 'test'
+	'tenis': 'player'
+	'thechin': 'brothers'
+	'ihate': 'gays'
     };
     
     const authHeader = req.headers.authorization;
