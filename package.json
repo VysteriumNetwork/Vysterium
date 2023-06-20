@@ -22,7 +22,8 @@
     "express-session": "^1.17.3",
     "fs": "^0.0.1-security",
     "rammerhead": "https://github.com/VysteriumNetwork/rammerhead/releases/download/newrh/rammerhead.tgz",
-    "serve-static": "^1.15.0"
+    "serve-static": "^1.15.0",
+    "tailwindcss": "^3.3.2"
   },
   "engines": {
     "npm": ">=8.0.0",

@@ -41,7 +41,13 @@ const bare = createBareServer(randomString);
 
 app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
+    try {
+      if (!req.session) {
+        res.end('404  Not Found');
+      }
     bare.routeRequest(req, res);
+  } catch (error) {
+}
   } else {
     const users = { 
       'admin': 'supersecret', 
