@@ -17,14 +17,39 @@
             </a>
         </div>
         <div class="mb-6">
-            <label class="block text-grey-darker text-sm font-bold mb-2" for="cookieImport">
-                Import Cookies
-            </label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker mb-3" id="cookieImport" type="file" accept=".json" onchange="importData(this)">
-            <a href="#" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Import
-            </a>
+            <div class="mb-6">
+                <label class="block text-grey-darker text-sm font-bold mb-2">
+                    Import Cookies
+                </label>
+                <input class="hidden" id="cookieImport" type="file" accept=".cookies" onchange="importData(this)">
+                <button onclick="document.getElementById('cookieImport').click()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Choose File
+                </button>
+            </div>
+                    <div class="mb-6">
+                <label class="block text-grey-darker text-sm font-bold mb-2" for="killWorkers">
+                    Unregister All Service Workers
+                </label>
+                <a href="#" id="killWorkers" onclick="killWorkers()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    Unregister
+                </a>
+            </div>
         </div>
+        
+        <script>
+            // Existing functions...
+
+            function killWorkers() {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                        for(let registration of registrations) {
+                            registration.unregister();
+                        }
+                        alert("Unregistered all service workers!");
+                    });
+                }
+            }
+        </script>
     </div>
 </body>
 </html>

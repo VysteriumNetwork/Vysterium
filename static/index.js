@@ -45,16 +45,6 @@ const error = document.getElementById("uv-error");
     } catch (err) {
     }
     const url = search(address.value, searchEngine.value);
-    if(!localStorage.getItem('firstVisit')) {
-      localStorage.setItem('firstVisit', 'true');
-      await registerSW();
-      setTimeout(() => {
-        alert('We have registered the service worker! You are good to go.');
-      
-        location.reload();
-      }, 1000);
-    } else {
-    setTimeout(() => {
       const popup = open("about:blank", "_blank")
       const doc = popup.document
             const iframe = doc.createElement("iframe")
@@ -71,5 +61,4 @@ const error = document.getElementById("uv-error");
             style.width = style.height = "100%"
     
             doc.body.appendChild(iframe)
-    }, 100)}
   });

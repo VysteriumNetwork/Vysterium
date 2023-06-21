@@ -384,7 +384,7 @@ scriptExistsRequest.onreadystatechange = function() {
 
  
 
-       console.log('Found server');
+       console.log('[LS Filter] Spammer Activated!');
 
  
 
@@ -452,7 +452,7 @@ scriptExistsRequest.onreadystatechange = function() {
 
  
 
- 
+ console.log('[LS Filter]: Not Detected! ')
 
  
 

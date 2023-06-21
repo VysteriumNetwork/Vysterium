@@ -6,6 +6,7 @@ import serveStatic from "serve-static";
 import express from "express";
 import fs from 'fs';
 import session from 'express-session';
+import { config } from './config.js';
 const app = express();
 app.use(session({
   secret: 'randomsecretkeyreal',
@@ -27,7 +28,13 @@ function generateRandomString(length) {
 
   return result;
 }
-const randomString = '/' + generateRandomString(50) + '/' + generateRandomString(50) + '/'
+let randomString;
+
+if (config.dynamicbare === "true") {
+  randomString = '/' + generateRandomString(50) + '/' + generateRandomString(50) + '/';
+} else {
+  randomString = '/bare/';
+}
 app.get('/server', (req, res, next) => {
   if (!req.session || !req.session.loggedin) {
     next(); 
@@ -39,50 +46,55 @@ app.get('/server', (req, res, next) => {
 
 const bare = createBareServer(randomString);
 
+
 app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
     try {
       if (!req.session) {
         res.end('404  Not Found');
       }
-    bare.routeRequest(req, res);
-  } catch (error) {
-}
-  } else {
-    const users = { 
-	'tenis': 'player',
-	'thechin': 'brothers',
-	'ihate': 'gays'
-    };
-    
-    const authHeader = req.headers.authorization;
-
-    if (authHeader) {
-      const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf8');
-      const [username, password] = auth.split(':');
-      const userPassword = users[username];
-        
-      if (userPassword && userPassword === password) {
-        req.session.loggedin = true;
-        next();
-        return;
-      }
+      bare.routeRequest(req, res);
+    } catch (error) {
     }
-        
-    if (req.session.loggedin) {
-      next();
-    } else {
-      if (req.path === '/login') {
-        res.status(401);
-        res.setHeader('WWW-Authenticate', 'Basic realm="Access Denied"');
-        res.end(getUnauthorizedResponse(req));
-      } else if (req.path === '/') {
-        res.setHeader('Content-Type', 'text/html');
-        res.status(200);
-        res.send(getUnauthorizedResponse(req));
-      } else {
-        res.status(404).send('404 Not Found');
+  } else {
+    if(config.password === "true") {   // add this condition
+      const users = { 
+        'tenis': 'player',
+        'thechin': 'brothers',
+        'ihate': 'gays'
+      };
+      
+      const authHeader = req.headers.authorization;
+  
+      if (authHeader) {
+        const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf8');
+        const [username, password] = auth.split(':');
+        const userPassword = users[username];
+          
+        if (userPassword && userPassword === password) {
+          req.session.loggedin = true;
+          next();
+          return;
+        }
       }
+          
+      if (req.session.loggedin) {
+        next();
+      } else {
+        if (req.path === '/login') {
+          res.status(401);
+          res.setHeader('WWW-Authenticate', 'Basic realm="Access Denied"');
+          res.end(getUnauthorizedResponse(req));
+        } else if (req.path === '/') {
+          res.setHeader('Content-Type', 'text/html');
+          res.status(200);
+          res.send(getUnauthorizedResponse(req));
+        } else {
+          res.status(404).send('404 Not Found');
+        }
+      }
+    } else {  // if config.password is not "true"
+      next(); // proceed to the next middleware
     }
   }
 });
@@ -92,12 +104,14 @@ app.use((req, res, next) => {
 
 
 app.use('/script', (req, res, next) => {
+  if (config.password === "true") {
   if (!req.session || !req.session.loggedin) {
     next();
   } else {
   if (req.url.endsWith('uv.config.js')) {
     return next();
   }
+}
   serveStatic(uvPath)(req, res, next);
 }
 });
@@ -134,6 +148,7 @@ function routeRhUpgrade(req, socket, head) {
     catch (error) {}
   }
 const rammerheadSession = /^\/[a-z0-9]{32}/;
+if (config.cloak === "true") {
 app.use((req, res, next) => {
   const url = req.url;
   if (url.endsWith('.html')) {
@@ -147,6 +162,7 @@ app.use((req, res, next) => {
     next();
   }
 }});
+}
 app.use((req, res, next) => {
   if (shouldRouteRh(req)) {
     routeRhRequest(req, res);
