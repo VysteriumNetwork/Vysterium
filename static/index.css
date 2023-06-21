@@ -156,9 +156,9 @@ body {
       background-color: #CB6CE6;
   }
   
-  .imperium:hover img {
-      background-color: #9F2424;
-  }
+  .settings:hover img {
+    background-color: #696999;
+}
   
   .generalmath:hover img {
       background-color: #012421;
