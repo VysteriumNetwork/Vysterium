@@ -60,7 +60,7 @@ app.use((req, res, next) => {
     if(config.password === "true") {   // add this condition
       const users = { 
         'tennis': 'player',
-        'thechin': 'brothers',
+        'hie': 'poxil',
         'ihate': 'gays'
       };
       
