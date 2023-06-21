@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <script src="./cookies.js"></script>
+    <link href="./tailwind.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<body class="flex items-center justify-center h-screen bg-gray-200">
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
+        <div class="mb-4">
+            <label class="block text-grey-darker text-sm font-bold mb-2" for="cookieExport">
+                Export Cookies
+            </label>
+            <a href="#" id="cookieExport" onclick="exportData()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Export
+            </a>
+        </div>
+        <div class="mb-6">
+            <label class="block text-grey-darker text-sm font-bold mb-2" for="cookieImport">
+                Import Cookies
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker mb-3" id="cookieImport" type="file" accept=".json" onchange="importData(this)">
+            <a href="#" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Import
+            </a>
+        </div>
+    </div>
+</body>
+</html>

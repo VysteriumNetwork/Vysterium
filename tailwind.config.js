@@ -1,7 +1,7 @@
 module.exports = {
   content: {
     relative: true,
-    files: ['./static/index.html', './static/elixir/index.html', './static/elixir/about.html'],
+    files: ['./static/index.html', './static/elixir/index.html', './static/elixir/about.html', './static/settings.html'],
     // files: ['./construction/index.html']
   },
   theme: {
