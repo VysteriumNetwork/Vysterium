@@ -59,7 +59,7 @@ app.use((req, res, next) => {
   } else {
     if(config.password === "true") {   // add this condition
       const users = { 
-        'tenis': 'player',
+        'tennis': 'player',
         'thechin': 'brothers',
         'ihate': 'gays'
       };
@@ -112,6 +112,11 @@ app.use('/script', (req, res, next) => {
     return next();
   }
 }
+  serveStatic(uvPath)(req, res, next);
+} else {
+  if (req.url.endsWith('uv.config.js')) {
+    return next();
+  }
   serveStatic(uvPath)(req, res, next);
 }
 });

@@ -72,3 +72,48 @@ function importData(input) {
     window.location.replace('/');
 }
 
+function importDatafile() {
+    let input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.cookie';  // Modified line
+
+    input.addEventListener('change', event => {
+        let file = event.target.files[0];
+
+        if(file) {
+            let reader = new FileReader();
+
+            reader.onload = function(event) {
+                try {
+                    let data = JSON.parse(base64DecodeUnicode(event.target.result));
+
+                    // Clear cookies
+                    document.cookie.split(";").forEach(c => {
+                        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                    });
+
+                    // Set new cookies
+                    for(let key in data.cookies) {
+                        let value = data.cookies[key];
+                        document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+                    }
+
+                    // Clear localStorage
+                    localStorage.clear();
+
+                    // Set new localStorage items
+                    for(let key in data.localStorage) {
+                        let value = data.localStorage[key];
+                        localStorage.setItem(key, value);
+                    }
+                } catch(e) {
+                    console.error("Error parsing JSON file: ", e);
+                }
+            };
+
+            reader.readAsText(file);
+        }
+    });
+
+    input.click();
+}
