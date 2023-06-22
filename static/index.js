@@ -47,7 +47,7 @@ const error = document.getElementById("uv-error");
     const iframeDoc = iframe.contentWindow || iframe.contentDocument.document || iframe.contentDocument;
 
     iframeDoc.document.open();
-    iframe.src = location.origin + '/irepel/load.html?url=' + (url)
+    iframe.src = location.origin + '/irepel/proxy.html?url=' + (url)
     doc.body.appendChild(iframe)
     if (localStorage.getItem('customjs') !== null) {
       var customjsValue = localStorage.getItem('customjs');
