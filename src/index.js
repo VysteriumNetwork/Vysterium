@@ -3,12 +3,24 @@ import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 import { fileURLToPath } from "node:url";
 import { createServer as createHttpServer } from "node:http";
 import serveStatic from "serve-static";
-import express from "express";
 import fs from 'fs';
 import session from 'express-session';
 import { config } from './config.js';
-// import { Router, Route, Link } from "svelte-routing";
+import { join } from 'path';
+import express from 'express';
+
+const blacklisted = [];
 const app = express();
+const dirname = fileURLToPath(new URL('.', import.meta.url));
+
+fs.readFile(join(dirname, 'ADS.txt'), 'utf-8', (err, data) => {
+  if (err) {
+    console.log(err);
+  } else {
+    const lines = data.split('\n');
+    for (let i in lines) blacklisted.push(lines[i]);
+  }
+});
 app.use(session({
   secret: 'randomsecretkeyreal',
   resave: false,
@@ -54,6 +66,11 @@ app.use((req, res, next) => {
       if (!req.session) {
         res.end('404  Not Found');
       } else {
+        try {
+        for (let i in blacklisted)
+        if (req.headers['x-bare-host']?.includes(blacklisted[i]))
+          return res.end('Stupid ads');
+        } catch {}
       bare.routeRequest(req, res);
     }
   } catch (e) {
