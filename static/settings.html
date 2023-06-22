@@ -1,55 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
-    <script src="./cookies.js"></script>
+    <script src="./settings.js"></script>
     <link href="./tailwind.css" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-<body class="flex items-center justify-center h-screen bg-gray-200">
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
+</head>
+<body class="bg-gray-800 text-white p-10">
+    <div class="bg-gray-700 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h1 class="text-2xl font-bold mb-4">Settings</h1>
+
         <div class="mb-4">
-            <label class="block text-grey-darker text-sm font-bold mb-2" for="cookieExport">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="cookieExport">
                 Export Cookies
             </label>
             <a href="#" id="cookieExport" onclick="exportData()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Export
             </a>
         </div>
-        <div class="mb-6">
-            <div class="mb-6">
-                <label class="block text-grey-darker text-sm font-bold mb-2">
-                    Import Cookies
-                </label>
-                <input class="hidden" id="cookieImport" type="file" accept=".cookies" onchange="importData(this)">
-                <button onclick="document.getElementById('cookieImport').click()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Choose File
-                </button>
-            </div>
-                    <div class="mb-6">
-                <label class="block text-grey-darker text-sm font-bold mb-2" for="killWorkers">
-                    Unregister All Service Workers
-                </label>
-                <a href="#" id="killWorkers" onclick="killWorkers()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                    Unregister
-                </a>
-            </div>
-        </div>
-        
-        <script>
-            // Existing functions...
 
-            function killWorkers() {
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                        for(let registration of registrations) {
-                            registration.unregister();
-                        }
-                        alert("Unregistered all service workers!");
-                    });
-                }
-            }
-        </script>
+        <div class="mb-6">
+            <label class="block text-gray-300 text-sm font-bold mb-2">
+                Import Cookies
+            </label>
+            <input class="hidden" id="cookieImport" type="file" accept=".cookies" onchange="importData(this)">
+            <button onclick="document.getElementById('cookieImport').click()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Choose File
+            </button>
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="killWorkers">
+                Unregister All Service Workers
+            </label>
+            <a href="#" id="killWorkers" onclick="killWorkers()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                Unregister
+            </a>
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-gray-300 text-sm font-bold mb-2">
+                Tab Cloak
+            </label>
+            <input class="shadow appearance-none border rounded w-half py-2 px-3 text-black mb-3" id="tabName" type="text" placeholder="Tab Name">
+            <input class="shadow appearance-none border rounded w-half py-2 px-3 text-black mb-3" id="iconUrl" type="text" placeholder="Icon URL">
+        </div>
     </div>
 </body>
 </html>

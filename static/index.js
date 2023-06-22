@@ -16,11 +16,12 @@ async function registerSW() {
   if (!navigator.serviceWorker)
     throw new Error("Your browser doesn't support service workers.");
 
-  // Ultraviolet has a stock `sw.js` script.
+    
   await navigator.serviceWorker.register(stockSW, {
     scope: __uv$config.prefix,
   });
 }
+registerSW();
 const form = document.getElementById("uv-form");
 /**
  * @type {HTMLInputElement}
@@ -40,10 +41,6 @@ const error = document.getElementById("uv-error");
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
   
-    try {
-      await registerSW();
-    } catch (err) {
-    }
     const url = search(address.value, searchEngine.value);
       const popup = open("about:blank", "_blank")
       const doc = popup.document
