@@ -6,21 +6,23 @@ import serveStatic from "serve-static";
 import fs from 'fs';
 import session from 'express-session';
 import { config } from './config.js';
-import { join } from 'path';
 import express from 'express';
 
-const blacklisted = [];
 const app = express();
-const dirname = fileURLToPath(new URL('.', import.meta.url));
+import path, { join } from 'path';
 
-fs.readFile(join(dirname, 'ADS.txt'), 'utf-8', (err, data) => {
-  if (err) {
-    console.log(err);
-  } else {
-    const lines = data.split('\n');
-    for (let i in lines) blacklisted.push(lines[i]);
-  }
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const blacklisted = [];
+
+fs.readFile(path.join(__dirname, './blocklist.txt'), 'utf-8', (err, data) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    blacklisted.push(...data.split('\n'));
 });
+
 app.use(session({
   secret: 'randomsecretkeyreal',
   resave: false,
@@ -49,7 +51,7 @@ if (config.dynamicbare === "true") {
   randomString = '/bare/';
 }
 app.get('/server', (req, res, next) => {
-  if (!req.session || !req.session.loggedin) {
+  if (!req.session || !req.session.loggedin || !config.password == "true") {
     next(); 
   } else {
     res.json({ bare: randomString });
@@ -63,22 +65,26 @@ const bare = createBareServer(randomString);
 app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
     try {
-      if (!req.session) {
+      if (!req.session && config.password  === "true") {
         res.end('404  Not Found');
-      } else {
+      }
+      if (bare.shouldRoute(req)) {
         try {
-        for (let i in blacklisted)
-        if (req.headers['x-bare-host']?.includes(blacklisted[i]))
-          return res.end('Stupid ads');
-        } catch {}
-      bare.routeRequest(req, res);
+          for (let i in blacklisted) {
+          if (blacklisted[i].includes(req.headers['x-bare-host'])) {
+              return res.end('Denied');
+   }}
+        } catch (error) {
+        }
+        bare.routeRequest(req, res);
+      }
+    } catch (error) {
     }
-  } catch (e) {
-  }} else {
+  } else {
     if(config.password === "true") {   // add this condition
       const users = { 
         'tennis': 'player',
-        'hie': 'poxil',
+        'thechin': 'brothers',
         'ihate': 'gays'
       };
       
@@ -114,8 +120,8 @@ app.use((req, res, next) => {
     } else {  // if config.password is not "true"
       next(); // proceed to the next middleware
     }
-  }});
-
+  }
+});
 
 
 
