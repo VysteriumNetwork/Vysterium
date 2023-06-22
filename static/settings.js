@@ -144,3 +144,7 @@ registration.unregister();
 }
 });
 }
+function saveCustomJs() {
+    const customJs = document.getElementById('customjs').value;
+    localStorage.setItem('customjs', customJs);
+}

@@ -71,7 +71,7 @@ app.use((req, res, next) => {
       if (bare.shouldRoute(req)) {
         try {
           for (let i in blacklisted) {
-          if (blacklisted[i].includes(req.headers['x-bare-host'])) {
+          if (req.headers['x-bare-host'](blacklisted[i])) {
               return res.end('Denied, this may be an ad or is blacklisted.');
    }}
         } catch (error) {
