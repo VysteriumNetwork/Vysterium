@@ -135,26 +135,8 @@ function applyTabCloak() {
         localStorage.setItem('iconUrl', iconUrl);
     }
 
-    // Display the notification
-    showNotification();
 }
 
-function showNotification() {
-    const notification = document.getElementById('notification');
-    notification.style.display = "block";
-    setTimeout(function(){
-        notification.style.opacity = 1;
-    }, 100);
-    setTimeout(closeNotification, 5000);  // Hide notification after 5 seconds
-}
-
-function closeNotification() {
-    const notification = document.getElementById('notification');
-    notification.style.opacity = 0;
-    setTimeout(function(){
-        notification.style.display = "none";
-    }, 300);
-}
 function killWorkers() {
     navigator.serviceWorker.getRegistrations().then(function(registrations) {
 for(let registration of registrations) {

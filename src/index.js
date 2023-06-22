@@ -53,11 +53,11 @@ app.use((req, res, next) => {
     try {
       if (!req.session) {
         res.end('404  Not Found');
-      }
+      } else {
       bare.routeRequest(req, res);
-    } catch (error) {
     }
-  } else {
+  } catch (e) {
+  }} else {
     if(config.password === "true") {   // add this condition
       const users = { 
         'tennis': 'player',
@@ -97,8 +97,7 @@ app.use((req, res, next) => {
     } else {  // if config.password is not "true"
       next(); // proceed to the next middleware
     }
-  }
-});
+  }});
 
 
 
