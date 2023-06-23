@@ -21,7 +21,7 @@ async function registerSW() {
     scope: __uv$config.prefix,
   });
 }
-registerSW();
+  registerSW();
 const form = document.getElementById("uv-form");
 /**
  * @type {HTMLInputElement}
@@ -38,19 +38,23 @@ const error = document.getElementById("uv-error");
 /**
  * @type {HTMLPreElement}
  */
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const url = search(address.value, searchEngine.value);
+    const popup = open("about:blank", "_blank")
+    const doc = popup.document
+          const iframe = doc.createElement("iframe")
+          const style = iframe.style
+          const link = doc.createElement("link")
   
-    const url = search(address.value, searchEngine.value);
-    const iframe = document.getElementById('myIframe');
-    iframe.style.display = 'block'
-    const iframeDoc = iframe.contentWindow || iframe.contentDocument.document || iframe.contentDocument;
-
-    iframeDoc.document.open();
-    iframe.src = location.origin + '/irepel/proxy.html?url=' + (url)
-    if (localStorage.getItem('customjs') !== null) {
-      var customjsValue = localStorage.getItem('customjs');
-      iframeDoc.document.write('<script>' + customjsValue + '</script>');
-      document.body.style.overflow = 'hidden';
-  }  
-  });
+          doc.title = "My Drive - Google Drive"
+          link.rel = "icon";
+          link.href = "https://ssl.gstatic.com/images/branding/product/2x/hh_drive_36dp.png";
+          iframe.src = location.origin + __uv$config.prefix + __uv$config.encodeUrl(url);
+          style.position = "fixed"
+          style.top = style.bottom = style.left = style.right = 0
+          style.border = style.outline = "none"
+          style.width = style.height = "100%"
+  
+          doc.body.appendChild(iframe)
+});

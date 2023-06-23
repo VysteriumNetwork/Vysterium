@@ -7,11 +7,14 @@ import fs from 'fs';
 import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
+
 const app = express();
 import path, { join } from 'path';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const blacklisted = [];
+
 fs.readFile(path.join(__dirname, './blocklist.txt'), 'utf-8', (err, data) => {
     if (err) {
         console.error(err);
@@ -19,6 +22,7 @@ fs.readFile(path.join(__dirname, './blocklist.txt'), 'utf-8', (err, data) => {
     }
     blacklisted.push(...data.split('\n'));
 });
+
 app.use(session({
   secret: 'randomsecretkeyreal',
   resave: false,
@@ -31,26 +35,33 @@ import createRammerhead from 'rammerhead/src/server/index.js';
 function generateRandomString(length) {
   let result = '';
   const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     result += characters.charAt(randomIndex);
   }
+
   return result;
 }
 let randomString;
+
 if (config.dynamicbare === "true") {
   randomString = '/' + generateRandomString(50) + '/' + generateRandomString(50) + '/';
 } else {
   randomString = '/bare/';
 }
 app.get('/server', (req, res, next) => {
-  if (!req.session || !req.session.loggedin || !config.password == "true") {
+  if (!req.session.loggedin && config.password == "true") {
     next(); 
   } else {
     res.json({ bare: randomString });
   }
 });
+
+
 const bare = createBareServer(randomString);
+
+
 app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
     try {
@@ -76,17 +87,21 @@ app.use((req, res, next) => {
         'thechin': 'brothers',
         'ihate': 'gays'
       };
+      
       const authHeader = req.headers.authorization;
+  
       if (authHeader) {
         const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf8');
         const [username, password] = auth.split(':');
         const userPassword = users[username];
+          
         if (userPassword && userPassword === password) {
           req.session.loggedin = true;
           next();
           return;
         }
       }
+          
       if (req.session.loggedin) {
         next();
       } else {
@@ -107,6 +122,10 @@ app.use((req, res, next) => {
     }
   }
 });
+
+
+
+
 app.use('/script', (req, res, next) => {
   if (config.password === "true") {
   if (!req.session || !req.session.loggedin) {
@@ -179,6 +198,7 @@ app.use((req, res, next) => {
     next();
   }
 });
+
 app.use((req, res, next) => {
   if (req.upgrade) {
     routeRhUpgrade(req, req.socket, req.head);
@@ -201,6 +221,7 @@ const nebularoutes = {
   '/nebula/privacy': 'privacy.html',
   '/nebula/unv': 'unv.html',
 };
+
 function handleRoutes(req, res, next) {
   const nfilename = nebularoutes[req.url];
   if (nfilename) {
@@ -223,7 +244,10 @@ function handleRoutes(req, res, next) {
     }
   }
 }
+
+
 app.use(handleRoutes)
+
 server.on("request", app);
 server.on('upgrade', (req, socket, head) => {
   if (bare.shouldRoute(req)) {
@@ -239,6 +263,7 @@ server.on('upgrade', (req, socket, head) => {
       socket.end();
   }
 });
+
 app.use((req, res) => {
   res.statusCode = 404;
   res.setHeader("Content-Type", "text/html");
@@ -247,8 +272,11 @@ app.use((req, res) => {
 function getUnauthorizedResponse(req) {
     return fs.readFileSync('./src/html/education/index.html', 'utf-8');
 }
+
+
 server.on("listening", () => {
   const addr = server.address();
+
   console.log(`Server running on port ${addr.port}`)
   console.log("");
   console.log("You can now view it in your browser.")
