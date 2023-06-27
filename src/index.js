@@ -9,7 +9,7 @@ import { config } from './config.js';
 import express from 'express';
 
 const app = express();
-import path, { join } from 'path';
+import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -50,6 +50,13 @@ if (config.dynamicbare === "true") {
 } else {
   randomString = '/bare/';
 }
+app.use(config.loginloc, (req, res, next) => {
+  if (!req.session.loggedin && config.password == "true") {
+    next(); 
+  } else {
+    res.redirect('/')
+  }
+});
 app.get('/server', (req, res, next) => {
   if (!req.session.loggedin && config.password == "true") {
     next(); 
@@ -66,7 +73,7 @@ app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
     try {
       if (!req.session && config.password  === "true") {
-        res.end('404  Not Found');
+        res.redirect('/')
       }
       if (bare.shouldRoute(req)) {
         try {
@@ -82,11 +89,7 @@ app.use((req, res, next) => {
     }
   } else {
     if(config.password === "true") {   // add this condition
-      const users = { 
-        'tennis': 'player',
-        'thechin': 'brothers',
-        'ihate': 'gays'
-      };
+      const users = config.users;
       
       const authHeader = req.headers.authorization;
   
@@ -105,7 +108,7 @@ app.use((req, res, next) => {
       if (req.session.loggedin) {
         next();
       } else {
-        if (req.path === '/login') {
+        if (req.path === config.loginloc) {
           res.status(401);
           res.setHeader('WWW-Authenticate', 'Basic realm="Access Denied"');
           res.end(getUnauthorizedResponse(req));
@@ -114,7 +117,7 @@ app.use((req, res, next) => {
           res.status(200);
           res.send(getUnauthorizedResponse(req));
         } else {
-          res.status(404).send('404 Not Found');
+          res.redirect('/');
         }
       }
     } else {  // if config.password is not "true"
