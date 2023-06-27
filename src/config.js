@@ -4,8 +4,6 @@ export const config = {
     password: "true",
     loginloc: "/login",
     users: {
-        'tennis': 'player',
-        'thechin': 'brothers',
-        'ihate': 'gays'
+        "verygood": "guesser",
     },
 };
