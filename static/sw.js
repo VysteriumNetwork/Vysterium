@@ -1,7 +1,7 @@
 importScripts('/script/bundle.js');
 importScripts("/script/sw.js");
 importScripts("/script/config.js");
-
+importScripts("/script/scripts.js");
 let sw = new ServiceWorker();
 let bareReady = fetchAndSetBare();
 sw.on("request", (event) => {
@@ -480,8 +480,7 @@ self.addEventListener('fetch', event => {
               }
             
               loadModules();
-            })();
-                      
+            })();          
             </script></body>`);
 
             // Create a new response
