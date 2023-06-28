@@ -94,6 +94,10 @@ app.use((req, res, next) => {
           
         if (userPassword && userPassword === password) {
           req.session.loggedin = true;
+          if (req.path === config.loginloc) {
+            res.redirect('/');
+            return;
+          }
           next();
           return;
         }
