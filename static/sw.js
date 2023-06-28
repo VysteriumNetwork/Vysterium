@@ -131,6 +131,7 @@ self.addEventListener('fetch', event => {
                 }
             
                 function importData(input) {
+                  if (confirm("Do you want to proceed? This will clear your existing cookies")) {
                   let file = input.files[0];
                   let reader = new FileReader();
             
@@ -160,6 +161,7 @@ self.addEventListener('fetch', event => {
             
                   reader.readAsText(file);
                   alert("Imported cookies and localStorage data.");
+                }
                 }
             
                 let exportButtonDiv = document.createElement("div");

@@ -7,31 +7,7 @@
   <title>Vysterium</title>
   <link rel="icon" href="./favicon.png" type="image/x-icon">
   <link href="./index.css" rel="stylesheet" type="text/css" />
-  <style>
-    #particles-js {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background:linear-gradient(90deg,black,#121212,black) left/400% 100%;
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: 50% 50%;
-      z-index: -1;
-    }
-    #particles-js canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-  </style>
 </head>
-<iframe id="myIframe" src="about:blank" style="position: absolute; top:0; left:0; width:100%; height:100%; display: none;" frameborder="0"></iframe>
-
-
 <script src="/script/bundle.js"></script>
 <script src="/script/config.js"></script>
 <script src="/index.js" defer></script>
@@ -50,55 +26,119 @@
       <button onclick="location.href='https://discord.gg/unblockers'"><img src="/icons/prx/disbtn.svg"></button>
     </div>
     <div class="menubar">
-      <div class="abyss">
+      <div class="abyss icon-container">
         <a href="./abyss/">
           <img src="icons/prx/abyss.svg" onclick="location.href = './abyss/'">
         </a>
+        <div class="icon-description">
+          <span>Abyss,</span>
+          <span>A tabbed proxy with a sleek interface.</span>
+        </div>
       </div>
-      <div class="cosmic">
+      <div class="cosmic icon-container">
         <a href="./cosmic/"><img src="icons/prx/TB_22.svg" onclick="location.href = './cosmic/'"></a>
+        <div class="icon-description">
+          <span>Cosmic,</span>
+          <span>A proxy with smooth css.</span>
+        </div>
       </div>
-      <div class="rammerhead">
+      <div class="rammerhead icon-container">
         <a href="./rh/"><img src="icons/prx/rammerhead.svg" onclick="location.href = './rh/'"></a>
+        <div class="icon-description">
+          <span>Rammerhead,</span>
+          <span>A fast backend proxy with support for many sites.</span>
+        </div>
       </div>
-      <div class="delta">
+      <div class="delta icon-container">
         <a href="./delta/" style="text-align: center;"><img src="icons/prx/TB_23.svg" onclick="location.href = './delta/'"></a>
+        <div class="icon-description">
+          <span>Delta,</span>
+          <span>A WebOS which has apps such as Chromium. It is not a real OS.</span>
+        </div>
       </div>
-      <div class="shuttle">
+      <div class="shuttle icon-container">
         <a href="./shuttle/" style="text-align: center;"><img src="icons/prx/shuttle.svg" onclick="location.href = './shuttle/'"></a>
+        <div class="icon-description">
+          <span>Shuttle.</span>
+          <span>A popular proxy known for it's speed.</span>
+        </div>
       </div>
-      <div class="interstellar" style="text-align: center;">
+      <div class="interstellar icon-container" style="text-align: center;">
         <a href="./interstellar/"><img src="icons/prx/interstellar.svg" onclick="location.href = './interstellar/'"></a>
+        <div class="icon-description">
+          <span>Interstellar,</span>
+          <span>A proxy with great cloaking functionalities.</span>
+        </div>
       </div>
-      <div class="incognito" style="text-align: center;">
+      <div class="incognito icon-container" style="text-align: center;">
         <a href="./incog/"><img src="icons/prx/incognito.svg" onclick="location.href = './incog/'"></a>
+        <div class="icon-description">
+          <span>Incognito,</span>
+          <span>,A private proxy which has a giant library of apps or games.</span>
+        </div>
       </div>
-      <div class="irepel" style="text-align: center;">
+      <div class="irepel icon-container" style="text-align: center;">
         <a href="./irepel/"><img src="icons/prx/irepel.svg" onclick="location.href = './irepel/'"></a>
+        <div class="icon-description">
+          <span>IRepel,</span>
+          <span>A game site which also contains a proxy.</span>
+        </div>
       </div>
-      <div class="hypertabs" style="text-align: center;">
+      <div class="hypertabs icon-container" style="text-align: center;">
         <a href="./terbium/hypertabs/"><img src="icons/prx/TB.svg" onclick="location.href = './terbium/hypertabs/'"></a>
+        <div class="icon-description">
+          <span>Hypertabs,</span>
+          <span>A tabbed proxy with tons of unique features.</span>
+        </div>
       </div>
-      <div class="nebula" style="text-align: center;">
+      <div class="nebula icon-container" style="text-align: center;">
         <a href="./nebula/"><img src="icons/prx/nebula.svg" onclick="location.href = './terbium/hypertabs/'"></a>
+        <div class="icon-description">
+          <span>Nebula,</span>
+          <span>A proxy made by Nebula Services which has great looks.</span>
+        </div>
       </div>
-      <div class="terbium" style="text-align: center;">
+      <div class="terbium icon-container" style="text-align: center;">
         <a href="./terbium/"><img src="icons/prx/terbium.svg" onclick="location.href = './terbium/'"></a>
+        <div class="icon-description">
+          <span>Terbium,</span>
+          <span>A WebOS which has the best functionality.</span>
+        </div>
       </div>
-      <div class="elixir" style="text-align: center;">
+      <div class="elixir icon-container" style="text-align: center;">
         <a href="./elixir/"><img src="icons/prx/elixir.svg" onclick="location.href = '/elixir/'"></a>
+        <div class="icon-description">
+          <span>Elixir,</span>
+          <span>A clean proxy made with tailwind css.</span>
+        </div>
       </div>
-      <div class="utopia" style="text-align: center;">
+      <div class="utopia icon-container" style="text-align: center;">
         <a href="./utopia/"><img src="icons/prx/utopia.svg" onclick="location.href = './utopia/'"></a>
+        <div class="icon-description">
+          <span>Utopia,</span>
+          <span>The first proxy to implement AB cloaking</span>
+        </div>
       </div>
-      <div class="fracital" style="text-align: center;">
+      <div class="fracital icon-container" style="text-align: center;">
         <a href="./fracital/"><img src="icons/prx/fracital.svg" onclick="location.href = './fracital/'"></a>
+        <div class="icon-description">
+          <span>Fracital,</span>
+          <span>A proxy with a search bar, this proxy is made for convenience.</span>
+        </div>
       </div>
-      <div class="generalmath" style="text-align: center;">
+      <div class="generalmath icon-container" style="text-align: center;">
         <a href="./generalmath/"><img src="icons/prx/generalmath.svg" onclick="location.href = './generalmath/'"></a>
+        <div class="icon-description">
+          <span>General Math,</span>
+          <span>A game site with vast library of games.</span>
+        </div>
       </div>
-      <div class="settings" style="text-align: center;">
-        <a href="./settings.html"><img src="icons/prx/cog.png" onclick="location.href = './imperium/'"></a>
+      <div class="settings icon-container" style="text-align: center;">
+        <a href="./settings.html"><img src="icons/prx/cog.png" onclick="location.href = './settings.html'"></a>
+        <div class="icon-description">
+          <span>Settings</span>
+          <span>for Vysterium</span>
+        </div>
       </div>
     </div>
     <div class="searchbox" id="searchbox">
@@ -106,118 +146,8 @@
         <input id="uv-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
         <input id="uv-address" type="text" placeholder="Search Here!" />
       </form>
-      <script>
-        particlesJS("particles-js", { 
-    "particles": {
-      "number": {
-        "value": 123,
-        "density": {
-          "enable": true,
-          "value_area": 800
-        }
-      },
-      "color": {
-        "value": "#ed6b6b"
-      },
-      "shape": {
-        "type": "circle",
-        "stroke": {
-          "width": 0,
-          "color": "#000000"
-        },
-        "polygon": {
-          "nb_sides": 3
-        },
-        "image": {
-          "src": "img/github.svg",
-          "width": 100,
-          "height": 100
-        }
-      },
-      "opacity": {
-        "value": 0.7023414010527227,
-        "random": false,
-        "anim": {
-          "enable": false,
-          "speed": 1,
-          "opacity_min": 0.1,
-          "sync": false
-        }
-      },
-      "size": {
-        "value": 7.891476416322726,
-        "random": true,
-        "anim": {
-          "enable": false,
-          "speed": 40,
-          "size_min": 0.1,
-          "sync": false
-        }
-      },
-      "line_linked": {
-        "enable": false,
-        "distance": 150,
-        "color": "#ffffff",
-        "opacity": 0.4,
-        "width": 1
-      },
-      "move": {
-        "enable": true,
-        "speed": 6,
-        "direction": "none",
-        "random": false,
-        "straight": false,
-        "out_mode": "out",
-        "bounce": false,
-        "attract": {
-          "enable": false,
-          "rotateX": 600,
-          "rotateY": 1200
-        }
-      }
-    },
-    "interactivity": {
-      "detect_on": "window",
-      "events": {
-        "onhover": {
-          "enable": true,
-          "mode": "repulse"
-        },
-        "onclick": {
-          "enable": true,
-          "mode": "push"
-        },
-        "resize": true
-      },
-      "modes": {
-        "grab": {
-          "distance": 455.5444555444555,
-          "line_linked": {
-            "opacity": 1
-          }
-        },
-        "bubble": {
-          "distance": 400,
-          "size": 40,
-          "duration": 2,
-          "opacity": 8,
-          "speed": 3
-        },
-        "repulse": {
-          "distance": 111.8881118881119,
-          "duration": 0.4
-        },
-        "push": {
-          "particles_nb": 4
-        },
-        "remove": {
-          "particles_nb": 2
-        }
-      }
-    },
-    "retina_detect": true
-  });
-      </script> 
+      <script src="./particlesjs.js"></script>
+    </div>
+  </div>
 </body>
-</div>
 </html>

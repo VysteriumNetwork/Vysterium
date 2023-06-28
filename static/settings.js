@@ -44,33 +44,39 @@ function exportData() {
 }
 
 function importData(input) {
+    if (confirm("Do you want to proceed? This will clear your existing cookies")) {
     let file = input.files[0];
     let reader = new FileReader();
 
-    reader.onload = function(event) {
-        let data = JSON.parse(base64DecodeUnicode(event.target.result));
+    reader.onload = function (event) {
+      let data = JSON.parse(base64DecodeUnicode(event.target.result));
 
-        document.cookie.split(";").forEach(c => {
-            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-        });
+      document.cookie.split(";").forEach((c) => {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
 
-        for(let key in data.cookies) {
-            let value = data.cookies[key];
-            document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-        }
+      for (let key in data.cookies) {
+        let value = data.cookies[key];
+        document.cookie = encodeURIComponent(key) + "=" + encodeURIComponent(
+          value
+        );
+      }
 
-        localStorage.clear();
+      localStorage.clear();
 
-        for(let key in data.localStorage) {
-            let value = data.localStorage[key];
-            localStorage.setItem(key, value);
-        }
+      for (let key in data.localStorage) {
+        let value = data.localStorage[key];
+        localStorage.setItem(key, value);
+      }
     };
 
     reader.readAsText(file);
-    alert('Imported cookies and localStorage data.');
-    window.location.replace('/');
-}
+    alert("Imported cookies and localStorage data.");
+    window.location.replace('/')
+  }
+  }
 
 function importDatafile() {
     let input = document.createElement('input');

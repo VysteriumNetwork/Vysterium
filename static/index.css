@@ -6,7 +6,52 @@
   width: 100%;
   height: 100%;
 }
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:linear-gradient(90deg,black,#121212,black) left/400% 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
+  z-index: -1;
+}
+#particles-js canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 
+.icon-container {
+  position: relative;
+}
+
+.icon-description {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+  transition: opacity 1.0s ease;
+  z-index: 1;
+}
+
+.icon-container:hover .icon-description {
+  opacity: 1;
+}
 body {
   --s:67px;
   --m:4px; 
