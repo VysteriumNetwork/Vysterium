@@ -40,9 +40,8 @@ self.addEventListener('fetch', event => {
                 renderModules();
                 menu.appendChild(searchInput);
                 menu.appendChild(moduleContainer);
-                menu.appendChild(importButton);
-                menu.appendChild(importInput);
-                menu.appendChild(exportButton);
+                menu.appendChild(exportButtonDiv);
+                menu.appendChild(importButtonDiv);
               }
             
               function executeJS() {
@@ -64,138 +63,138 @@ self.addEventListener('fetch', event => {
                 executeButton.addEventListener("click", () => eval(textarea.value));
                 menu.appendChild(executeButton);
               }
-          
-          function cookieManager(importData, exportData) {
-            menu.innerHTML = "";
-          
-            let backButton = document.createElement("button");
-            backButton.textContent = "Back to modules list";
-            backButton.addEventListener("click", home);
-            menu.appendChild(backButton);
-          
-            function base64DecodeUnicode(str) {
-              return decodeURIComponent(
-                atob(str)
-                  .split("")
-                  .map(function (c) {
-                    return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-                  })
-                  .join("")
-              );
-            }
-            function base64EncodeUnicode(str) {
-              return btoa(
-                encodeURIComponent(str).replace(
-                  /%([0-9A-F]{2})/g,
-                  function (match, p1) {
-                    return String.fromCharCode("0x" + p1);
-                  }
-                )
-              );
-            }
-          
-            function exportData() {
-              let cookies = document.cookie
-                .split("; ")
-                .reduce((result, c) => {
-                  let [key, value] = c.split("=").map(decodeURIComponent);
-                  result[key] = value;
-                  return result;
-                }, {});
-          
-              let localStorageData = {};
-              for (let i = 0; i < localStorage.length; i++) {
-                let key = localStorage.key(i);
-                let value = localStorage.getItem(key);
-                localStorageData[key] = value;
-              }
-          
-              let data = {
-                cookies: cookies,
-                localStorage: localStorageData,
-              };
-          
-              let jsonString = base64EncodeUnicode(JSON.stringify(data));
-              let blob = new Blob([jsonString], { type: "application/json" });
-              let url = URL.createObjectURL(blob);
-          
-              let link = document.createElement("a");
-              link.href = url;
-              link.download =
-                prompt("What do you want to call your save?", "mycookie") + ".cookies";
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-          
-              setTimeout(() => URL.revokeObjectURL(url), 10000);
-            }
-          
-            function importData(input) {
-              let file = input.files[0];
-              let reader = new FileReader();
-          
-              reader.onload = function (event) {
-                let data = JSON.parse(base64DecodeUnicode(event.target.result));
-          
-                document.cookie.split(";").forEach((c) => {
-                  document.cookie = c
-                    .replace(/^ +/, "")
-                    .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-                });
-          
-                for (let key in data.cookies) {
-                  let value = data.cookies[key];
-                  document.cookie = encodeURIComponent(key) + "=" + encodeURIComponent(
-                    value
+            
+              function cookieManager() {
+                menu.innerHTML = "";
+            
+                let backButton = document.createElement("button");
+                backButton.textContent = "Back to modules list";
+                backButton.addEventListener("click", home);
+                menu.appendChild(backButton);
+            
+                function base64DecodeUnicode(str) {
+                  return decodeURIComponent(
+                    atob(str)
+                      .split("")
+                      .map(function (c) {
+                        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+                      })
+                      .join("")
                   );
                 }
-          
-                localStorage.clear();
-          
-                for (let key in data.localStorage) {
-                  let value = data.localStorage[key];
-                  localStorage.setItem(key, value);
+            
+                function base64EncodeUnicode(str) {
+                  return btoa(
+                    encodeURIComponent(str).replace(
+                      /%([0-9A-F]{2})/g,
+                      function (match, p1) {
+                        return String.fromCharCode("0x" + p1);
+                      }
+                    )
+                  );
                 }
-              };
-          
-              reader.readAsText(file);
-              alert("Imported cookies and localStorage data.");
-            }
-          
-            let exportButtonDiv = document.createElement("div");
-            exportButtonDiv.classList.add("mb-4");
-          
-            let exportButtonLabel = document.createElement("label");
-            exportButtonLabel.textContent = "Export Cookies";
-            exportButtonDiv.appendChild(exportButtonLabel);
-          
-            let exportButton = document.createElement("button");
-            exportButton.textContent = "Export";
-            exportButton.classList.add("ml-2"); // Add margin class for spacing
-            exportButton.addEventListener("click", exportData);
-            exportButtonDiv.appendChild(exportButton);
-          
-            menu.appendChild(exportButtonDiv);
-          
-            let importButtonDiv = document.createElement("div");
-            importButtonDiv.classList.add("mb-4");
-          
-            let importButtonLabel = document.createElement("label");
-            importButtonLabel.textContent = "Import Cookies";
-            importButtonDiv.appendChild(importButtonLabel);
-          
-            let importInput = document.createElement("input");
-            importInput.id = "cookieImport";
-            importInput.type = "file";
-            importInput.accept = ".cookies";
-            importInput.classList.add("hidden");
-            importInput.addEventListener("change", () => importData(importInput));
-            importButtonDiv.appendChild(importInput);
-          
-          
-            menu.appendChild(importButtonDiv);
-          }
-          
+            
+                function exportData() {
+                  let cookies = document.cookie
+                    .split("; ")
+                    .reduce((result, c) => {
+                      let [key, value] = c.split("=").map(decodeURIComponent);
+                      result[key] = value;
+                      return result;
+                    }, {});
+            
+                  let localStorageData = {};
+                  for (let i = 0; i < localStorage.length; i++) {
+                    let key = localStorage.key(i);
+                    let value = localStorage.getItem(key);
+                    localStorageData[key] = value;
+                  }
+            
+                  let data = {
+                    cookies: cookies,
+                    localStorage: localStorageData,
+                  };
+            
+                  let jsonString = base64EncodeUnicode(JSON.stringify(data));
+                  let blob = new Blob([jsonString], { type: "application/json" });
+                  let url = URL.createObjectURL(blob);
+            
+                  let link = document.createElement("a");
+                  link.href = url;
+                  link.download =
+                    prompt("What do you want to call your save?", "mycookie") + ".cookies";
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+            
+                  setTimeout(() => URL.revokeObjectURL(url), 10000);
+                }
+            
+                function importData(input) {
+                  let file = input.files[0];
+                  let reader = new FileReader();
+            
+                  reader.onload = function (event) {
+                    let data = JSON.parse(base64DecodeUnicode(event.target.result));
+            
+                    document.cookie.split(";").forEach((c) => {
+                      document.cookie = c
+                        .replace(/^ +/, "")
+                        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                    });
+            
+                    for (let key in data.cookies) {
+                      let value = data.cookies[key];
+                      document.cookie = encodeURIComponent(key) + "=" + encodeURIComponent(
+                        value
+                      );
+                    }
+            
+                    localStorage.clear();
+            
+                    for (let key in data.localStorage) {
+                      let value = data.localStorage[key];
+                      localStorage.setItem(key, value);
+                    }
+                  };
+            
+                  reader.readAsText(file);
+                  alert("Imported cookies and localStorage data.");
+                }
+            
+                let exportButtonDiv = document.createElement("div");
+                exportButtonDiv.classList.add("mb-4");
+            
+                let exportButtonLabel = document.createElement("label");
+                exportButtonLabel.textContent = "Export Cookies";
+                exportButtonDiv.appendChild(exportButtonLabel);
+            
+                let exportButton = document.createElement("button");
+                exportButton.textContent = "Export";
+                exportButton.classList.add("ml-2"); // Add margin class for spacing
+                exportButton.addEventListener("click", exportData);
+                exportButtonDiv.appendChild(exportButton);
+            
+                menu.appendChild(exportButtonDiv);
+            
+                let importButtonDiv = document.createElement("div");
+                importButtonDiv.classList.add("mb-4");
+            
+                let importButtonLabel = document.createElement("label");
+                importButtonLabel.textContent = "Import Cookies";
+                importButtonDiv.appendChild(importButtonLabel);
+            
+                let importInput = document.createElement("input");
+                importInput.id = "cookieImport";
+                importInput.type = "file";
+                importInput.accept = ".cookies";
+                importInput.classList.add("hidden");
+                importInput.addEventListener("change", () => importData(importInput));
+                importButtonDiv.appendChild(importInput);
+            
+                menu.appendChild(importButtonDiv);
+              }
+            
               function changeURL() {
                 menu.innerHTML = "";
             
@@ -393,16 +392,22 @@ self.addEventListener('fetch', event => {
               let moduleContainer = document.createElement("div");
               menu.appendChild(moduleContainer);
             
+              let importButtonDiv = document.createElement("div");
+              importButtonDiv.classList.add("mb-4");
+            
+              let importButtonLabel = document.createElement("label");
+              importButtonLabel.textContent = "Import JSON";
+              importButtonDiv.appendChild(importButtonLabel);
+            
               let importButton = document.createElement("button");
-              importButton.textContent = "Import JSON";
-              menu.appendChild(importButton);
+              importButton.textContent = "Import";
+              importButton.classList.add("ml-2"); // Add margin class for spacing
+              importButton.addEventListener("click", () => importInput.click());
+              importButtonDiv.appendChild(importButton);
             
               let importInput = document.createElement("input");
               importInput.type = "file";
               importInput.style.display = "none";
-              menu.appendChild(importInput);
-            
-              importButton.addEventListener("click", () => importInput.click());
               importInput.addEventListener("change", async () => {
                 let file = importInput.files[0];
                 if (!file) return;
@@ -419,11 +424,20 @@ self.addEventListener('fetch', event => {
                 modules = [...modules, ...newScripts];
                 renderModules();
               });
+              importButtonDiv.appendChild(importInput);
+            
+              menu.appendChild(importButtonDiv);
+            
+              let exportButtonDiv = document.createElement("div");
+              exportButtonDiv.classList.add("mb-4");
+            
+              let exportButtonLabel = document.createElement("label");
+              exportButtonLabel.textContent = "Export JSON";
+              exportButtonDiv.appendChild(exportButtonLabel);
             
               let exportButton = document.createElement("button");
-              exportButton.textContent = "Export JSON";
-              menu.appendChild(exportButton);
-            
+              exportButton.textContent = "Export";
+              exportButton.classList.add("ml-2"); // Add margin class for spacing
               exportButton.addEventListener("click", () => {
                 let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(customScripts));
                 let downloadAnchorNode = document.createElement("a");
@@ -433,6 +447,9 @@ self.addEventListener('fetch', event => {
                 downloadAnchorNode.click();
                 downloadAnchorNode.remove();
               });
+              exportButtonDiv.appendChild(exportButton);
+            
+              menu.appendChild(exportButtonDiv);
             
               renderModules();
             
@@ -464,7 +481,7 @@ self.addEventListener('fetch', event => {
             
               loadModules();
             })();
-            
+                      
             </script></body>`);
 
             // Create a new response
