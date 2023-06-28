@@ -15,7 +15,7 @@ self.addEventListener('fetch', event => {
         // Check if the request is for an HTML document
         if (event.request.headers.get('Accept').includes('text/html')) {
           // Make sure we only modify the responses that are OK and HTML
-          if (!response.ok || response.headers.get('Content-Type').indexOf('text/html') === -1) {
+          if (!response.ok || !response.headers.get('Content-Type') || response.headers.get('Content-Type').indexOf('text/html') === -1) {
             return response;
           }
 
