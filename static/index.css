@@ -304,6 +304,6 @@ body {
     }
   }
   /* Gradient Animation */
-  @keyframes things-ispoop {
+  @keyframes animations {
     100% {background-position:right}
   }
