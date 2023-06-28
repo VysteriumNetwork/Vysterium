@@ -5,8 +5,8 @@
 	<link rel="shortcut icon" href="assets/images/branding/favicon/favicon.png" type="image/x-icon">
   <script src="/interstellar/assets/js/go.js"></script>
   <script src="./js/index.js"></script>
-  <script src="/script/uv.bundle.js"></script>
-  <script src="/script/uv.config.js"></script>
+  <script src="/script/bundle.js"></script>
+  <script src="/script/config.js"></script>
   <script src="./index.js"></script>
   <link rel="stylesheet" href="assets/css/nav.css">
 <style>
@@ -162,8 +162,8 @@ console.log("Error fetching 'bare' from server:", error);
 <script>
 window.onload = function() {
   let encodedUrl = sessionStorage.getItem("encodedUrl");
-  // add the prefix __uv$config.prefix to the encoded URL
-  encodedUrl = __uv$config.prefix + encodedUrl;
+  // add the prefix selfindex$config.prefix to the encoded URL
+  encodedUrl = selfindex$config.prefix + encodedUrl;
   document.querySelector("#iframeid").src = encodedUrl;
 }
 </script>

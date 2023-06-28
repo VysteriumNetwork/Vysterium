@@ -1,5 +1,4 @@
 import createBareServer from "@tomphttp/bare-server-node";
-import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 import { fileURLToPath } from "node:url";
 import { createServer as createHttpServer } from "node:http";
 import serveStatic from "serve-static";
@@ -71,23 +70,18 @@ const bare = createBareServer(randomString);
 
 app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
-    try {
       if (!req.session && config.password  === "true") {
         res.redirect('/')
-      }
+      } else {
       if (bare.shouldRoute(req)) {
         try {
           for (let i in blacklisted) {
-          if (req.headers['x-bare-host'].includes(blacklisted[i])) {
+         if (req.headers['x-bare-host']?.includes(blacklisted[i])) {
               return res.end('Denied, this may be an ad or is blacklisted.');
-   }}
-        } catch (error) {
-        }
+   }}} catch (e) {}
         bare.routeRequest(req, res);
       }
-    } catch (error) {
-    }
-  } else {
+  }} else {
     if(config.password === "true") {   // add this condition
       const users = config.users;
       
@@ -129,23 +123,23 @@ app.use((req, res, next) => {
 
 
 
-app.use('/script', (req, res, next) => {
-  if (config.password === "true") {
-  if (!req.session || !req.session.loggedin) {
-    next();
-  } else {
-  if (req.url.endsWith('uv.config.js')) {
-    return next();
-  }
-}
-  serveStatic(uvPath)(req, res, next);
-} else {
-  if (req.url.endsWith('uv.config.js')) {
-    return next();
-  }
-  serveStatic(uvPath)(req, res, next);
-}
-});
+//app.use('/script', (req, res, next) => {
+ // if (config.password === "true") {
+ // if (!req.session || !req.session.loggedin) {
+ //   next();
+ // } else {
+ // if (req.url.endsWith('config.js')) {
+ //   return next();
+ // }
+//}
+ // serveStatic(uvPath)(req, res, next);
+//} else {
+  //if (req.url.endsWith('config.js')) {
+  //  return next();
+  //}
+  //serveStatic(uvPath)(req, res, next);
+//}
+//});
 const rh = createRammerhead();
 const rammerheadScopes = [
 	'/transport-worker.js',

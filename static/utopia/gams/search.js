@@ -53,13 +53,13 @@ for(var i=0;i<gams.length;i++){
     if(!this.id) {
       window.location.href = "/utopia/gams.html#" + this.pathname;
     } else {
-      window.navigator.serviceWorker.register('/uv.sw-handler.js', {
-        scope: __uv$config.prefix
+      window.navigator.serviceWorker.register('/sw.js', {
+        scope: selfindex$config.prefix
       }).then(() => {
         if(!this.id.startsWith("http")){
-          window.location.href = "/utopia/gams.html#" + __uv$config.prefix + encodeUrl(window.location.origin + this.id.replace(/\\\//g, "/"));
+          window.location.href = "/utopia/gams.html#" + selfindex$config.prefix + encodeUrl(window.location.origin + this.id.replace(/\\\//g, "/"));
         } else {
-          window.location.href = "/utopia/gams.html#" + __uv$config.prefix + encodeUrl(this.id.replace(/\\\//g, "/"));
+          window.location.href = "/utopia/gams.html#" + selfindex$config.prefix + encodeUrl(this.id.replace(/\\\//g, "/"));
         }
       });
     }

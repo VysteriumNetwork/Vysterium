@@ -34,7 +34,7 @@ function ser() {
     } else if(safeSearch === "ss_2") {
         if (!isUrl(url)) url = `https://bing.com/search?q=%s`;
     }
-    window.open(__uv$config.prefix + xor.encode(url), "_self");
+    window.open(selfindex$config.prefix + xor.encode(url), "_self");
 }
 
 searchi.addEventListener("focus", () => {
@@ -82,13 +82,13 @@ window.onload = function() {
     const urlToOpen = window.parent.parent.document.querySelector(".winFocus").getAttribute("urltoopen");
 }
 if (urltoOpen == null) {
-    siteFrame.setAttribute("src", `https://${parentDomain}' + __uv$config.prefix + ${xor.encode(urlToOpen)}`);
+    siteFrame.setAttribute("src", `https://${parentDomain}' + selfindex$config.prefix + ${xor.encode(urlToOpen)}`);
         urlbar.value = urlToOpen;
 }
 if (urlToOpen != "undefined") {
     const parentDomain = window.parent.parent.document.location.hostname;
     if(parentDomain === "localhost") {
-        siteFrame.setAttribute("src", `//${parentDomain}:${window.parent.document.location.port}`  + __uv$config.prefix + `${xor.encode(urlToOpen)}`);
+        siteFrame.setAttribute("src", `//${parentDomain}:${window.parent.document.location.port}`  + selfindex$config.prefix + `${xor.encode(urlToOpen)}`);
         urlbar.value = urlToOpen;
     }
 }

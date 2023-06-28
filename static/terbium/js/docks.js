@@ -325,7 +325,7 @@ function windows(link, icn, title, browser, os, fullscreen, appName) {
                 } else if(safeSearch === "ss_2") {
                     if (!isUrl(url)) url = 'https://bing.com/search?q=%s' + url + "&safesearch=2";
                 }
-                framew.src = __uv$config.prefix + xor.encode(url);
+                framew.src = selfindex$config.prefix + xor.encode(url);
             }
             if (e.keyCode == "9") {
                 e.preventDefault();
@@ -574,7 +574,7 @@ function windows(link, icn, title, browser, os, fullscreen, appName) {
     // }
     switch(os) {
         case false: 
-            framew.src = __uv$config.prefix + xor.encode(link);
+            framew.src = selfindex$config.prefix + xor.encode(link);
             break;
         case true:
             framew.src = link;

@@ -22,8 +22,8 @@ document.getElementById('proi').innerText = input;
     
      
      }else {
-       window.navigator.serviceWorker.register('/uv.sw-handler.js', {
-        scope: __uv$config.prefix
+       window.navigator.serviceWorker.register('/sw.js', {
+        scope: selfindex$config.prefix
     }).then(() => {
         let url = input.trim()
           if (url.indexOf('tiktok') > -1){
@@ -32,9 +32,9 @@ document.getElementById('proi').innerText = input;
         if (!isUrl(url)) url = `https://duckduckgo.com/?q=${url}&atb=v320-4__&ia=web`;
         else if (!(url.startsWith('https://') || url.startsWith('http://'))) url = 'http://' + url;
 document.getElementById('proi').innerText = url;
-       // window.location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+       // window.location.href = selfindex$config.prefix + selfindex$config.encodeUrl(url);
                   const iframe = document.querySelector(`.browser-tab-content-iframe[active]`);
-                let ok = __uv$config.prefix + __uv$config.encodeUrl(url);
+                let ok = selfindex$config.prefix + selfindex$config.encodeUrl(url);
                iframe.src= `${ok}`
 
     });

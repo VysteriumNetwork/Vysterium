@@ -34,7 +34,7 @@ function go(link) {
     return;
     // go("bing.com/search?q=" + document.getElementById('urlbar').value);
   }
-  document.getElementById("frame").src=__uv$config.prefix+xor.encode(link);
+  document.getElementById("frame").src=selfindex$config.prefix+xor.encode(link);
 };
 
 document.getElementById("btnsrch").addEventListener("click", () => {
@@ -102,7 +102,7 @@ let observer = new MutationObserver(mutations => {
   mutations.forEach(mutation => {
     if (mutation.type == "attributes") {
 	if(!document.getElementById("urlbar").src == "") {
-      document.getElementById("urlbar").src=xor.decode(document.getElementById("frame").contentWindow.location.href.split(__uv$config.prefix)[1]);
+      document.getElementById("urlbar").src=xor.decode(document.getElementById("frame").contentWindow.location.href.split(selfindex$config.prefix)[1]);
     }
    };
   });

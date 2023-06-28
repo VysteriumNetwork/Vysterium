@@ -1,4 +1,4 @@
-const prefix = __uv$config.prefix;
+const prefix = selfindex$config.prefix;
 const URL_BAR = document.getElementById("urlbar");
 const ACTIVE_WINDOW = () => { return document.getElementById(getActiveFrameId()).contentWindow; }
 const CONTENT_WINDOW = (n) => { return document.getElementById(n).contentWindow }

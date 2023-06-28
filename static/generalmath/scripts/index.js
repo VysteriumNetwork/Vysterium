@@ -4,8 +4,8 @@ const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get("url") != null) {
   makeloader()
   document.getElementsByTagName("input")[0].value = urlParams.get("url");
-  window.navigator.serviceWorker.register('/uv.sw-handler.js', {
-    scope: __uv$config.prefix
+  window.navigator.serviceWorker.register('/sw.js', {
+    scope: selfindex$config.prefix
   }).then(() => {
     let url = input.value.trim();
     if (!isUrl(url)) url = 'https://www.google.com/search?q=' + url;
@@ -18,8 +18,8 @@ if (urlParams.get("url") != null) {
 form.addEventListener('submit', async event => {
     makeloader()
     event.preventDefault();
-    window.navigator.serviceWorker.register('/uv.sw-handler.js', {
-        scope: __uv$config.prefix
+    window.navigator.serviceWorker.register('/sw.js', {
+        scope: selfindex$config.prefix
     }).then(() => {
         let url = input.value.trim();
         if (!isUrl(url)) url = 'https://www.google.com/search?q=' + url;
@@ -36,12 +36,12 @@ function load(url){
     for(var i = 0; i < elms.length; i++) 
       elms[i].style.display='none';
     const frame = document.querySelector('.access-frame');
-    frame.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+    frame.src = selfindex$config.prefix + selfindex$config.encodeUrl(url);
     frame.style.display = 'block';
     document.querySelector('.access-panel').style.removeProperty('display');
   }
   else{
-    window.location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+    window.location.href = selfindex$config.prefix + selfindex$config.encodeUrl(url);
   }
 }
 

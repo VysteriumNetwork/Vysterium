@@ -89,23 +89,23 @@
         
             
           
-              <script src="/script/uv.bundle.js"></script>
-    <script src="/script/uv.config.js"></script>
+              <script src="/script/bundle.js"></script>
+    <script src="/script/config.js"></script>
               <script>
                 const form = document.querySelector('form');
 const input = document.querySelector('input');
 
 form.addEventListener('submit', async event => {
     event.preventDefault();
-    window.navigator.serviceWorker.register('/uv.sw-handler.js', {
-        scope: __uv$config.prefix
+    window.navigator.serviceWorker.register('/sw.js', {
+        scope: selfindex$config.prefix
     }).then(() => {
         let url = input.value.trim();
         if (!isUrl(url)) url = 'https://www.duckduckgo.com/?q=' + url;
         else if (!(url.startsWith('https://') || url.startsWith('http://'))) url = 'http://' + url;
 
 
-        window.location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+        window.location.href = selfindex$config.prefix + selfindex$config.encodeUrl(url);
     });
 });
 

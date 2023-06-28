@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="/script/uv.bundle.js"></script>
-    <script src="/script/uv.config.js"></script>
+    <script src="/script/bundle.js"></script>
+    <script src="/script/config.js"></script>
     <style>
         @font-face {
             font-family: 'Roboto';
@@ -76,15 +76,15 @@
             startpage: 'https://www.startpage.com/sp/search?query='
         };
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistration("/uv.sw-handler.js").then(async worker => {
-                if(!worker) await navigator.serviceWorker.register('/uv.sw-handler.js', { scope: __uv$config.prefix });
+            navigator.serviceWorker.getRegistration("/sw.js").then(async worker => {
+                if(!worker) await navigator.serviceWorker.register('/sw.js', { scope: selfindex$config.prefix });
                 let url = atob(decodeURIComponent(window.location.hash.slice(1)));
                 let search = engines[localStorage.getItem('incog||search') || 'google'];
                 if (url) {
                     if (!isUrl(url)) url = search + url;
                     else if (!(url.startsWith('https://') || url.startsWith('http://'))) { url = 'http://' + url; };
                 } else { url = new URL(search).origin }
-                window.location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+                window.location.href = selfindex$config.prefix + selfindex$config.encodeUrl(url);
             });
         } else {
             document.querySelector('.lds-dual-ring').remove();

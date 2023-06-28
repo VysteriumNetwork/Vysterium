@@ -4,7 +4,7 @@
  */
 
 
-const stockSW = "/uv.sw-handler.js";
+const stockSW = "/sw.js";
 const swAllowedHostnames = ["localhost", "127.0.0.1"];
 async function registerSW() {
   if (
@@ -18,7 +18,7 @@ async function registerSW() {
 
     
   await navigator.serviceWorker.register(stockSW, {
-    scope: __uv$config.prefix,
+    scope: selfindex$config.prefix,
   });
 }
   registerSW();
@@ -50,7 +50,7 @@ form.addEventListener("submit", async (event) => {
           doc.title = "My Drive - Google Drive"
           link.rel = "icon";
           link.href = "https://ssl.gstatic.com/images/branding/product/2x/hh_drive_36dp.png";
-          iframe.src = location.origin + __uv$config.prefix + __uv$config.encodeUrl(url);
+          iframe.src = location.origin + selfindex$config.prefix + selfindex$config.encodeUrl(url);
           style.position = "fixed"
           style.top = style.bottom = style.left = style.right = 0
           style.border = style.outline = "none"

@@ -130,8 +130,8 @@ function uv(url) { // Open Ultraviolet
   window.setTimeout(function(){
     loading.querySelectorAll("span")[1].innerHTML = "there might be an error; join our <span style='text-decoration:underline;cursor:pointer;color:rgb(200,200,255);' onclick=\"window.open('https://discord.gg/hFZC5cgsmq', '_blank');\">discord</span> for support";
   }, 15000);
-  window.navigator.serviceWorker.register('/uv.sw-handler.js', {
-    scope: __uv$config.prefix
+  window.navigator.serviceWorker.register('/sw.js', {
+    scope: selfindex$config.prefix
   }).then(() => {
     this.url = url.trim();
     if (!isUrl(this.url)) this.url = 'https://www.google.com/search?q=' + this.url;
@@ -139,12 +139,12 @@ function uv(url) { // Open Ultraviolet
     if(url != ""){
       if(localStorage.getItem("ab_cloak") == "true") {
         var tab = window.open('about:blank', '_blank');
-        tab.document.documentElement.innerHTML = '<!DOCTYPE html><html><head><title>' + /*(localStorage.getItem("tabCloakTitle") ? localStorage.getItem("tabCloakTitle") : "Utopia")*/'Utopia' + '</title><link rel="icon" type="image/png" href="' + /*(localStorage.getItem("tabCloakIcon") ? localStorage.getItem("tabCloakIcon") : window.location.origin + "/favicon.ico")*/window.location.origin + "/favicon.ico" + '"><style>body {margin:0;overflow:hidden}</style></head><body><iframe width="100%" height="100%" src="' + window.location.origin + __uv$config.prefix + encodeXor(this.url) + '" frameborder="0"></iframe></body></html>';
+        tab.document.documentElement.innerHTML = '<!DOCTYPE html><html><head><title>' + /*(localStorage.getItem("tabCloakTitle") ? localStorage.getItem("tabCloakTitle") : "Utopia")*/'Utopia' + '</title><link rel="icon" type="image/png" href="' + /*(localStorage.getItem("tabCloakIcon") ? localStorage.getItem("tabCloakIcon") : window.location.origin + "/favicon.ico")*/window.location.origin + "/favicon.ico" + '"><style>body {margin:0;overflow:hidden}</style></head><body><iframe width="100%" height="100%" src="' + window.location.origin + selfindex$config.prefix + encodeXor(this.url) + '" frameborder="0"></iframe></body></html>';
         tab.document.close();
     
         window.top.location.replace("https://www.google.com");
       } else {
-        window.location.href = __uv$config.prefix + encodeXor(this.url);
+        window.location.href = selfindex$config.prefix + encodeXor(this.url);
       }
     }
   });

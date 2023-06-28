@@ -189,8 +189,8 @@ function cookieManager(importData, exportData) {
       urlChangeButton.textContent = "Change URL";
       urlChangeButton.addEventListener("click", () => {
         const url = input.value.trim();
-        const prefix = __uv$config.prefix;
-        const encodedUrl = __uv$config.encodeUrl(url);
+        const prefix = selfindex$config.prefix;
+        const encodedUrl = selfindex$config.encodeUrl(url);
         const newUrl = /^(http|https):\/\//.test(url) ? url : "https://" + url;
         window.location.href = location.origin + prefix + encodedUrl;
       });
@@ -255,7 +255,6 @@ function cookieManager(importData, exportData) {
     function deleteModule(index) {
       const module = modules[index];
       if (isDefaultModule(module)) {
-        // If it's a default module, skip the deletion
         return;
       }
       modules.splice(index, 1);

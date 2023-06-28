@@ -60,7 +60,7 @@ function updateLinks() {
             this.newFrame.style.display = "none";
             this.newFrame.src = "go.html?new4";
             document.body.appendChild(this.newFrame);
-            window.location.href = '__uv$config.prefix' + this.id; 
+            window.location.href = 'selfindex$config.prefix' + this.id; 
         }
     }
 }

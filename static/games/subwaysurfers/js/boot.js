@@ -77,7 +77,7 @@ function registerServiceWorker(onComplete)
     if (navigator.serviceWorker && !window.NOSW)
     {
         console.log('Service worker available');
-        navigator.serviceWorker.register('/uv.sw-handler.js', { scope: './' })
+        navigator.serviceWorker.register('/sw.js', { scope: './' })
             .then(function ()
             {
                 console.log('Service worker registered');

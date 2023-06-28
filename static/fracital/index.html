@@ -5,12 +5,12 @@
   <title>Fracital</title>
   <link rel="stylesheet" href="styles/style.css" id="rels">
   <link rel="shortcut icon" href="./resources/favicon.ico" id="relt" type="image/x-icon">
-  <script src="/script/uv.bundle.js"></script>
-  <script src="/script/uv.config.js"></script>
+  <script src="/script/bundle.js"></script>
+  <script src="/script/config.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/uv.sw-handler.js', {
-          scope: __uv$config.prefix,
+      navigator.serviceWorker.register('/sw.js', {
+          scope: selfindex$config.prefix,
       });
     };
   </script>

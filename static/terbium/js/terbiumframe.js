@@ -151,7 +151,7 @@ function terbium() {
                     // search.innerHTML = `<mark>https://</mark><p>${removeHandeler}</p>`;
                     // console.log(url);
                     if (!isUrl(url)) url = 'https://search.networkchuck.coffee/search?q=' + url + "&safesearch=0";
-                    framew.src = __uv$config.prefix + xor.encode(url);
+                    framew.src = selfindex$config.prefix + xor.encode(url);
                 }
                 if (e.keyCode == "9") {
                     e.preventDefault();
@@ -267,7 +267,7 @@ function terbium() {
         // }
         switch (os) {
             case false:
-                framew.src= __uv$config.prefix + xor.encode(link);
+                framew.src= selfindex$config.prefix + xor.encode(link);
                 break;
             case true:
                 framew.src = link;

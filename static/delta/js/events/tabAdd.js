@@ -32,7 +32,7 @@ function tabAdd (data) {
   
   const loop = setInterval(() => {
     // parse url
-    const newUrl = _browser_.decodeUrl(iframe.contentWindow.location.href.split(__uv$config.prefix)[1]);
+    const newUrl = _browser_.decodeUrl(iframe.contentWindow.location.href.split(selfindex$config.prefix)[1]);
 
     // update url
     try {
@@ -72,7 +72,7 @@ function tabAdd (data) {
     // update history
     try {
       let tab = _browser_.tabs.get(id);
-      let link = _browser_.decodeUrl(iframe.contentWindow.location.href.split(__uv$config.prefix)[1]); 
+      let link = _browser_.decodeUrl(iframe.contentWindow.location.href.split(selfindex$config.prefix)[1]); 
       if(link !== tab.history[tab.historyIndex]) {
         if(iframe.getAttribute("historyChange")) return;
         if(link !== "about:blank" && link && !iframe.contentWindow.location.href.includes("./newtab.html") && !iframe.contentWindow.location.href.includes("genow://")) {

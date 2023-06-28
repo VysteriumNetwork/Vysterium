@@ -10,9 +10,9 @@ function activeTabChange (data) {
   const sr = iframe.src
   iframe.setAttribute("active", "");
   const adr = document.getElementById('proi')
-  if (iframe.src != location.protocol + "//" + location.hostname +'/newtab.html' && iframe.src.indexOf(__uv$config.prefix) > -1){
+  if (iframe.src != location.protocol + "//" + location.hostname +'/newtab.html' && iframe.src.indexOf(selfindex$config.prefix) > -1){
     // let link = _browser_.decodeUrl(iframe.contentWindow.location.href.split("/service/")[1])
-  adr.innerText = _browser_.decodeUrl(iframe.contentWindow.location.href.split(__uv$config.prefix)[1])
+  adr.innerText = _browser_.decodeUrl(iframe.contentWindow.location.href.split(selfindex$config.prefix)[1])
   } else if (iframe.contentWindow.location.href.includes("/hostedPages/")){
 //let pageThing = '../../hostedPages/' + surelol + '.html'
     

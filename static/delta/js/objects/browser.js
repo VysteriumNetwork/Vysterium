@@ -8,8 +8,8 @@ chromeTabs.init(document.querySelector(".chrome-tabs"));
 var _browser_ = {
   tabs: new Map(),
   chromeTabs: chromeTabs,
-  encodeUrl: __uv$config.encodeUrl,
-  decodeUrl: __uv$config.decodeUrl
+  encodeUrl: selfindex$config.encodeUrl,
+  decodeUrl: selfindex$config.decodeUrl
 }
 
 export default _browser_;

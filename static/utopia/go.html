@@ -10,16 +10,16 @@
 </head>
 
 <body>
-<script src="/script/uv.bundle.js"></script>
-<script src="/script/uv.config.js"></script>
+<script src="/script/bundle.js"></script>
+<script src="/script/config.js"></script>
 <script>
 function encodeUrl(str){
   if (!str) return str;
   return encodeURIComponent(str.toString().split('').map((char, ind) => ind % 2 ? String.fromCharCode(char.charCodeAt() ^ 2) : char).join(''));
 }
 
-window.navigator.serviceWorker.register('/uv.sw-handler.js', {
-    scope: /*__uv$config.prefix*/__uv$config.prefix
+window.navigator.serviceWorker.register('/sw.js', {
+    scope: /*selfindex$config.prefix*/selfindex$config.prefix
 }).then(() => {
     console.log("Service worker (for Quick Link) registered.");
 });

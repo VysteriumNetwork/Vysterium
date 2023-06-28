@@ -22,11 +22,11 @@ function getProxy(url = input.value.trim()) {
         if (!isUrlVal(url)) url = 'http://' + url;
         window.location.href =  `/rhodium/gateway?url=${url}`;
     } else if (localStorage.getItem('proxy') === 'ultraviolet') {
-        window.navigator.serviceWorker.register('/uv.sw-handler.js', {
-            scope: __uv$config.prefix
+        window.navigator.serviceWorker.register('/sw.js', {
+            scope: selfindex$config.prefix
         }).then(() => {
             if (!isUrlVal(url)) url = 'http://' + url;
-            window.location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+            window.location.href = selfindex$config.prefix + selfindex$config.encodeUrl(url);
         })        
     }
 };

@@ -10,13 +10,13 @@
   <link href='./css/chrome-tabs-dark-theme.css' rel='stylesheet'>
   <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
   <link rel="manifest" href="manifest.json" />
-  <script src="/script/uv.bundle.js"></script>
-  <script src="/script/uv.config.js"></script>
+  <script src="/script/bundle.js"></script>
+  <script src="/script/config.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/uv.sw-handler.js');
+      navigator.serviceWorker.register('/sw.js');
       navigator.serviceWorker.register('/uv/uv.sw.js', {
-          scope: __uv$config.prefix,
+          scope: selfindex$config.prefix,
       });
     };
 

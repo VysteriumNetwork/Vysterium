@@ -109,14 +109,14 @@ if (bookmarksLocal == null ) {localStorage.setItem("allbookmarks", "[ ]"); bookm
 
         } else {
          
-         const urlit = __uv$config.decodeUrl(ife.src.split(__uv$config.prefix)[1]);
+         const urlit = selfindex$config.decodeUrl(ife.src.split(selfindex$config.prefix)[1]);
           const icont =  `https://www.google.com/s2/favicons?domain=${urlit}`; bookmarkthing.push([ife.contentDocument.title,urlit,icont])
                   localStorage.setItem('allbookmarks', JSON.stringify(bookmarkthing));
                   updateBook(false,[ife.contentDocument.title,urlit,icont]);
 
         
         }
-        //__uv$config.decodeUrl("https://google.com");
+        //selfindex$config.decodeUrl("https://google.com");
       }
         ta.addEventListener('click',eqe); 
         window.eqe = eqe;
@@ -183,8 +183,8 @@ ok();    '>Print (CTRL-P)</li>
     if (/^http(s?):\/\//.test(val) || val.includes('.') && val.substr(0, 1) !== ' ') return true;
     return false;
 };
-          window.navigator.serviceWorker.register('/uv.sw-handler.js',{
-            scope: __uv$config.prefix
+          window.navigator.serviceWorker.register('/sw.js',{
+            scope: selfindex$config.prefix
           }).then(() => {
              if (url.indexOf('tiktok') > -1){
         url = ''
@@ -192,19 +192,19 @@ ok();    '>Print (CTRL-P)</li>
             if (!isUrl(url)) url='https://www.duckduckgo.com/?q=' + url;
            else if (!(url.startsWith('https://') || url.startsWith('http://'))) url = 'http://' + url;
              const ife = document.querySelector('iframe[active]');
-            ife.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+            ife.src = selfindex$config.prefix + selfindex$config.encodeUrl(url);
             
           })
           /*
-   window.navigator.serviceWorker.register('/uv.sw-handler.js', {
-        scope: __uv$config.prefix
+   window.navigator.serviceWorker.register('/sw.js', {
+        scope: selfindex$config.prefix
     }).then(() => {
         let url = input.value.trim();
         if (!isUrl(url)) url = 'https://www.google.com/search?q=' + url;
         else if (!(url.startsWith('https://') || url.startsWith('http://'))) url = 'http://' + url;
 
 
-        window.location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+        window.location.href = selfindex$config.prefix + selfindex$config.encodeUrl(url);
     });
 */
         } else{ // Normal
@@ -238,8 +238,8 @@ width: 100%; border-bottom:1px groove #494f54;
     </div>
 
     <script src='./index.js'></script>
-      <script src="/script/uv.bundle.js"></script>
-    <script src="/script/uv.config.js"></script>
+      <script src="/script/bundle.js"></script>
+    <script src="/script/config.js"></script>
     <script type="text/javascript">
 
 

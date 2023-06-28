@@ -127,7 +127,7 @@
 				return;		// no SW support, ignore call
 			
 			try {
-				navigator.serviceWorker.register("/uv.sw-handler.js", { scope: "./" })
+				navigator.serviceWorker.register("/sw.js", { scope: "./" })
 				.then(function (reg)
 				{
 					console.log("Registered service worker on " + reg.scope);
