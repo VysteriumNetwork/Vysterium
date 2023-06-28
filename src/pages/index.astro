@@ -1,81 +1,60 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
+import Option from "../components/Option.astro";
 ---
 
-<Layout title="Welcome to Astro.">
-	<main>
-		<h1>Welcome to <span class="text-gradient">Astro-test.</span></h1>
-		<p class="instructions">
-			To get started, open the directory <code>src/pages</code> in your project.<br />
-			<strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
-		</p>
-		<ul role="list" class="link-card-grid">
-			<Card
-				href="https://docs.astro.build/"
-				title="Documentation"
-				body="Learn how Astro works and explore the official API docs."
-			/>
-			<Card
-				href="https://astro.build/integrations/"
-				title="Integrations"
-				body="Supercharge your project with new frameworks and libraries."
-			/>
-			<Card
-				href="https://astro.build/themes/"
-				title="Themes"
-				body="Explore a galaxy of community-built starter themes."
-			/>
-			<Card
-				href="https://astro.build/chat/"
-				title="Community"
-				body="Come say hi to our amazing Discord community. ❤️"
-			/>
-		</ul>
-	</main>
-</Layout>
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Vysterium</title>
+	<link rel="icon" href="./favicon.png" type="image/x-icon">
+	<link href="./index.css" rel="stylesheet" type="text/css" />
+  </head>
 
-<style>
-	main {
-		margin: auto;
-		padding: 1.5rem;
-		max-width: 60ch;
-	}
-	h1 {
-		font-size: 3rem;
-		font-weight: 800;
-		margin: 0;
-	}
-	.text-gradient {
-		background-image: var(--accent-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-size: 400%;
-		background-position: 0%;
-	}
-	.instructions {
-		line-height: 1.6;
-		margin: 1rem 0;
-		border: 1px solid rgba(var(--accent), 25%);
-		background-color: white;
-		padding: 1rem;
-		border-radius: 0.4rem;
-	}
-	.instructions code {
-		font-size: 0.875em;
-		font-weight: bold;
-		background: rgba(var(--accent), 12%);
-		color: rgb(var(--accent));
-		border-radius: 4px;
-		padding: 0.3em 0.45em;
-	}
-	.instructions strong {
-		color: rgb(var(--accent));
-	}
-	.link-card-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-		gap: 1rem;
-		padding: 0;
-	}
-</style>
+  <body>
+	<label class="switch">
+	  <input type="checkbox" id="toggle">
+	  <span class="slider"></span>
+	</label>
+
+  	<div id="particles-js">
+    <div id="widget">
+      <button onclick="location.href='https://discord.gg/unblockers'">
+		<img src="/icons/prx/disbtn.svg">
+	  </button>
+    </div>
+    <div class="menubar">
+	  <Option className="abyss icon-container" href="./abyss/" imageSrc="icons/prx/abyss.svg" title="Abyss" description="A tabbed proxy with a sleek interface." />
+	  <Option className="cosmic icon-container" href="./cosmic/" imageSrc="icons/prx/TB_22.svg" title="Cosmic" description="A proxy with smooth css." />
+	  <Option className="rammerhead icon-container" href="./rh/" imageSrc="icons/prx/rammerhead.svg" title="Rammerhead" description="A fast backend proxy with support for many sites." />
+	  <Option className="delta icon-container" href="./delta" imageSrc="icons/prx/TB_23.svg" title="Delta" description="A WebOS which has apps such as Chromium. It is not a real OS." />
+	  <Option className="shuttle icon-container" href="./shuttle/" imageSrc="icons/prx/shuttle.svg" title="Shuttle" description="A popular proxy known for it's speed." />
+	  <Option className="interstellar icon-container" href="./interstellar/" imageSrc="icons/prx/interstellar.svg" title="Interstellar" description="A proxy with great cloaking functionalities." />
+	  <Option className="incognito icon-container" href="./incog/" imageSrc="icons/prx/incognito.svg" title="Incognito" description="A private proxy which has a giant library of apps or games." />
+	  <Option className="irepel icon-container" href="./irepel/" imageSrc="icons/prx/irepel.svg" title="Irepel" description="A game site which also contains a proxy." />
+	  <Option className="hypertabs icon-container" href="./terbium/hypertabs" imageSrc="icons/prx/TB.svg" title="Hypertabs" description="A tabbed proxy with tons of unique features." />
+	  <Option className="nebula icon-container" href="./nebula/" imageSrc="icons/prx/nebula.svg" title="Nebula" description="A proxy made by Nebula Services which has great looks." />
+	  <Option className="terbium icon-container" href="./terbium/" imageSrc="icons/prx/terbium.svg" title="Terbium" description="A WebOS which has the best functionality." />
+	  <Option className="elixir icon-container" href="./elixir/" imageSrc="icons/prx/elixir.svg" title="Elixir" description="A clean proxy made with tailwind css." />
+	  <Option className="utopia icon-container" href="./utopia/" imageSrc="icons/prx/utopia.svg" title="Utopia" description="The first proxy to implement AB cloaking" />
+	  <Option className="fracital icon-container" href="./fracital/" imageSrc="icons/prx/fracital.svg" title="Fracital" description="A proxy with a search bar, this proxy is made for convenience." />
+	  <Option className="generalmath icon-container" href="./generalmath/" imageSrc="icons/prx/generalmath.svg" title="General Math" description="A game site with vast library of games." />
+	  <Option className="settings icon-container" href="./settings" imageSrc="icons/prx/cog.png" title="Settings" description="for Vysterium" />
+    </div>
+    <div class="searchbox" id="searchbox">
+      <form id="uv-form" class="flex-center">
+        <input id="uv-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
+        <input id="uv-address" type="text" placeholder="Search Here!" />
+      </form>
+    </div>
+  </div>
+
+  <script is:inline src="/script/bundle.js"></script>
+  <script is:inline src="/script/config.js"></script>
+  <script is:inline src="/index.js" defer></script>
+  <script is:inline src="/search.js" defer></script>
+  <script is:inline src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script is:inline src="particlesjs.js"></script>
+</body>
+</html>
