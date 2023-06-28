@@ -20,7 +20,6 @@
     "svelte-routing": "^1.10.0"
   },
   "dependencies": {
-    "@titaniumnetwork-dev/ultraviolet": "^1.0.11",
     "@tomphttp/bare-server-node": "^1.2.6",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
