@@ -1,7 +1,7 @@
 export const config = {
     dynamicbare: "true",
     cloak: "true",
-    password: "false",
+    password: "true",
     loginloc: "/login",
     users: {
         "verygood": "guesser",
