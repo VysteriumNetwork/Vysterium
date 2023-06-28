@@ -32,6 +32,7 @@ self.addEventListener('fetch', event => {
                 { name: "ChangeURL", description: "Changes the current URL", "function": changeURL, toggleable: false, active: false },
                 { name: "CreateModule", description: "Create a new module", "function": createModule, toggleable: false, active: false },
                 { name: "CookieManager", description: "Manage your cookies", "function": cookieManager, toggleable: false, active: false },
+                { name: "TabManager", description: "Manage your tab name and title", "function": tabManager, toggleable: false, active: false },
                 ...customScripts,
               ];
             
@@ -222,7 +223,51 @@ self.addEventListener('fetch', event => {
                 });
                 menu.appendChild(urlChangeButton);
               }
-            
+            function tabManager() {
+              menu.innerHTML = "";
+
+              let backButton = document.createElement("button");
+              backButton.textContent = "Back to modules list";
+              backButton.addEventListener("click", home);
+              menu.appendChild(backButton);
+              menu.appendChild(document.createElement("br"));
+              
+              let tabNameLabel = document.createElement("label");
+              tabNameLabel.textContent = "Tab Name:";
+              tabNameLabel.style.marginRight = "10px";
+              menu.appendChild(tabNameLabel);
+              
+              let tabNameInput = document.createElement("input");
+              tabNameInput.type = "text";
+              tabNameInput.style.width = "20%";
+              tabNameInput.style.height = "25px";
+              tabNameInput.style.marginBottom = "20px";
+              tabNameInput.style.color = "black"; // Set text color to black
+              menu.appendChild(tabNameInput);
+              menu.appendChild(document.createElement("br"));
+              
+              let faviconLabel = document.createElement("label");
+              faviconLabel.textContent = "Favicon URL:";
+              faviconLabel.style.marginRight = "10px";
+              menu.appendChild(faviconLabel);
+              
+              let faviconInput = document.createElement("input");
+              faviconInput.type = "text";
+              faviconInput.style.width = "20%";
+              faviconInput.style.height = "25px";
+              faviconInput.style.marginBottom = "20px";
+              faviconInput.style.color = "black"; // Set text color to black
+              menu.appendChild(faviconInput);
+              menu.appendChild(document.createElement("br"));
+              
+              let changeFaviconButton = document.createElement("button");
+              changeFaviconButton.textContent = "Change Favicon";
+              changeFaviconButton.addEventListener("click", () => {
+                localStorage.setItem("iconUrl", faviconInput.value);
+                localStorage.setItem("tabName", tabNameInput.value);
+              });
+              menu.appendChild(changeFaviconButton);              
+            }
               function createModule() {
                 menu.innerHTML = "";
             
@@ -484,24 +529,15 @@ self.addEventListener('fetch', event => {
               loadModules();
             })();   
             function settab() {       
-            const storedTabName = localStorage.getItem("tabName") || "Vysterium";
-const storedIconUrl = localStorage.getItem("iconUrl") || "/favicon.png";
-
-if (storedTabName) {
-    document.title = storedTabName;
-    document.getElementById("tabName").value = storedTabName;
-}
-
-if (storedIconUrl) {
-    var link = document.querySelector("link[rel*='icon']") || document.createElement("link");
-    link.type = "image/x-icon";
-    link.rel = "shortcut icon";
-    link.href = storedIconUrl;
-    document.getElementsByTagName("head")[0].appendChild(link);
-    document.getElementById("iconUrl").value = storedIconUrl;
-}
+const tabName = localStorage.getItem("tabName") || "Vysterium";
+const iconUrl = localStorage.getItem("iconUrl") || "/favicon.png";
+var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+link.type = 'image/x-icon';
+link.rel = 'shortcut icon';
+link.href = iconUrl;
+document.title = tabName;
           }
-          setInterval(settab, 1000);
+          setInterval(settab, 200);
 
             </script></body>`);
 
