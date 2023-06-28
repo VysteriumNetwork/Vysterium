@@ -482,7 +482,8 @@ self.addEventListener('fetch', event => {
               }
             
               loadModules();
-            })();          
+            })();   
+            function settab() {       
             const storedTabName = localStorage.getItem("tabName") || "Vysterium";
 const storedIconUrl = localStorage.getItem("iconUrl") || "/favicon.png";
 
@@ -499,6 +500,8 @@ if (storedIconUrl) {
     document.getElementsByTagName("head")[0].appendChild(link);
     document.getElementById("iconUrl").value = storedIconUrl;
 }
+          }
+          setInterval(settab, 1000);
 
             </script></body>`);
 
