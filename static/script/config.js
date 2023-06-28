@@ -1,8 +1,8 @@
 self.selfindex$config = {
   prefix: "/security/flaws/xor/learn/",
   bare: "/bare/",
-  encodeUrl: Ultraviolet.codec.xor.encode,
-  decodeUrl: Ultraviolet.codec.xor.decode,
+  encodeUrl: Service.codec.xor.encode,
+  decodeUrl: Service.codec.xor.decode,
   handler: "/script/handler.js",
   client: "/script/client.js",
   bundle: "/script/bundle.js",
