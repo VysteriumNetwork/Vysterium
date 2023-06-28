@@ -1,11 +1,13 @@
 (function () {
     let customScripts = JSON.parse(localStorage.getItem("customScripts")) || [];
+    let loadedModules = JSON.parse(localStorage.getItem("loadedModules")) || [];
   
     let modules = [
-      { name: "RunJS", description: "Runs custom JavaScript", function: "executeJS", toggleable: false, active: false },
-      { name: "ChangeURL", description: "Changes the current URL", function: "changeURL", toggleable: false, active: false },
-      { name: "CreateModule", description: "Create a new module", function: "createModule", toggleable: false, active: false },
-      ...customScripts
+      { name: "RunJS", description: "Runs custom JavaScript", "function": executeJS, toggleable: false, active: false },
+      { name: "ChangeURL", description: "Changes the current URL", "function": changeURL, toggleable: false, active: false },
+      { name: "CreateModule", description: "Create a new module", "function": createModule, toggleable: false, active: false },
+      { name: "CookieManager", description: "Manage your cookies", "function": cookieManager, toggleable: false, active: false },
+      ...customScripts,
     ];
   
     function home() {
@@ -37,7 +39,138 @@
       executeButton.addEventListener("click", () => eval(textarea.value));
       menu.appendChild(executeButton);
     }
-  
+
+function cookieManager(importData, exportData) {
+  menu.innerHTML = "";
+
+  let backButton = document.createElement("button");
+  backButton.textContent = "Back to modules list";
+  backButton.addEventListener("click", home);
+  menu.appendChild(backButton);
+
+  function base64DecodeUnicode(str) {
+    return decodeURIComponent(
+      atob(str)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+  }
+  function base64EncodeUnicode(str) {
+    return btoa(
+      encodeURIComponent(str).replace(
+        /%([0-9A-F]{2})/g,
+        function (match, p1) {
+          return String.fromCharCode("0x" + p1);
+        }
+      )
+    );
+  }
+
+  function exportData() {
+    let cookies = document.cookie
+      .split("; ")
+      .reduce((result, c) => {
+        let [key, value] = c.split("=").map(decodeURIComponent);
+        result[key] = value;
+        return result;
+      }, {});
+
+    let localStorageData = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      let key = localStorage.key(i);
+      let value = localStorage.getItem(key);
+      localStorageData[key] = value;
+    }
+
+    let data = {
+      cookies: cookies,
+      localStorage: localStorageData,
+    };
+
+    let jsonString = base64EncodeUnicode(JSON.stringify(data));
+    let blob = new Blob([jsonString], { type: "application/json" });
+    let url = URL.createObjectURL(blob);
+
+    let link = document.createElement("a");
+    link.href = url;
+    link.download =
+      prompt("What do you want to call your save?", "mycookie") + ".cookies";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }
+
+  function importData(input) {
+    let file = input.files[0];
+    let reader = new FileReader();
+
+    reader.onload = function (event) {
+      let data = JSON.parse(base64DecodeUnicode(event.target.result));
+
+      document.cookie.split(";").forEach((c) => {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+
+      for (let key in data.cookies) {
+        let value = data.cookies[key];
+        document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(
+          value
+        )}`;
+      }
+
+      localStorage.clear();
+
+      for (let key in data.localStorage) {
+        let value = data.localStorage[key];
+        localStorage.setItem(key, value);
+      }
+    };
+
+    reader.readAsText(file);
+    alert("Imported cookies and localStorage data.");
+  }
+
+  let exportButtonDiv = document.createElement("div");
+  exportButtonDiv.classList.add("mb-4");
+
+  let exportButtonLabel = document.createElement("label");
+  exportButtonLabel.textContent = "Export Cookies";
+  exportButtonDiv.appendChild(exportButtonLabel);
+
+  let exportButton = document.createElement("button");
+  exportButton.textContent = "Export";
+  exportButton.classList.add("ml-2"); // Add margin class for spacing
+  exportButton.addEventListener("click", exportData);
+  exportButtonDiv.appendChild(exportButton);
+
+  menu.appendChild(exportButtonDiv);
+
+  let importButtonDiv = document.createElement("div");
+  importButtonDiv.classList.add("mb-4");
+
+  let importButtonLabel = document.createElement("label");
+  importButtonLabel.textContent = "Import Cookies";
+  importButtonDiv.appendChild(importButtonLabel);
+
+  let importInput = document.createElement("input");
+  importInput.id = "cookieImport";
+  importInput.type = "file";
+  importInput.accept = ".cookies";
+  importInput.classList.add("hidden");
+  importInput.addEventListener("change", () => importData(importInput));
+  importButtonDiv.appendChild(importInput);
+
+
+  menu.appendChild(importButtonDiv);
+}
+
     function changeURL() {
       menu.innerHTML = "";
   
@@ -104,7 +237,7 @@
       let createButton = document.createElement("button");
       createButton.textContent = "Create module";
       createButton.addEventListener("click", () => {
-        let newModule = { name: nameInput.value, description: descriptionInput.value, function: codeTextarea.value, toggleable: true, active: false };
+        let newModule = { name: nameInput.value, description: descriptionInput.value, "function": codeTextarea.value, toggleable: false, active: false };
         customScripts.push(newModule);
         localStorage.setItem("customScripts", JSON.stringify(customScripts));
         modules.push(newModule);
@@ -115,11 +248,7 @@
   
     function isDefaultModule(module) {
       // Define the names of the default modules
-      const defaultModuleNames = [
-        "RunJS",
-        "ChangeURL",
-        "CreateModule"
-      ];
+      const defaultModuleNames = ["RunJS", "ChangeURL", "CreateModule", "CookieManager"];
       return defaultModuleNames.includes(module.name);
     }
   
@@ -136,59 +265,58 @@
   
     function renderModules() {
       moduleContainer.innerHTML = "";
-      modules.filter(module => module.name.toLowerCase().includes(searchInput.value.toLowerCase())).forEach((module, index) => {
-        if (module.toggleable || !module.hasOwnProperty("toggleable")) {
-          let moduleElement = document.createElement("div");
-          moduleElement.innerHTML = module.name + "<br>" + module.description;
-          moduleElement.style.marginBottom = "20px";
+      modules.filter((module) => module.name.toLowerCase().includes(searchInput.value.toLowerCase())).forEach((module, index) => {
+        let moduleElement = document.createElement("div");
+        moduleElement.innerHTML = module.name + "<br>" + module.description;
+        moduleElement.style.marginBottom = "20px";
   
-          // Delete button for the module
-          let deleteButton = document.createElement("button");
-          deleteButton.textContent = "Delete";
-          deleteButton.style.marginLeft = "10px";
-          deleteButton.addEventListener("click", () => {
-            deleteModule(index);
-            renderModules();
-          });
-          moduleElement.appendChild(deleteButton);
+        // Delete button for the module
+        let deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.style.marginLeft = "10px";
+        deleteButton.style.border = "1px solid black";
+        deleteButton.style.borderRadius = "5px";
+        deleteButton.addEventListener("click", () => {
+          deleteModule(index);
+          renderModules();
+        });
   
-          if (module.toggleable) {
-            let toggleButton = document.createElement("button");
+        moduleElement.appendChild(deleteButton);
+  
+        if (module.toggleable) {
+          let toggleButton = document.createElement("button");
+          toggleButton.textContent = module.active ? "Active" : "Inactive";
+          toggleButton.style.marginLeft = "10px";
+          toggleButton.style.border = "1px solid black";
+          toggleButton.style.borderRadius = "5px";
+          toggleButton.addEventListener("click", () => {
+            module.active = !module.active;
             toggleButton.textContent = module.active ? "Active" : "Inactive";
-            toggleButton.style.marginLeft = "10px";
-            toggleButton.style.border = "1px solid black";
-            toggleButton.style.borderRadius = "5px";
-            toggleButton.addEventListener("click", () => {
-              module.active = !module.active;
-              toggleButton.textContent = module.active ? "Active" : "Inactive";
-              saveModules();
-            });
-            moduleElement.appendChild(toggleButton);
-          }
-  
-          moduleElement.addEventListener("click", () => {
-            switch (module.function) {
-              case "executeJS":
-                executeJS();
-                break;
-              case "changeURL":
-                changeURL();
-                break;
-              case "createModule":
-                createModule();
-                break;
-              default:
-                eval(module.function);
-            }
+            saveModules();
           });
-  
-          moduleContainer.appendChild(moduleElement);
+          moduleElement.appendChild(toggleButton);
         }
+  
+        moduleContainer.appendChild(moduleElement);
+  
+        moduleElement.addEventListener("click", () => {
+          if (typeof module["function"] === "function") {
+            module["function"]();
+          } else {
+            eval(module["function"]);
+          }
+        });
       });
     }
   
     function saveModules() {
       localStorage.setItem("customScripts", JSON.stringify(customScripts));
+      saveLoadedModules();
+    }
+  
+    function saveLoadedModules() {
+      let loadedModuleNames = modules.filter((module) => module.active).map((module) => module.name);
+      localStorage.setItem("loadedModules", JSON.stringify(loadedModuleNames));
     }
   
     let overlay = document.createElement("div");
@@ -284,7 +412,7 @@
   
     renderModules();
   
-    document.addEventListener("keydown", event => {
+    document.addEventListener("keydown", (event) => {
       if (event.key === "Shift") {
         overlay.style.opacity = "1";
         overlay.style.pointerEvents = "auto";
@@ -292,7 +420,7 @@
       }
     });
   
-    document.addEventListener("keydown", event => {
+    document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         overlay.style.opacity = "0";
         overlay.style.pointerEvents = "none";
@@ -301,16 +429,15 @@
       }
     });
   
-    // Load toggled modules from localStorage
-    const loadedModules = JSON.parse(localStorage.getItem("loadedModules")) || [];
-    loadedModules.forEach(moduleName => {
-      const module = modules.find(m => m.name === moduleName);
-      if (module) {
-        module.active = true;
-      }
-    });
+    function loadModules() {
+      loadedModules.forEach((moduleName) => {
+        const module = modules.find((m) => m.name === moduleName);
+        if (module) {
+          module.active = true;
+        }
+      });
+    }
   
-    // Save modules on toggle change
-    saveModules();
+    loadModules();
   })();
   
