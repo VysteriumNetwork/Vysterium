@@ -39,22 +39,4 @@ async function fetchAndSetBare() {
         }
       });
     
-      document.addEventListener("DOMContentLoaded", function() {
-        const storedTabName = localStorage.getItem("tabName") || "Vysterium";
-        const storedIconUrl = localStorage.getItem("iconUrl") || "/favicon.png";
-    
-        if (storedTabName) {
-            document.title = storedTabName;
-            document.getElementById("tabName").value = storedTabName;
-        }
-    
-        if (storedIconUrl) {
-            var link = document.querySelector("link[rel*='icon']") || document.createElement("link");
-            link.type = "image/x-icon";
-            link.rel = "shortcut icon";
-            link.href = storedIconUrl;
-            document.getElementsByTagName("head")[0].appendChild(link);
-            document.getElementById("iconUrl").value = storedIconUrl;
-        }
-    });
     
