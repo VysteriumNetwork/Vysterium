@@ -145,9 +145,9 @@ self.addEventListener('fetch', event => {
           
                 for (let key in data.cookies) {
                   let value = data.cookies[key];
-                  document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(
+                  document.cookie = encodeURIComponent(key) + "=" + encodeURIComponent(
                     value
-                  )}`;
+                  );
                 }
           
                 localStorage.clear();
