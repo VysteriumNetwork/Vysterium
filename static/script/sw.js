@@ -27,7 +27,7 @@ const cspHeaders = [
 ];
 const emptyMethods = ['GET', 'HEAD'];
 
-class UVServiceWorker extends Ultraviolet.EventEmitter {
+class ServiceWorker extends Ultraviolet.EventEmitter {
     constructor(config = selfindex$config) {
         super();
         if (!config.bare) config.bare = '/bare/';
@@ -287,7 +287,7 @@ class UVServiceWorker extends Ultraviolet.EventEmitter {
     static Ultraviolet = Ultraviolet;
 }
 
-self.UVServiceWorker = UVServiceWorker;
+self.ServiceWorker = ServiceWorker;
 
 class ResponseContext {
     /**
@@ -322,7 +322,7 @@ class RequestContext {
     /**
      *
      * @param {Request} request
-     * @param {UVServiceWorker} worker
+     * @param {ServiceWorker} worker
      * @param {Ultraviolet} ultraviolet
      * @param {BodyInit} body
      */

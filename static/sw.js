@@ -2,7 +2,7 @@ importScripts('/script/bundle.js');
 importScripts("/script/sw.js");
 importScripts("/script/config.js");
 
-let sw = new UVServiceWorker();
+let sw = new ServiceWorker();
 let bareReady = fetchAndSetBare();
 sw.on("request", (event) => {
   event.data.headers["user-agent"] =
