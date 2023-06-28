@@ -3,9 +3,9 @@
 // This is to allow us to produce a generic bundle with no hard-coded paths.
 
 /**
- * @type {import('../uv').ServiceCtor}
+ * @type {import('../uv').UltravioletCtor}
  */
-const Service = self.Service;
+const Ultraviolet = self.Ultraviolet;
 
 const cspHeaders = [
     'cross-origin-embedder-policy',
@@ -27,7 +27,7 @@ const cspHeaders = [
 ];
 const emptyMethods = ['GET', 'HEAD'];
 
-class ServiceWorker extends Service.EventEmitter {
+class ServiceWorker extends Ultraviolet.EventEmitter {
     constructor(config = selfindex$config) {
         super();
         if (!config.bare) config.bare = '/bare/';
@@ -38,9 +38,9 @@ class ServiceWorker extends Service.EventEmitter {
         ).map((str) => new URL(str, location).toString());
         this.address = addresses[~~(Math.random() * addresses.length)];
         /**
-         * @type {InstanceType<Service['BareClient']>}
+         * @type {InstanceType<Ultraviolet['BareClient']>}
          */
-        this.bareClient = new Service.BareClient(this.address);
+        this.bareClient = new Ultraviolet.BareClient(this.address);
     }
     /**
      *
@@ -57,29 +57,29 @@ class ServiceWorker extends Service.EventEmitter {
             if (!request.url.startsWith(location.origin + this.config.prefix))
                 return await fetch(request);
 
-            const Service = new Service(this.config, this.address);
+            const ultraviolet = new Ultraviolet(this.config, this.address);
 
             if (typeof this.config.construct === 'function') {
-                this.config.construct(Service, 'service');
+                this.config.construct(ultraviolet, 'service');
             }
 
-            const db = await Service.cookie.db();
+            const db = await ultraviolet.cookie.db();
 
-            Service.meta.origin = location.origin;
-            Service.meta.base = Service.meta.url = new URL(
-                Service.sourceUrl(request.url)
+            ultraviolet.meta.origin = location.origin;
+            ultraviolet.meta.base = ultraviolet.meta.url = new URL(
+                ultraviolet.sourceUrl(request.url)
             );
 
             const requestCtx = new RequestContext(
                 request,
                 this,
-                Service,
+                ultraviolet,
                 !emptyMethods.includes(request.method.toUpperCase())
                     ? await request.blob()
                     : null
             );
 
-            if (Service.meta.url.protocol === 'blob:') {
+            if (ultraviolet.meta.url.protocol === 'blob:') {
                 requestCtx.blob = true;
                 requestCtx.base = requestCtx.url = new URL(
                     requestCtx.url.pathname
@@ -91,12 +91,12 @@ class ServiceWorker extends Service.EventEmitter {
                 request.referrer.startsWith(location.origin)
             ) {
                 const referer = new URL(
-                    Service.sourceUrl(request.referrer)
+                    ultraviolet.sourceUrl(request.referrer)
                 );
 
                 if (
                     requestCtx.headers.origin ||
-                    (Service.meta.url.origin !== referer.origin &&
+                    (ultraviolet.meta.url.origin !== referer.origin &&
                         request.mode === 'cors')
                 ) {
                     requestCtx.headers.origin = referer.origin;
@@ -105,10 +105,10 @@ class ServiceWorker extends Service.EventEmitter {
                 requestCtx.headers.referer = referer.href;
             }
 
-            const cookies = (await Service.cookie.getCookies(db)) || [];
-            const cookieStr = Service.cookie.serialize(
+            const cookies = (await ultraviolet.cookie.getCookies(db)) || [];
+            const cookieStr = ultraviolet.cookie.serialize(
                 cookies,
-                Service.meta,
+                ultraviolet.meta,
                 false
             );
 
@@ -149,7 +149,7 @@ class ServiceWorker extends Service.EventEmitter {
             }
 
             if (responseCtx.headers.location) {
-                responseCtx.headers.location = Service.rewriteUrl(
+                responseCtx.headers.location = ultraviolet.rewriteUrl(
                     responseCtx.headers.location
                 );
             }
@@ -179,17 +179,17 @@ class ServiceWorker extends Service.EventEmitter {
 
             if (responseCtx.headers['set-cookie']) {
                 Promise.resolve(
-                    Service.cookie.setCookies(
+                    ultraviolet.cookie.setCookies(
                         responseCtx.headers['set-cookie'],
                         db,
-                        Service.meta
+                        ultraviolet.meta
                     )
                 ).then(() => {
                     self.clients.matchAll().then(function (clients) {
                         clients.forEach(function (client) {
                             client.postMessage({
                                 msg: 'updateCookies',
-                                url: Service.meta.url.href,
+                                url: ultraviolet.meta.url.href,
                             });
                         });
                     });
@@ -204,30 +204,30 @@ class ServiceWorker extends Service.EventEmitter {
                         {
                             // craft a JS-safe list of arguments
                             const scripts = [
-                                Service.bundleScript,
-                                Service.clientScript,
-                                Service.configScript,
-                                Service.handlerScript,
+                                ultraviolet.bundleScript,
+                                ultraviolet.clientScript,
+                                ultraviolet.configScript,
+                                ultraviolet.handlerScript,
                             ]
                                 .map((script) => JSON.stringify(script))
                                 .join(',');
-                            responseCtx.body = `if (!self.selfindex && self.importScripts) { ${Service.createJsInject(
+                            responseCtx.body = `if (!self.selfindex && self.importScripts) { ${ultraviolet.createJsInject(
                                 this.address,
                                 this.bareClient.data,
-                                Service.cookie.serialize(
+                                ultraviolet.cookie.serialize(
                                     cookies,
-                                    Service.meta,
+                                    ultraviolet.meta,
                                     true
                                 ),
                                 request.referrer
                             )} importScripts(${scripts}); }\n`;
-                            responseCtx.body += Service.js.rewrite(
+                            responseCtx.body += ultraviolet.js.rewrite(
                                 await response.text()
                             );
                         }
                         break;
                     case 'style':
-                        responseCtx.body = Service.rewriteCSS(
+                        responseCtx.body = ultraviolet.rewriteCSS(
                             await response.text()
                         );
                         break;
@@ -235,24 +235,24 @@ class ServiceWorker extends Service.EventEmitter {
                     case 'document':
                         if (
                             isHtml(
-                                Service.meta.url,
+                                ultraviolet.meta.url,
                                 responseCtx.headers['content-type'] || ''
                             )
                         ) {
-                            responseCtx.body = Service.rewriteHtml(
+                            responseCtx.body = ultraviolet.rewriteHtml(
                                 await response.text(),
                                 {
                                     document: true,
-                                    injectHead: Service.createHtmlInject(
-                                        Service.handlerScript,
-                                        Service.bundleScript,
-                                        Service.clientScript,
-                                        Service.configScript,
+                                    injectHead: ultraviolet.createHtmlInject(
+                                        ultraviolet.handlerScript,
+                                        ultraviolet.bundleScript,
+                                        ultraviolet.clientScript,
+                                        ultraviolet.configScript,
                                         this.address,
                                         this.bareClient.data,
-                                        Service.cookie.serialize(
+                                        ultraviolet.cookie.serialize(
                                             cookies,
-                                            Service.meta,
+                                            ultraviolet.meta,
                                             true
                                         ),
                                         request.referrer
@@ -284,7 +284,7 @@ class ServiceWorker extends Service.EventEmitter {
             return renderError(err, fetchedURL, this.address);
         }
     }
-    static Service = Service;
+    static Ultraviolet = Ultraviolet;
 }
 
 self.ServiceWorker = ServiceWorker;
@@ -298,7 +298,7 @@ class ResponseContext {
     constructor(request, response) {
         this.request = request;
         this.raw = response;
-        this.Service = request.Service;
+        this.ultraviolet = request.ultraviolet;
         this.headers = {};
         // eg set-cookie
         for (const key in response.rawHeaders)
@@ -323,11 +323,11 @@ class RequestContext {
      *
      * @param {Request} request
      * @param {ServiceWorker} worker
-     * @param {Service} Service
+     * @param {Ultraviolet} ultraviolet
      * @param {BodyInit} body
      */
-    constructor(request, worker, Service, body = null) {
-        this.Service = Service;
+    constructor(request, worker, ultraviolet, body = null) {
+        this.ultraviolet = ultraviolet;
         this.request = request;
         this.headers = Object.fromEntries(request.headers.entries());
         this.method = request.method;
@@ -340,23 +340,23 @@ class RequestContext {
         this.blob = false;
     }
     get url() {
-        return this.Service.meta.url;
+        return this.ultraviolet.meta.url;
     }
     set url(val) {
-        this.Service.meta.url = val;
+        this.ultraviolet.meta.url = val;
     }
     get base() {
-        return this.Service.meta.base;
+        return this.ultraviolet.meta.base;
     }
     set base(val) {
-        this.Service.meta.base = val;
+        this.ultraviolet.meta.base = val;
     }
 }
 
 function isHtml(url, contentType = '') {
     return (
         (
-            Service.mime.contentType(contentType || url.pathname) ||
+            Ultraviolet.mime.contentType(contentType || url.pathname) ||
             'text/html'
         ).split(';')[0] === 'text/html'
     );
@@ -400,7 +400,7 @@ function hostnameErrorTemplate(fetchedURL, bareServer) {
         `uvHostname.textContent = ${JSON.stringify(location.hostname)};` +
         `reload.addEventListener("click", () => location.reload());` +
         `uvVersion.textContent = ${JSON.stringify(
-            process.env.Service_VERSION
+            process.env.ULTRAVIOLET_VERSION
         )};`;
 
     return (
@@ -423,7 +423,7 @@ function hostnameErrorTemplate(fetchedURL, bareServer) {
         '</ul>' +
         '<button id="reload">Reload</button>' +
         '<hr />' +
-        '<p><i>Service v<span id="uvVersion"></span></i></p>' +
+        '<p><i>Ultraviolet v<span id="uvVersion"></span></i></p>' +
         `<script src="${
             'data:application/javascript,' + encodeURIComponent(script)
         }"></script>` +
@@ -458,46 +458,62 @@ function errorTemplate(
 
     // turn script into a data URI so we don't have to escape any HTML values
     const script =
-    `errorTitle.textContent = ${JSON.stringify(title)};` +
-    `errorCode.textContent = ${JSON.stringify(code)};` +
-    (id ? `errorId.textContent = ${JSON.stringify(id)};` : '') +
-    `errorMessage.textContent =  ${JSON.stringify(message)};` +
-    `errorTrace.value = ${JSON.stringify(trace)};` +
-    `fetchedURL.textContent = ${JSON.stringify(fetchedURL)};` +
-    `bareServer.href = ${JSON.stringify(bareServer)};` +
-    `for (const node of document.querySelectorAll("#uvHostname")) node.textContent = ${JSON.stringify(
-        location.hostname
-    )};` +
-    `reload.addEventListener("click", () => location.reload());` +
-    `uvVersion.textContent = ${JSON.stringify(
-        process.env.Service_VERSION
-    )};`;
+        `errorTitle.textContent = ${JSON.stringify(title)};` +
+        `errorCode.textContent = ${JSON.stringify(code)};` +
+        (id ? `errorId.textContent = ${JSON.stringify(id)};` : '') +
+        `errorMessage.textContent =  ${JSON.stringify(message)};` +
+        `errorTrace.value = ${JSON.stringify(trace)};` +
+        `fetchedURL.textContent = ${JSON.stringify(fetchedURL)};` +
+        `bareServer.href = ${JSON.stringify(bareServer)};` +
+        `for (const node of document.querySelectorAll("#uvHostname")) node.textContent = ${JSON.stringify(
+            location.hostname
+        )};` +
+        `reload.addEventListener("click", () => location.reload());` +
+        `uvVersion.textContent = ${JSON.stringify(
+            process.env.ULTRAVIOLET_VERSION
+        )};`;
 
-return `
-<html>
-  <center>
-    <div style="margin-top: 20px;">
-      <h2 style="font-size: 24px;">The service worker was not properly registered. Please go back to the home page.</h2>
-      <button id="registerSWButton" style="padding: 10px 20px; font-size: 16px;">Register Service Worker</button>
-    </div>
-    <script>
-      if ("serviceWorker" in navigator) {
-        const registerSWButton = document.getElementById("registerSWButton");
-        registerSWButton.addEventListener("click", async () => {
-          try {
-            const registration = await navigator.serviceWorker.register("/sw.js");
-            console.log("Service Worker registered:", registration);
-          } catch (error) {
-            console.error("Failed to register Service Worker:", error);
-          }
-        });
-      } else {
-        console.log("Service Worker is not supported.");
-      }
-    </script>
-  </center>
-</html>`;
-    }
+    return (
+        '<!DOCTYPE html>' +
+        '<html>' +
+        '<head>' +
+        "<meta charset='utf-8' />" +
+        '<title>Error</title>' +
+        '</head>' +
+        '<body>' +
+        "<h1 id='errorTitle'></h1>" +
+        '<hr />' +
+        '<p>Failed to load <b id="fetchedURL"></b></p>' +
+        '<p id="errorMessage"></p>' +
+        '<table><tbody>' +
+        '<tr><td>Code:</td><td id="errorCode"></td></tr>' +
+        (id ? '<tr><td>ID:</td><td id="errorId"></td></tr>' : '') +
+        '</tbody></table>' +
+        '<textarea id="errorTrace" cols="40" rows="10" readonly></textarea>' +
+        '<p>Try:</p>' +
+        '<ul>' +
+        '<li>Checking your internet connection</li>' +
+        '<li>Verifying you entered the correct address</li>' +
+        '<li>Clearing the site data</li>' +
+        '<li>Contacting <b id="uvHostname"></b>\'s administrator</li>' +
+        "<li>Verify the <a id='bareServer' title='Bare server'>Bare server</a> isn't censored</li>" +
+        '</ul>' +
+        '<p>If you\'re the administrator of <b id="uvHostname"></b>, try:</p>' +
+        '<ul>' +
+        '<li>Restarting your Bare server</li>' +
+        '<li>Updating Ultraviolet</li>' +
+        '<li>Troubleshooting the error on the <a href="https://github.com/titaniumnetwork-dev/Ultraviolet" target="_blank">GitHub repository</a></li>' +
+        '</ul>' +
+        '<button id="reload">Reload</button>' +
+        '<hr />' +
+        '<p><i>Ultraviolet v<span id="uvVersion"></span></i></p>' +
+        `<script src="${
+            'data:application/javascript,' + encodeURIComponent(script)
+        }"></script>` +
+        '</body>' +
+        '</html>'
+    );
+}
 
 /**
  * @typedef {import("@tomphttp/bare-client").BareError} BareError

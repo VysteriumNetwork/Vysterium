@@ -1,8 +1,8 @@
 self.selfindex$config = {
   prefix: "/security/flaws/xor/learn/",
   bare: "/bare/",
-  encodeUrl: Service.codec.xor.encode,
-  decodeUrl: Service.codec.xor.decode,
+  encodeUrl: Ultraviolet.codec.xor.encode,
+  decodeUrl: Ultraviolet.codec.xor.decode,
   handler: "/script/handler.js",
   client: "/script/client.js",
   bundle: "/script/bundle.js",
@@ -50,4 +50,3 @@ fetch(`${location.origin}${globals.injectScriptUrl}`, {cache: "no-store"})
       setInterval(generate, 500);
     }
   });
-
