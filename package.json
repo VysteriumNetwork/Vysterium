@@ -1,35 +1,15 @@
 {
-  "name": "Vysterium",
-  "version": "1.0.0",
-  "description": "Vysterium proxy.",
+  "name": "vysterium-astro",
   "type": "module",
+  "version": "0.0.1",
   "scripts": {
-    "start": "node src/index.js"
-  },
-  "files": [
-    "static",
-    "src",
-    "ssl",
-    ".gitignore",
-    "app.json"
-  ],
-  "author": "",
-  "license": "GPL-3.0-or-later",
-  "devDependencies": {
-    "svelte": "^3.55.1",
-    "svelte-routing": "^1.10.0"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "dependencies": {
-    "@tomphttp/bare-server-node": "^1.2.6",
-    "express": "^4.18.2",
-    "express-session": "^1.17.3",
-    "fs": "^0.0.1-security",
-    "rammerhead": "https://github.com/VysteriumNetwork/rammerhead/releases/download/newrh/rammerhead.tgz",
-    "serve-static": "^1.15.0",
-    "tailwindcss": "^3.3.2"
-  },
-  "engines": {
-    "npm": ">=8.0.0",
-    "node": ">=17 <18"
+    "astro": "^2.7.0"
   }
 }
