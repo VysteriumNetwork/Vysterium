@@ -16,7 +16,7 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 50% 50%;
-  z-index: -1;
+  z-index: -2;
 }
 #particles-js canvas {
   position: absolute;
@@ -46,12 +46,13 @@
   text-align: center;
   white-space: nowrap;
   transition: opacity 1.0s ease;
-  z-index: 1;
+  z-index: -1; /* Update z-index to send it behind the icon */
 }
 
 .icon-container:hover .icon-description {
   opacity: 1;
 }
+
 body {
   --s:67px;
   --m:4px; 

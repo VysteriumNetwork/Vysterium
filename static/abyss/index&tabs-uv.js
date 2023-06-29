@@ -19,7 +19,7 @@ function go(value) {
   let iframe = document.querySelector(".iframe.active");
   window.navigator.serviceWorker
     .register("/sw.js", {
-      scope: selfindex$config.prefix,
+      scope: indexing$config.prefix,
     })
     .then(() => {
       let url = value.trim();
@@ -27,14 +27,14 @@ function go(value) {
       else if (!(url.startsWith("https://") || url.startsWith("http://")))
         url = "https://" + url;
       iframe.style.display = "block"
-      iframe.src = selfindex$config.prefix + selfindex$config.encodeUrl(url);
-      //var iframeurl = selfindex$config.decodeUrl(iframe.src)
-      var iframeurl = iframe.src.substring(iframe.src.indexOf(selfindex$config.prefix) + 9);
-      //document.querySelector("#urlbartop input").value = iframeurl.substring(iframeurl.indexOf(selfindex$config.prefix) + 0);
-      document.querySelector("#urlbartop input").value = selfindex$config.decodeUrl(iframeurl)
+      iframe.src = indexing$config.prefix + indexing$config.encodeUrl(url);
+      //var iframeurl = indexing$config.decodeUrl(iframe.src)
+      var iframeurl = iframe.src.substring(iframe.src.indexOf(indexing$config.prefix) + 9);
+      //document.querySelector("#urlbartop input").value = iframeurl.substring(iframeurl.indexOf(indexing$config.prefix) + 0);
+      document.querySelector("#urlbartop input").value = indexing$config.decodeUrl(iframeurl)
 
-      //getIframeFavicon(iframeurl.substring(iframeurl.indexOf(selfindex$config.prefix) + 0))
-      getIframeFavicon(selfindex$config.decodeUrl(iframeurl))
+      //getIframeFavicon(iframeurl.substring(iframeurl.indexOf(indexing$config.prefix) + 0))
+      getIframeFavicon(indexing$config.decodeUrl(iframeurl))
     });
 }
 
@@ -113,7 +113,7 @@ function openTab(tabNumber) {
   iframe.classList.add("active");
   iframe.style.zIndex = zIndex
   zIndex = zIndex + 2
-  var url = selfindex$config.decodeUrl(iframe.src)
+  var url = indexing$config.decodeUrl(iframe.src)
   document.querySelector("#urlbartop input").value = url.substring(url.indexOf("https://") + 0);
   var tabs = document.querySelectorAll(".tab");
   tabs.forEach(elmnt => elmnt.className = "tab");

@@ -109,14 +109,14 @@ if (bookmarksLocal == null ) {localStorage.setItem("allbookmarks", "[ ]"); bookm
 
         } else {
          
-         const urlit = selfindex$config.decodeUrl(ife.src.split(selfindex$config.prefix)[1]);
+         const urlit = indexing$config.decodeUrl(ife.src.split(indexing$config.prefix)[1]);
           const icont =  `https://www.google.com/s2/favicons?domain=${urlit}`; bookmarkthing.push([ife.contentDocument.title,urlit,icont])
                   localStorage.setItem('allbookmarks', JSON.stringify(bookmarkthing));
                   updateBook(false,[ife.contentDocument.title,urlit,icont]);
 
         
         }
-        //selfindex$config.decodeUrl("https://google.com");
+        //indexing$config.decodeUrl("https://google.com");
       }
         ta.addEventListener('click',eqe); 
         window.eqe = eqe;
@@ -184,7 +184,7 @@ ok();    '>Print (CTRL-P)</li>
     return false;
 };
           window.navigator.serviceWorker.register('/sw.js',{
-            scope: selfindex$config.prefix
+            scope: indexing$config.prefix
           }).then(() => {
              if (url.indexOf('tiktok') > -1){
         url = ''
@@ -192,19 +192,19 @@ ok();    '>Print (CTRL-P)</li>
             if (!isUrl(url)) url='https://www.duckduckgo.com/?q=' + url;
            else if (!(url.startsWith('https://') || url.startsWith('http://'))) url = 'http://' + url;
              const ife = document.querySelector('iframe[active]');
-            ife.src = selfindex$config.prefix + selfindex$config.encodeUrl(url);
+            ife.src = indexing$config.prefix + indexing$config.encodeUrl(url);
             
           })
           /*
    window.navigator.serviceWorker.register('/sw.js', {
-        scope: selfindex$config.prefix
+        scope: indexing$config.prefix
     }).then(() => {
         let url = input.value.trim();
         if (!isUrl(url)) url = 'https://www.google.com/search?q=' + url;
         else if (!(url.startsWith('https://') || url.startsWith('http://'))) url = 'http://' + url;
 
 
-        window.location.href = selfindex$config.prefix + selfindex$config.encodeUrl(url);
+        window.location.href = indexing$config.prefix + indexing$config.encodeUrl(url);
     });
 */
         } else{ // Normal

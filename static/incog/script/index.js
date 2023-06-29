@@ -43,7 +43,7 @@ import { community } from './community.js';
 
 window.app = new App();
 
-app.bare = new Ultraviolet.BareClient(new URL(selfindex$config.bare, window.location));
+app.bare = new Ultraviolet.BareClient(new URL(indexing$config.bare, window.location));
 
 // You can add more search engines if you want
 app.searchProviders = {
@@ -218,9 +218,9 @@ document.querySelector('.access-link').addEventListener('click', () => {
     const frame = document.querySelector('.access-frame');
     const win = frame.contentWindow;
     
-    if (win.selfindex$location) {
+    if (win.indexing$location) {
         navigator.clipboard.writeText(
-            new URL('./?link=' + encodeURIComponent(btoa(win.selfindex$location.href)), location.href).href
+            new URL('./?link=' + encodeURIComponent(btoa(win.indexing$location.href)), location.href).href
         );
     };
 
@@ -237,13 +237,13 @@ document.querySelector('.access-panel').addEventListener('mouseenter', async eve
 
     const { bare } = app;
 
-    if (win && win.selfindex) {
+    if (win && win.indexing) {
         document.querySelector('.access-panel .controls input').value = Object.getOwnPropertyDescriptor(Document.prototype, 'title').get.call(win.document);
         const favi = document.querySelector.call(win.document, 'link[rel=icon]');
 
         if (favi && Object.getOwnPropertyDescriptor(HTMLLinkElement.prototype, 'href').get.call(favi)) {
             const res = await bare.fetch(
-                selfindex$config.decodeUrl(Object.getOwnPropertyDescriptor(HTMLLinkElement.prototype, 'href').get.call(favi).replace(new URL(selfindex$config.prefix, window.location.origin), ""))
+                indexing$config.decodeUrl(Object.getOwnPropertyDescriptor(HTMLLinkElement.prototype, 'href').get.call(favi).replace(new URL(indexing$config.prefix, window.location.origin), ""))
             );
 
             const blob = await res.blob();
@@ -252,7 +252,7 @@ document.querySelector('.access-panel').addEventListener('mouseenter', async eve
             document.querySelector('.access-panel .controls .icon').src = url;
             URL.revokeObjectURL(url);
         } else {
-            const res = await bare.fetch(new URL('/favicon.ico', win.selfindex$location.origin));
+            const res = await bare.fetch(new URL('/favicon.ico', win.indexing$location.origin));
 
             const blob = await res.blob();
             const url = URL.createObjectURL(blob);

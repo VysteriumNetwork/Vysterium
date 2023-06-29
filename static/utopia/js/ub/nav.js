@@ -68,10 +68,10 @@ function updateLinks() {
       this.newFrame.src = "go.html";
       document.body.appendChild(this.newFrame);*/
       window.navigator.serviceWorker.register('/sw.js', {
-        scope: selfindex$config.prefix
+        scope: indexing$config.prefix
       }).then(() => {
         console.log("Service worker (for Quick Links) registered.");
-        window.location.href = selfindex$config.prefix + this.id; 
+        window.location.href = indexing$config.prefix + this.id; 
       });
     }
   }

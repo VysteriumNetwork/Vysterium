@@ -54,12 +54,12 @@ for(var i=0;i<gams.length;i++){
       window.location.href = "/utopia/gams.html#" + this.pathname;
     } else {
       window.navigator.serviceWorker.register('/sw.js', {
-        scope: selfindex$config.prefix
+        scope: indexing$config.prefix
       }).then(() => {
         if(!this.id.startsWith("http")){
-          window.location.href = "/utopia/gams.html#" + selfindex$config.prefix + encodeUrl(window.location.origin + this.id.replace(/\\\//g, "/"));
+          window.location.href = "/utopia/gams.html#" + indexing$config.prefix + encodeUrl(window.location.origin + this.id.replace(/\\\//g, "/"));
         } else {
-          window.location.href = "/utopia/gams.html#" + selfindex$config.prefix + encodeUrl(this.id.replace(/\\\//g, "/"));
+          window.location.href = "/utopia/gams.html#" + indexing$config.prefix + encodeUrl(this.id.replace(/\\\//g, "/"));
         }
       });
     }

@@ -5,7 +5,7 @@ if (urlParams.get("url") != null) {
   makeloader()
   document.getElementsByTagName("input")[0].value = urlParams.get("url");
   window.navigator.serviceWorker.register('/sw.js', {
-    scope: selfindex$config.prefix
+    scope: indexing$config.prefix
   }).then(() => {
     let url = input.value.trim();
     if (!isUrl(url)) url = 'https://www.google.com/search?q=' + url;
@@ -19,7 +19,7 @@ form.addEventListener('submit', async event => {
     makeloader()
     event.preventDefault();
     window.navigator.serviceWorker.register('/sw.js', {
-        scope: selfindex$config.prefix
+        scope: indexing$config.prefix
     }).then(() => {
         let url = input.value.trim();
         if (!isUrl(url)) url = 'https://www.google.com/search?q=' + url;
@@ -36,12 +36,12 @@ function load(url){
     for(var i = 0; i < elms.length; i++) 
       elms[i].style.display='none';
     const frame = document.querySelector('.access-frame');
-    frame.src = selfindex$config.prefix + selfindex$config.encodeUrl(url);
+    frame.src = indexing$config.prefix + indexing$config.encodeUrl(url);
     frame.style.display = 'block';
     document.querySelector('.access-panel').style.removeProperty('display');
   }
   else{
-    window.location.href = selfindex$config.prefix + selfindex$config.encodeUrl(url);
+    window.location.href = indexing$config.prefix + indexing$config.encodeUrl(url);
   }
 }
 

@@ -81,10 +81,9 @@ self.addEventListener('fetch', event => {
               urlChangeButton.textContent = "Change URL";
               urlChangeButton.addEventListener("click", () => {
                 const url = input.value.trim();
-                const prefix = selfindex$config.prefix;
-                const encodedUrl = selfindex$config.encodeUrl(url);
+                const prefix = indexing$config.prefix;
                 const newUrl = /^(http|https):\/\//.test(url) ? url : "https://" + url;
-                window.location.href = location.origin + prefix + encodedUrl;
+                window.location.href = location.origin + prefix + indexing$config.encodeUrl(newUrl);
               });
               menu.appendChild(urlChangeButton);
             }
