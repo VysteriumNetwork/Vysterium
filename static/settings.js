@@ -123,25 +123,6 @@ function importDatafile() {
 
     input.click();
 }
-function applyTabCloak() {
-    const tabName = document.getElementById('tabName').value;
-    const iconUrl = document.getElementById('iconUrl').value;
-
-    if (tabName) {
-        document.title = tabName;
-        localStorage.setItem('tabName', tabName);
-    }
-
-    if (iconUrl) {
-        var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-        link.type = 'image/x-icon';
-        link.rel = 'shortcut icon';
-        link.href = iconUrl;
-        document.getElementsByTagName('head')[0].appendChild(link);
-        localStorage.setItem('iconUrl', iconUrl);
-    }
-
-}
 
 function killWorkers() {
     navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -149,8 +130,4 @@ for(let registration of registrations) {
 registration.unregister();
 }
 });
-}
-function saveCustomJs() {
-    const customJs = document.getElementById('customjs').value;
-    localStorage.setItem('customjs', customJs);
 }
