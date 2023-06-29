@@ -126,17 +126,20 @@ self.addEventListener('fetch', event => {
               menu.appendChild(faviconInput);
               menu.appendChild(document.createElement("br"));
             
-              let changeFaviconButton = document.createElement("button");
-              changeFaviconButton.textContent = "Change Favicon";
-              changeFaviconButton.addEventListener("click", () => {
+              let apply = document.createElement("button");
+              apply.textContent = "Apply";
+              apply.addEventListener("click", () => {
+                if(window!=window.top) {
+                  alert("This will not work in an iframe!")
+                } else {
                 var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
               link.type = 'image/x-icon';
               link.rel = 'shortcut icon';
               link.href = faviconInput.value || "https://google.com/favicon.ico";
               document.title = tabNameInput.value || "Vysterium";
+                }
               });
-              menu.appendChild(changeFaviconButton);
-              
+              menu.appendChild(apply);
             }
             
             function createModule() {
