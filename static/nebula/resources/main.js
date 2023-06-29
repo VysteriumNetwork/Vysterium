@@ -42,7 +42,7 @@ window.stealthEngineLoaded = false;
 window.addEventListener("load", () => {
 
   navigator.serviceWorker.register("/sw.js", {
-    scope: indexing$config.prefix
+    scope: index$config.prefix
   });
 
   // Link evaluation
@@ -87,7 +87,7 @@ window.addEventListener("load", () => {
       // Re-register the service worker incase it failed to onload
       navigator.serviceWorker
         .register("/sw.js", {
-          scope: indexing$config.prefix
+          scope: index$config.prefix
         })
         .then(() => {
           const value = event.target.firstElementChild.value;
@@ -98,7 +98,7 @@ window.addEventListener("load", () => {
           // encode the URL for UltraViolet
           let redirectTo =
             proxy === "uv"
-              ? indexing$config.prefix + indexing$config.encodeUrl(url)
+              ? index$config.prefix + index$config.encodeUrl(url)
               : __osana$config.prefix + __osana$config.codec.encode(url);
           const option = localStorage.getItem("nogg");
           if (option === "on") {
@@ -337,8 +337,8 @@ function link(_link) {
           var currentLink = _link.slice(0, _link.length - 1);
           iframe.src =
             location.origin +
-            indexing$config.prefix +
-            indexing$config.encodeUrl(currentLink);
+            index$config.prefix +
+            index$config.encodeUrl(currentLink);
           style.position = "fixed";
           style.top = style.bottom = style.left = style.right = 0;
           style.border = style.outline = "none";
@@ -349,6 +349,6 @@ function link(_link) {
     }, 200);
   } else {
     location.href =
-      indexing$config.prefix + indexing$config.encodeUrl("https://radon.games/");
+      index$config.prefix + index$config.encodeUrl("https://radon.games/");
   }
 }

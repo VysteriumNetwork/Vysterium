@@ -18,7 +18,7 @@ async function registerSW() {
 
     
   await navigator.serviceWorker.register(stockSW, {
-    scope: indexing$config.prefix,
+    scope: index$config.prefix,
   });
 }
   registerSW();
@@ -50,7 +50,7 @@ form.addEventListener("submit", async (event) => {
           doc.title = "My Drive - Google Drive"
           link.rel = "icon";
           link.href = "https://ssl.gstatic.com/images/branding/product/2x/hh_drive_36dp.png";
-          iframe.src = location.origin + indexing$config.prefix + indexing$config.encodeUrl(url);
+          iframe.src = location.origin + index$config.prefix + index$config.encodeUrl(url);
           style.position = "fixed"
           style.top = style.bottom = style.left = style.right = 0
           style.border = style.outline = "none"

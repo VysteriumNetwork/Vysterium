@@ -1,4 +1,4 @@
-const prefix = indexing$config.prefix;
+const prefix = index$config.prefix;
 const URL_BAR = document.getElementById("urlbar");
 const ACTIVE_WINDOW = () => { return document.getElementById(getActiveFrameId()).contentWindow; }
 const CONTENT_WINDOW = (n) => { return document.getElementById(n).contentWindow }

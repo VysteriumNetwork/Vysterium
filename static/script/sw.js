@@ -1,4 +1,4 @@
-/*globals indexing$config*/
+/*globals index$config*/
 // Users must import the config (and bundle) prior to importing uv.sw.js
 // This is to allow us to produce a generic bundle with no hard-coded paths.
 
@@ -28,7 +28,7 @@ const cspHeaders = [
 const emptyMethods = ['GET', 'HEAD'];
 
 class ServiceWorker extends Ultraviolet.EventEmitter {
-    constructor(config = indexing$config) {
+    constructor(config = index$config) {
         super();
         if (!config.bare) config.bare = '/bare/';
         if (!config.prefix) config.prefix = '/service/';
@@ -211,7 +211,7 @@ class ServiceWorker extends Ultraviolet.EventEmitter {
                             ]
                                 .map((script) => JSON.stringify(script))
                                 .join(',');
-                            responseCtx.body = `if (!self.indexing && self.importScripts) { ${ultraviolet.createJsInject(
+                            responseCtx.body = `if (!self.index && self.importScripts) { ${ultraviolet.createJsInject(
                                 this.address,
                                 this.bareClient.data,
                                 ultraviolet.cookie.serialize(

@@ -1397,7 +1397,7 @@ class WIN {
         });
         switch(os) {
             case "false":
-                framew.src = indexing$config.prefix + xor.encode(link);
+                framew.src = index$config.prefix + xor.encode(link);
                 break;
             case "true":
                 framew.src = link;

@@ -162,8 +162,8 @@ console.log("Error fetching 'bare' from server:", error);
 <script>
 window.onload = function() {
   let encodedUrl = sessionStorage.getItem("encodedUrl");
-  // add the prefix indexing$config.prefix to the encoded URL
-  encodedUrl = indexing$config.prefix + encodedUrl;
+  // add the prefix index$config.prefix to the encoded URL
+  encodedUrl = index$config.prefix + encodedUrl;
   document.querySelector("#iframeid").src = encodedUrl;
 }
 </script>

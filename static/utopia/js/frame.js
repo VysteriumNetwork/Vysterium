@@ -14,7 +14,7 @@ frame.onload = function(){
 
   frame.contentWindow.onunload = unloading;
 
-  if(this.contentWindow.location.pathname.startsWith(indexing$config.prefix)) {
+  if(this.contentWindow.location.pathname.startsWith(index$config.prefix)) {
     document.body.style.background = "none";
   } else {
     document.body.style.background = "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/utopia/img/space-tint.png')";

@@ -22,4 +22,4 @@ class xor {
   }
 }
 // and setting path easily. (wait this is in the js.js file as prefix though?)
-path = indexing$config.prefix
+path = index$config.prefix

@@ -2,7 +2,7 @@ function go(value) {
   let iframe = document.querySelector(".iframe.active");
   window.navigator.serviceWorker
     .register("/sw.js", {
-      scope: indexing$config.prefix,
+      scope: index$config.prefix,
     })
     .then(() => {
       let url = value.trim();
@@ -10,7 +10,7 @@ function go(value) {
       else if (!(url.startsWith("https://") || url.startsWith("http://")))
         url = "https://" + url;
       //pass the encoded url to the second page
-      sessionStorage.setItem("encodedUrl", indexing$config.encodeUrl(url));
+      sessionStorage.setItem("encodedUrl", index$config.encodeUrl(url));
       location.href = "./go.html";
     });
 }

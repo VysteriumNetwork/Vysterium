@@ -24,5 +24,5 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
   
   const url = search(address.value, searchEngine.value);
-  location.href = indexing$config.prefix + indexing$config.encodeUrl(url);
+  location.href = index$config.prefix + index$config.encodeUrl(url);
 });

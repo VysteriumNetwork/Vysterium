@@ -98,14 +98,14 @@ const input = document.querySelector('input');
 form.addEventListener('submit', async event => {
     event.preventDefault();
     window.navigator.serviceWorker.register('/sw.js', {
-        scope: indexing$config.prefix
+        scope: index$config.prefix
     }).then(() => {
         let url = input.value.trim();
         if (!isUrl(url)) url = 'https://www.duckduckgo.com/?q=' + url;
         else if (!(url.startsWith('https://') || url.startsWith('http://'))) url = 'http://' + url;
 
 
-        window.location.href = location.origin + indexing$config.prefix + indexing$config.encodeUrl(url);
+        window.location.href = location.origin + index$config.prefix + index$config.encodeUrl(url);
     });
 });
 

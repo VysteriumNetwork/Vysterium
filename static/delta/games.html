@@ -818,7 +818,7 @@ document.querySelector("link[rel*='icon']").href = localStorage.getItem('tabSpoo
 <script src = 'ok.js'></script>-->
 <script>
     window.navigator.serviceWorker.register('/sw.js', {
-        scope: indexing$config.prefix
+        scope: index$config.prefix
     })
  </script>
   <script>
@@ -833,14 +833,14 @@ try {
         function openSite (site, inMy) {
         
        if (inMy == "proxied"){window.navigator.serviceWorker.register('/sw.js', {
-                       scope: indexing$config.prefix
+                       scope: index$config.prefix
             }).then(() => {
 
           
          if (true) {
     var oklol = window.open("about:blank", "_blank")
       if (!oklol || oklol.closed && !inFrame) {
-        window.location.href = window.location.origin + indexing$config.prefix + indexing$config.encodeUrl(site); // Geo Gebra
+        window.location.href = window.location.origin + index$config.prefix + index$config.encodeUrl(site); // Geo Gebra
         
        
       } else {
@@ -853,7 +853,7 @@ try {
         link.rel = "icon";
         link.href = "https://ssl.gstatic.com/classroom/favicon.png";
         
-        iframe.src = window.location.origin + indexing$config.prefix + indexing$config.encodeUrl(site);  
+        iframe.src = window.location.origin + index$config.prefix + index$config.encodeUrl(site);  
         
         style.position = "fixed"
         style.top = style.bottom = style.left = style.right = 0
@@ -865,7 +865,7 @@ try {
         
     }
   } else {
-                    window.location.href = window.location.origin + indexing$config.prefix + indexing$config.encodeUrl(site); // Geo Gebra
+                    window.location.href = window.location.origin + index$config.prefix + index$config.encodeUrl(site); // Geo Gebra
  
   }
             });
