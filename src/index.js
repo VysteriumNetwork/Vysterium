@@ -65,13 +65,13 @@ app.get('/server', (req, res, next) => {
   }
 });
 
-app.use('/games/', async (req, res, next) => {  
+app.use('/games/', async (req, res, next) => {
+  if (req.url.startsWith('/thumbnails/') || req.url.startsWith('/flash/') || req.url.startsWith('/swfs/')) {
+    next();
+  }
   if (!req.session.loggedin && config.password == "true") {
-    next(); 
+    next();
   } else {
-    if (req.url.startsWith('/thumbnails/') || req.url.startsWith('/2048/') || req.url.startsWith('/flash/') || req.url.startsWith('/swfs/')){
-      next();
-    }
     try {
       const response = await axios({
         method: req.method,
@@ -79,13 +79,14 @@ app.use('/games/', async (req, res, next) => {
         responseType: "stream",
         validateStatus: (status) => status !== 404
       });
-      res.writeHead(response.status, { "Content-Type": "text/html" });
+      res.writeHead(response.status, { "Content-Type": response.headers['content-type'].split(";")[0] });
       response.data.pipe(res);
     } catch {
       next();
     }
   }
 });
+
 
 
 const bare = createBareServer(randomString);
