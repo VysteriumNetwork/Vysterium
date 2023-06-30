@@ -3,13 +3,14 @@ import { fileURLToPath } from "node:url";
 import { createServer as createHttpServer } from "node:http";
 import serveStatic from "serve-static";
 import fs from 'fs';
+import compression from 'compression';
 import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
 import axios from "axios";
 const app = express();
 import path from 'path';
-
+app.use(compression())
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const blacklisted = [];
