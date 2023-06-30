@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import { createServer as createHttpServer } from "node:http";
 import serveStatic from "serve-static";
 import fs from 'fs';
-import compression from 'compression';
+import compression from 'compression'
 import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
@@ -65,31 +65,6 @@ app.get('/server', (req, res, next) => {
   }
 });
 
-app.use('/games/', async (req, res, next) => {  
-  if (!req.session.loggedin && config.password == "true") {
-    next(); 
-  } else {
-    if (req.url.startsWith('/thumbnails/') || req.url.startsWith('/2048/') || req.url.startsWith('/flash/') || req.url.startsWith('/swfs/')){
-      next();
-    }
-    try {
-      const response = await axios({
-        method: req.method,
-        url: "https://raw.githubusercontent.com/3kh0/3kh0-Assets/main" + req.url,
-        responseType: "stream",
-        validateStatus: (status) => status !== 404
-      });
-      res.writeHead(response.status, { "Content-Type": "text/html" });
-      response.data.pipe(res);
-    } catch {
-      next();
-    }
-  }
-});
-
-
-const bare = createBareServer(randomString);
-
 app.use('/games/', async (req, res, next) => {
   if (req.url.startsWith('/thumbnails/')) {
     next();
@@ -98,21 +73,46 @@ app.use('/games/', async (req, res, next) => {
   
   if (!req.session.loggedin && config.password == "true") {
     next(); 
-  } else {
+} else {
     try {
-      const response = await axios({
-        method: req.method,
-        url: "https://raw.githubusercontent.com/3kh0/3kh0-Assets/main" + req.url,
-        responseType: "stream",
-        validateStatus: (status) => status !== 404
-      });
-      res.writeHead(response.status, { "Content-Type": response.headers['content-type'].split(";")[0] });
-      response.data.pipe(res);
+        const assetUrl = "https://raw.githubusercontent.com/3kh0/3kh0-Assets/main" + req.url;
+        const response = await axios({
+            method: req.method,
+            url: assetUrl,
+            responseType: "stream",
+            validateStatus: (status) => status !== 404
+        });
+        
+        let contentType;
+        if (assetUrl.endsWith('.html')) {
+            contentType = 'text/html';
+        } else if (assetUrl.endsWith('.css')) {
+            contentType = 'text/css';
+        } else if (assetUrl.endsWith('.js')) {
+            contentType = 'application/javascript';
+        } else if (assetUrl.endsWith('.png')) {
+            contentType = 'image/png';
+        } else if (assetUrl.endsWith('.jpg') || assetUrl.endsWith('.jpeg')) {
+            contentType = 'image/jpeg';
+        } else if (assetUrl.endsWith('.gif')) {
+            contentType = 'image/gif';
+        } else {
+            contentType = 'text/plain';
+        }
+
+        res.writeHead(response.status, { "Content-Type": contentType });
+        response.data.pipe(res);
     } catch {
-      next();
+        next();
     }
-  }
+}
+
 });
+
+
+const bare = createBareServer(randomString);
+
+
 app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
       if (!req.session && config.password  === "true") {
