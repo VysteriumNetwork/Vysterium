@@ -64,49 +64,27 @@ app.get('/server', (req, res, next) => {
   }
 });
 
-app.use('/games/', async (req, res, next) => {
-  if (req.url.startsWith('/thumbnails/')) {
-    next();
-    return;
-  }
-  
+app.use('/games', async (req, res, next) => {
   if (!req.session.loggedin && config.password == "true") {
     next(); 
-} else {
-    try {
-        const assetUrl = "https://raw.githubusercontent.com/3kh0/3kh0-Assets/main" + req.url;
-        const response = await axios({
-            method: req.method,
-            url: assetUrl,
-            responseType: "stream",
-            validateStatus: (status) => status !== 404
-        });
-        
-        let contentType;
-        if (assetUrl.endsWith('.html')) {
-            contentType = 'text/html';
-        } else if (assetUrl.endsWith('.css')) {
-            contentType = 'text/css';
-        } else if (assetUrl.endsWith('.js')) {
-            contentType = 'application/javascript';
-        } else if (assetUrl.endsWith('.png')) {
-            contentType = 'image/png';
-        } else if (assetUrl.endsWith('.jpg') || assetUrl.endsWith('.jpeg')) {
-            contentType = 'image/jpeg';
-        } else if (assetUrl.endsWith('.gif')) {
-            contentType = 'image/gif';
-        } else {
-            contentType = 'text/plain';
-        }
+  } else {
+  try {
+      const assetUrl = "https://rawcdn.githack.com/VysteriumNetwork/gfiles/092e9553d9dd166583e04f3f43cb52c091cff952" + req.url;
+      const response = await axios({
+          method: req.method,
+          url: assetUrl,
+          responseType: "stream",
+          validateStatus: (status) => status !== 404
+      });
 
-        res.writeHead(response.status, { "Content-Type": contentType });
-        response.data.pipe(res);
-    } catch {
-        next();
-    }
+      res.writeHead(response.status, { "Content-Type": response.headers['content-type'].split(";")[0] });
+      response.data.pipe(res);
+  } catch (error) {
+      next(error);
+  }
 }
-
 });
+
 
 
 const bare = createBareServer(randomString);
