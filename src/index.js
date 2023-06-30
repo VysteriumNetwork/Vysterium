@@ -1,7 +1,6 @@
 import createBareServer from "@tomphttp/bare-server-node";
 import { fileURLToPath } from "node:url";
 import { createServer as createHttpServer } from "node:http";
-import serveStatic from "serve-static";
 import fs from 'fs';
 import compression from 'compression'
 import session from 'express-session';
@@ -181,12 +180,12 @@ app.use((req, res, next) => {
  //   return next();
  // }
 //}
- // serveStatic(uvPath)(req, res, next);
+ // express.static(uvPath)(req, res, next);
 //} else {
   //if (req.url.endsWith('config.js')) {
   //  return next();
   //}
-  //serveStatic(uvPath)(req, res, next);
+  //express.static(uvPath)(req, res, next);
 //}
 //});
 const rh = createRammerhead();
@@ -252,7 +251,8 @@ app.use((req, res, next) => {
     next();
   }
 });
-app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
+app.use(express.static(fileURLToPath(new URL("../static/", import.meta.url))));
+
 const shuttleroutes = {
   '/shuttle/': 'index.html',
   '/shuttle/games': 'games.html',
