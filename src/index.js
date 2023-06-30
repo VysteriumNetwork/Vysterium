@@ -6,7 +6,7 @@ import fs from 'fs';
 import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
-
+import axios from "axios";
 const app = express();
 import path from 'path';
 
@@ -61,6 +61,28 @@ app.get('/server', (req, res, next) => {
     next(); 
   } else {
     res.json({ bare: randomString });
+  }
+});
+
+app.use('/games/', async (req, res, next) => {  
+  if (!req.session.loggedin && config.password == "true") {
+    next(); 
+  } else {
+    if (req.url.startsWith('/thumbnails/') || req.url.startsWith('/2048/') || req.url.startsWith('/flash/') || req.url.startsWith('/swfs/')){
+      next();
+    }
+    try {
+      const response = await axios({
+        method: req.method,
+        url: "https://raw.githubusercontent.com/3kh0/3kh0-Assets/main" + req.url,
+        responseType: "stream",
+        validateStatus: (status) => status !== 404
+      });
+      res.writeHead(response.status, { "Content-Type": "text/html" });
+      response.data.pipe(res);
+    } catch {
+      next();
+    }
   }
 });
 

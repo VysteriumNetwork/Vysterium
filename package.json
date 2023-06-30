@@ -26,6 +26,7 @@
     "fs": "^0.0.1-security",
     "rammerhead": "https://github.com/VysteriumNetwork/rammerhead/releases/download/newrh/rammerhead.tgz",
     "serve-static": "^1.15.0",
+    "axios": "^1.3.4",
     "tailwindcss": "^3.3.2"
   },
   "engines": {

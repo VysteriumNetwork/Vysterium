@@ -4,7 +4,6 @@
  */
 
 
-const stockSW = "/sw.js";
 const swAllowedHostnames = ["localhost", "127.0.0.1"];
 async function registerSW() {
   if (
@@ -15,9 +14,7 @@ async function registerSW() {
 
   if (!navigator.serviceWorker)
     throw new Error("Your browser doesn't support service workers.");
-
-    
-  await navigator.serviceWorker.register(stockSW, {
+  await navigator.serviceWorker.register("/sw.js", {
     scope: index$config.prefix,
   });
 }
