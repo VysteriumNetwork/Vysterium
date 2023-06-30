@@ -64,29 +64,6 @@ app.get('/server', (req, res, next) => {
   }
 });
 
-app.use('/games', async (req, res, next) => {
-  if (!req.session.loggedin && config.password == "true") {
-    next(); 
-  } else {
-  try {
-      const assetUrl = "https://rawcdn.githack.com/VysteriumNetwork/gfiles/092e9553d9dd166583e04f3f43cb52c091cff952" + req.url;
-      const response = await axios({
-          method: req.method,
-          url: assetUrl,
-          responseType: "stream",
-          validateStatus: (status) => status !== 404
-      });
-
-      res.writeHead(response.status, { "Content-Type": response.headers['content-type'].split(";")[0] });
-      response.data.pipe(res);
-  } catch (error) {
-      next(error);
-  }
-}
-});
-
-
-
 const bare = createBareServer(randomString);
 
 
@@ -229,8 +206,26 @@ app.use((req, res, next) => {
     next();
   }
 });
-app.use(express.static(fileURLToPath(new URL("../static/", import.meta.url))));
+app.use('/', async (req, res, next) => {
+  if (!req.session.loggedin && config.password == "true") {
+    next(); 
+  } else {
+  try {
+      const assetUrl = "https://rawcdn.githack.com/VysteriumNetwork/Vysterium-Static/3002438c2b6d4023a49b9b346104166f1121ee0f" + req.url;
+      const response = await axios({
+          method: req.method,
+          url: assetUrl,
+          responseType: "stream",
+          validateStatus: (status) => status !== 404
+      });
 
+      res.writeHead(response.status, { "Content-Type": response.headers['content-type'].split(";")[0] });
+      response.data.pipe(res);
+  } catch (error) {
+      next(error);
+  }
+}
+});
 const shuttleroutes = {
   '/shuttle/': 'index.html',
   '/shuttle/games': 'games.html',
