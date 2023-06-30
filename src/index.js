@@ -7,6 +7,7 @@ import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
 import axios from "axios";
+import { uvPath } from '@titaniumnetwork-dev/ultraviolet'
 const app = express();
 import path from 'path';
 app.use(compression())
@@ -126,23 +127,24 @@ app.use((req, res, next) => {
 
 
 
-//app.use('/script', (req, res, next) => {
- // if (config.password === "true") {
- // if (!req.session || !req.session.loggedin) {
- //   next();
- // } else {
- // if (req.url.endsWith('config.js')) {
- //   return next();
- // }
-//}
- // express.static(uvPath)(req, res, next);
-//} else {
-  //if (req.url.endsWith('config.js')) {
-  //  return next();
-  //}
-  //express.static(uvPath)(req, res, next);
-//}
-//});
+app.use('/script', (req, res, next) => {
+  if (config.password === "true") {
+  if (!req.session || !req.session.loggedin) {
+    next();
+  } else {
+  if (req.url.endsWith('config.js')) {
+    return next();
+  }
+  if (req.url.endsWith('scripts.js')) {
+    return next();
+  }
+  if (req.url.endsWith('sw.js')) {
+    return next();
+  }
+  express.static(uvPath)(req, res, next);
+}
+}
+});
 const rh = createRammerhead();
 const rammerheadScopes = [
 	'/transport-worker.js',
@@ -211,13 +213,19 @@ app.use('/', async (req, res, next) => {
     next(); 
   } else {
   try {
-      const assetUrl = "https://rawcdn.githack.com/VysteriumNetwork/Vysterium-Static/3002438c2b6d4023a49b9b346104166f1121ee0f" + req.url;
+    if (req.url.endsWith('.html') || req.url.endsWith('/')) {
+      res.status(404);
+    }
+      const assetUrl = "https://rawcdn.githack.com/VysteriumNetwork/Vysterium-Static/9092ebdaf8c066165bec411b504571744e3e4312" + req.url;
       const response = await axios({
           method: req.method,
           url: assetUrl,
           responseType: "stream",
           validateStatus: (status) => status !== 404
       });
+      if (!req.url.endsWith('.html') && !req.url.endsWith('/')) {
+        res.status(response.status);
+      }
 
       res.writeHead(response.status, { "Content-Type": response.headers['content-type'].split(";")[0] });
       response.data.pipe(res);
