@@ -65,12 +65,39 @@ app.get('/server', (req, res, next) => {
   }
 });
 
-app.use('/games/', async (req, res, next) => {
-  if (req.url.startsWith('/thumbnails/') || req.url.startsWith('/flash/') || req.url.startsWith('/swfs/')) {
-    next();
-  }
+app.use('/games/', async (req, res, next) => {  
   if (!req.session.loggedin && config.password == "true") {
+    next(); 
+  } else {
+    if (req.url.startsWith('/thumbnails/') || req.url.startsWith('/2048/') || req.url.startsWith('/flash/') || req.url.startsWith('/swfs/')){
+      next();
+    }
+    try {
+      const response = await axios({
+        method: req.method,
+        url: "https://raw.githubusercontent.com/3kh0/3kh0-Assets/main" + req.url,
+        responseType: "stream",
+        validateStatus: (status) => status !== 404
+      });
+      res.writeHead(response.status, { "Content-Type": "text/html" });
+      response.data.pipe(res);
+    } catch {
+      next();
+    }
+  }
+});
+
+
+const bare = createBareServer(randomString);
+
+app.use('/games/', async (req, res, next) => {
+  if (req.url.startsWith('/thumbnails/')) {
     next();
+    return;
+  }
+  
+  if (!req.session.loggedin && config.password == "true") {
+    next(); 
   } else {
     try {
       const response = await axios({
@@ -86,12 +113,6 @@ app.use('/games/', async (req, res, next) => {
     }
   }
 });
-
-
-
-const bare = createBareServer(randomString);
-
-
 app.use((req, res, next) => {
   if (req.path.startsWith(randomString)) {
       if (!req.session && config.password  === "true") {
