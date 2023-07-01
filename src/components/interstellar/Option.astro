@@ -1,0 +1,20 @@
+---
+interface Props {
+  className: string;
+  url: string;
+  imageSrc: string;
+  title: string;
+}
+
+const { className, url, imageSrc, title } = Astro.props;
+---
+<div class="row">
+  <div class="span1">
+    <div style="padding-top: 5px;" class={className} loading="lazy">
+      <a class="game" onclick={`go("${url}")`}>
+        <img style="border-radius: 25px;" src={imageSrc} />
+      </a>
+      <p>{title}</p>
+    </div>
+  </div>
+</div>

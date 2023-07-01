@@ -1,13 +1,15 @@
+---
+---
 <html style="margin: 0;">
 <head>
  <title>Classes</title>
   <link rel="icon" type="image/x-icon" href="assets/images/branding/favicon/favicon.png">
-	<link rel="shortcut icon" href="assets/images/branding/favicon/favicon.png" type="image/x-icon">
-  <script src="/interstellar/assets/js/go.js"></script>
-  <script src="./js/index.js"></script>
-  <script src="/script/bundle.js"></script>
-  <script src="/script/config.js"></script>
-  <script src="./index.js"></script>
+  <link rel="shortcut icon" href="assets/images/branding/favicon/favicon.png" type="image/x-icon">
+  <script is:inline src="/interstellar/assets/js/go.js"></script>
+  <script is:inline src="./js/index.js"></script>
+  <script is:inline src="/script/bundle.js"></script>
+  <script is:inline src="/script/config.js"></script>
+  <script is:inline src="./index.js"></script>
   <link rel="stylesheet" href="assets/css/nav.css">
 <style>
 .tip {
@@ -102,16 +104,6 @@ margin: 0px 2px;
 }
 
 </style>
-
-       <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WKJQ5QHQTJ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-WKJQ5QHQTJ');
-</script>
 </head>
 <body>
 
@@ -128,13 +120,13 @@ margin: 0px 2px;
             </div>
             <!--button class="toggle">expand_more</button-->
         </div>
-<script>
+<script is:inline>
 const homeButton = document.getElementById("home-button");
 homeButton.addEventListener("click", function() {
-    window.location.href = "./web.html";
+    window.location.href = "./web";
 });
 </script>
-<script>
+<script is:inline>
 const fullscreenButton = document.getElementById("fullscreen-button");
 fullscreenButton.addEventListener("click", function() {
     if (!document.fullscreenElement) {
@@ -144,10 +136,7 @@ fullscreenButton.addEventListener("click", function() {
     }
 });
 </script>
-</body>
-	     
-<html>
-  <script>
+  <script is:inline>
     fetch("/server/")
 .then(response => response.text())
 .then(data => {
@@ -158,8 +147,8 @@ console.log("Successfully fetched and set 'bare' value in localStorage.");
 console.log("Error fetching 'bare' from server:", error);
 });
 </script>
-<iframe src="./loading.html" id="iframeId" style="bottom: 0;" style="border:0px #ffffff none;" name="myiFrame" scrolling="yes" frameborder="0" marginheight="0px" marginwidth="0px" height="100%" width="100%" allowfullscreen ></iframe>
-<script>
+<iframe src="./loading" id="iframeId" style="bottom: 0;" style="border:0px #ffffff none;" name="myiFrame" scrolling="yes" frameborder="0" marginheight="0px" marginwidth="0px" height="100%" width="100%" allowfullscreen ></iframe>
+<script is:inline>
 window.onload = function() {
   let encodedUrl = sessionStorage.getItem("encodedUrl");
   // add the prefix selfindex$config.prefix to the encoded URL
@@ -167,4 +156,5 @@ window.onload = function() {
   document.querySelector("#iframeid").src = encodedUrl;
 }
 </script>
+</body>
 </html>
