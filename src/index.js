@@ -1,4 +1,4 @@
-import createBareServer from "@tomphttp/bare-server-node";
+import { createBareServer } from "@tomphttp/bare-server-node";
 import { fileURLToPath } from "node:url";
 import { createServer as createHttpServer } from "node:http";
 import fs from 'fs';
@@ -6,7 +6,6 @@ import compression from 'compression'
 import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
-import axios from "axios";
 const app = express();
 import path from 'path';
 app.use(compression())
