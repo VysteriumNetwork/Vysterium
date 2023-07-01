@@ -1,0 +1,151 @@
+---
+import NavBar from "../../components/shuttle/NavBar.astro";
+---
+<html>
+<head>
+  <style>
+    body {
+      position: relative;
+    }
+
+    .loader-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #000;
+      z-index: 9999;
+      transition: opacity 0.3s ease-out;
+    }
+
+    .lds-ripple {
+      display: inline-block;
+      position: relative;
+      width: 80px;
+      height: 80px;
+    }
+
+    .lds-ripple div {
+      position: absolute;
+      border: 4px solid #fff;
+      opacity: 1;
+      border-radius: 50%;
+      animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+
+    .lds-ripple div:nth-child(2) {
+      animation-delay: -0.5s;
+    }
+
+    @keyframes lds-ripple {
+      0% {
+        top: 36px;
+        left: 36px;
+        width: 0;
+        height: 0;
+        opacity: 0;
+      }
+      4.9% {
+        top: 36px;
+        left: 36px;
+        width: 0;
+        height: 0;
+        opacity: 0;
+      }
+      5% {
+        top: 36px;
+        left: 36px;
+        width: 0;
+        height: 0;
+        opacity: 1;
+      }
+      100% {
+        top: 0px;
+        left: 0px;
+        width: 72px;
+        height: 72px;
+        opacity: 0;
+      }
+    }
+  </style>
+  <script is:inline src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script is:inline src="http://threejs.org/examples/js/libs/stats.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+  <meta property="og:title" content="shuttle" />
+  <meta property="og:description" content="shuttle, the fastest browser" />
+  <meta property="og:image" content="./shuttle.png" />
+  <meta name="theme-color" content="#000000" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="language" content="English" />
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <link rel="stylesheet" href="./assets/css/cookie.css">
+  <script is:inline src="https://kit.fontawesome.com/be27c0ad9d.js" crossorigin="anonymous"></script>
+  <script is:inline src="./assets/js/index.js" defer></script>
+  <script is:inline src="./assets/js/go.js" defer></script>
+  <script is:inline src="./assets/js/proxy-handler.js"></script>
+  <title>Shuttle</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+</head>
+<body id="body">
+  <div class="loader-container">
+    <div class="lds-ripple">
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  <script is:inline src="./assets/js/cookie.js"></script>
+  <p hidden>hey shuttle user using inspect element! join our discord now at discord.gg/xi</p>
+  <div id="align">
+    <nav id="nav">
+      <a href="./">
+        <i class="fa-solid fa-xmark" style="color: white; margin-right: auto; margin-left: 20px; font-size: 24px;"></i>
+      </a>
+      <span id="m" style="margin: auto;"></span>
+      <a onclick="fullscreen()">
+        <i class="fa-solid fa-expand" style="color: white; margin-left: auto; margin-right: 45px; font-size: 20px;"></i>
+      </a>
+    </nav>
+    <iframe id="ifr"></iframe>
+  </div>
+  <NavBar />
+  <div class="alignment-container-1" style="margin-top:10%;">
+    <div class="header-container">
+      <div class="big-text">
+        <h1>Shuttle</h1>
+      </div>
+      <h2 style="color:white;"><span id="splash"></span></h2>
+    </div>
+    <form id="form">
+      <input autofocus autocomplete="off" class="search" id="search" placeholder="URL Or Search" />
+      <button type="submit" class="submit-button">
+        <i class="fas fa-search searchicon"></i>
+      </button>
+    </form>
+    <div class="ah">
+	<iframe src="/irepel/proxy.html?url=https://hub.alienhub.xyz/show?utm_medium=shuttle" frameborder="0" scrolling="no"></iframe>
+    </div>
+    <footer>
+      <a title="discord" href="https://discord.gg/xi">Discord</a>
+      <a title="github" href="https://github.com/shuttlenetwork/shuttle">Github</a>
+    </footer>
+  </div>
+  <script is:inline src="/script/bundle.js"></script>
+  <script is:inline src="/script/config.js"></script>
+    <script is:inline>
+      window.addEventListener("load", function() {
+        const loaderContainer = document.querySelector(".loader-container");
+        setTimeout(function() {
+          loaderContainer.style.opacity = "0";
+          setTimeout(function() {
+            loaderContainer.style.display = "none";
+          }, 500);
+        }, 1000);
+      });
+    </script>
+  <div class="background"></div>
+</body>
+</html>

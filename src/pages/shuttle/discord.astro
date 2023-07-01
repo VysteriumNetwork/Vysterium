@@ -1,0 +1,24 @@
+---
+import StarsContainer from "../../components/shuttle/StarsContainer.astro";
+import NavBar from "../../components/shuttle/NavBar.astro";
+---
+<html>
+<head>
+  <title>Shuttle</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <script is:inline src="/script/bundle.js"></script>
+  <script is:inline src="/script/config.js"></script>
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <script is:inline src="https://kit.fontawesome.com/be27c0ad9d.js" crossorigin="anonymous"></script>
+  <script is:inline src="./assets/js/index.js" defer></script>
+  <script is:inline src="./assets/js/gs.js" defer></script>
+</head>
+
+<body>
+  <StarsContainer />
+  <NavBar />
+
+  <iframe src="/irepel/proxy.html?url=https://chatsystem.shuttledev.repl.co"></iframe>
+  <div class="background"></div>
+</body>
+</html>

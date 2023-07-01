@@ -1,0 +1,31 @@
+---
+---
+<!-- Navbar start -->
+<div class="sidebar">
+    <a href="./" id="logo">
+        <img src="shuttle.png" alt="Logo">
+    </a>
+    <a href="./"><span>Home</span></a>
+    <a href="./games"><span>Games</span></a>
+    <a href="./apps"><span>Apps</span></a>
+    <a href="./chat"><span>Chat</span></a>
+    <a href="./discord"><span>Discord</span></a>
+    <a href="./settings"><span>Settings</span></a>
+</div>
+<script is:inline>
+  let path = window.location.pathname;
+  if (path == "/shuttle/games") {
+    document.getElementById("games-nav").className = "active";
+  } else if (path == "/shuttle/apps") {
+    document.getElementById("games-nav").className = "active";
+  } else if (path == "/shuttle/games") {
+    document.getElementById("games-nav").className = "active";
+  } else if (path == "/shuttle/chat") {
+    document.getElementById("chat-nav").className = "active";
+  } else if (path == "/shuttle/discord") {
+    document.getElementById("discord-nav").className = "active";
+  } else if (path == "/shuttle/settings") {
+    document.getElementById("settings-nav").className = "active";
+  }
+</script>
+<!-- Navbar end -->

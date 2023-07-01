@@ -1,0 +1,43 @@
+---
+import StarsContainer from "../../components/shuttle/StarsContainer.astro";
+import NavBar from "../../components/shuttle/NavBar.astro";
+---
+<html>
+<head>
+  <title>Shuttle</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <script is:inline src="https://kit.fontawesome.com/be27c0ad9d.js" crossorigin="anonymous"></script>
+  <script is:inline src="./assets/js/index.js" defer></script>
+  <script is:inline src="./assets/js/settings.js"></script>
+</head>
+
+<body>
+  <StarsContainer />
+  <NavBar />
+
+  <div class="alignment-container-1">
+    <h1 class="settings-head">Settings</h1>
+    <h2 class="settings-head2">about:blank cloaking</h2>
+    <button class="button" id="ab">Go about:blank</button>
+    <h2 class="settings-head2">Title</h2>
+    <input type="text" class="settingsInput button"
+      onchange="document.title = this.value; localStorage.setItem('title', this.value)"
+      placeholder="Change Title" />
+    <input type="text" class="settingsInput button"
+      onchange="changeFavicon(this.value); localStorage.setItem('favicon', this.value)"
+      placeholder="Change Favicon (URL)" />
+    <br />
+    <h2 class="settings-head2">Browser</h2>
+    <select class="browsers" id="browsers" onchange="changeSearch(this)">
+      <option>Google</option>
+      <option>DuckDuckGo</option>
+      <option>Brave</option>
+    </select>
+  </div>
+  <script is:inline src="/script/bundle.js"></script>
+  <script is:inline src="/script/config.js"></script>
+  <script is:inline src="./assets/js/abc.js"></script>
+  <div class="background"></div>
+</body>
+</html>

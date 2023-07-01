@@ -1,5 +1,5 @@
 const buildGS = async () => {
-  const res = await fetch('/assets/json/gs.json')
+  const res = await fetch('./assets/json/gs.json')
   const json = await res.json()
   console.log(json)
   json.forEach(element => {
