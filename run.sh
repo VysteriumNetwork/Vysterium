@@ -1,3 +1,3 @@
-git clone git@github.com:VysteriumNetwork/Vysterium-Static.git static
+bash installstatic.sh
 npm install
 npm start
