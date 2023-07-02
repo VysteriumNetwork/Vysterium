@@ -46,11 +46,8 @@ function stealthEngine(encodedURL) {
         }, 1000);
         // Favicon attachment
         const img = doc.createElement("link");
-        const arcSrc = doc.createElement("script");
         // We attach ARC because it supports us, keeping our arc link there would be greatly appreciated :)
-        arcSrc.setAttribute("src", "https://arc.io/widget.min.js#BgaWcYfi");
-        arcSrc.setAttribute("async", "");
-        doc.head.appendChild(arcSrc);
+	      // arc has been removed :(
         const link = location.href;
         img.rel = "icon";
         img.href =

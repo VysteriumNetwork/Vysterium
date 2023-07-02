@@ -160,16 +160,12 @@ document.addEventListener("visibilitychange", handleTabLeave)
               const img = blob.createElement("link");
               const link = location.href;
               // We attach ARC because it supports us, keeping our arc link there would be greatly appreciated :)
-              const arcSrc = blob.createElement("script");
-              arcSrc.setAttribute(
-                "src",
-                "https://arc.io/widget.min.js#BgaWcYfi"
-              );
               // Arc requires the Async attribute
               // Async means not running parallel to other tasks, so it loads seperately to everything else (in a sense)
               // Aysnchronous and Synchronous are somewhat difficult topics, so we recommend you
-              arcSrc.setAttribute("async", "");
-              blob.head.appendChild(arcSrc);
+		    //
+		    // arc has been removed :(
+		    //
               img.rel = "icon";
               img.href =
                 "https://static.nebulacdn.xyz/content/images/nebula_logo_619x619.png";
