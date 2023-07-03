@@ -3,6 +3,7 @@ export const config = {
     cloak: "true",
     password: "true",
     loginloc: "/login",
+    edusite: "https://www.vallecitok12.com",
     users: {
         "verygood": "guesser",
     },
