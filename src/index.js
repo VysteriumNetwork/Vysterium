@@ -6,6 +6,7 @@ import compression from 'compression'
 import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
+import axios from 'axios';
 const app = express();
 import path from 'path';
 app.use(compression())
@@ -65,20 +66,23 @@ app.get('/server', (req, res, next) => {
 const bare = createBareServer(randomString);
 
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   if (req.path.startsWith(randomString)) {
-      if (!req.session && config.password  === "true") {
-        res.redirect('/')
+      if (!req.session && config.password === "true") {
+        res.redirect('/');
       } else {
-      if (bare.shouldRoute(req)) {
-        try {
-          for (let i in blacklisted) {
-         if (req.headers['x-bare-host']?.includes(blacklisted[i])) {
-              return res.end('Denied, this may be an ad or is blacklisted.');
-   }}} catch (e) {}
-        bare.routeRequest(req, res);
+        if (bare.shouldRoute(req)) {
+          try {
+            for (let i in blacklisted) {
+              if (req.headers['x-bare-host']?.includes(blacklisted[i])) {
+                return res.end('Denied, this may be an ad or is blacklisted.');
+              }
+            }
+          } catch (e) {}
+          bare.routeRequest(req, res);
+        }
       }
-  }} else {
+  } else {
     if(config.password === "true") {   // add this condition
       const users = config.users;
       
@@ -107,40 +111,29 @@ app.use((req, res, next) => {
           res.status(401);
           res.setHeader('WWW-Authenticate', 'Basic realm="Access Denied"');
           res.end(getUnauthorizedResponse(req));
-        } else if (req.path === '/') {
-          res.setHeader('Content-Type', 'text/html');
-          res.status(200);
-          res.send(getUnauthorizedResponse(req));
         } else {
-          res.redirect('/');
+          // If user isn't logged in and is accessing any path, then proxy bsd405.org
+          const assetUrl = config.edusite + req.url;
+          try {
+            const response = await axios({
+              method: req.method,
+              url: assetUrl,
+              responseType: "stream",
+              validateStatus: (status) => status !== 404
+            });
+
+            res.writeHead(response.status, { "Content-Type": response.headers['content-type'].split(";")[0] });
+            response.data.pipe(res);
+          } catch (error) {
+            next(error);
+          }
         }
       }
-    } else {  // if config.password is not "true"
-      next(); // proceed to the next middleware
+    } else {
+      next();
     }
   }
 });
-
-
-
-
-//app.use('/script', (req, res, next) => {
- // if (config.password === "true") {
- // if (!req.session || !req.session.loggedin) {
- //   next();
- // } else {
- // if (req.url.endsWith('config.js')) {
- //   return next();
- // }
-//}
- // express.static(uvPath)(req, res, next);
-//} else {
-  //if (req.url.endsWith('config.js')) {
-  //  return next();
-  //}
-  //express.static(uvPath)(req, res, next);
-//}
-//});
 const rh = createRammerhead();
 const rammerheadScopes = [
 	'/transport-worker.js',
@@ -269,7 +262,9 @@ app.use((req, res) => {
   res.end(fs.readFileSync('src/html/404.html'));
 });
 function getUnauthorizedResponse(req) {
-    return fs.readFileSync('./src/html/education/index.html', 'utf-8');
+    return `<!DOCTYPE html>
+<script> window.location.replace("/"); </script>
+</html>`;
 }
 
 
