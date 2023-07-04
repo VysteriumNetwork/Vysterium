@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+---
+---
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +11,7 @@
     <meta name="og:image" content="./images/main-icon.svg">
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.2.0/css/all.css">
-    <link rel="shortcut icon" href="images/main-icon.svg">
+    <link rel="shortcut icon" href="./images/main-icon.svg">
 
 <body>
     <div id="window">
@@ -19,11 +20,11 @@
                 <img src="./images/app-store.png" alt="app-store">
                 <h1>App Store</h1>
                 <p>Do you want to get 70+ more to play here on iRepel. If yes check out the app store!</p>
-                <a href="store.html" target="_blank"><button class="go">Go to App Store</button></a>
+                <a href="./store" target="_blank"><button class="go">Go to App Store</button></a>
                 <button class="close">No Thanks</button>
             </div>!-->
             <div class="content">
-                <img src="images/ytpng.png" alt="youtube">
+                <img src="./images/ytpng.png" alt="youtube">
                 <h1>Subscribe To Blazer</h1>
                 <p>IRepel is made by Blazer. Go give him a sub!</p>
                 <a href="https://www.youtube.com/@BlazerHM?sub_confirmation=1" target="_blank" alt="subscribe"><button class="go">Subscribe</button></a>
@@ -32,7 +33,7 @@
         <div id="clickbox"></div>
         <div id="play">
             <i class="fa-solid fa-circle-xmark" onclick="play()"></i>
-            <iframe src="./index.html" frameborder="0" id="iframe"></iframe>
+            <iframe src="./" frameborder="0" id="iframe"></iframe>
         </div>
         <div class="apps" id="apps"></div>
         <div class="apps other" id="pageTwo"></div>
@@ -43,8 +44,8 @@
         </div>
         <div id="bar" class="bar">
             <img src="./images/drive-mad.jpg" onclick="play('./game/drive-mad')" alt="drive mad">
-            <a href="./store.html" target="_blank"><img src="images/app-store.png" alt="app store"></a>
-            <img src="./images/krk.png" onclick="play('./proxy.html?url=https:/krunker.io')" alt="krunker">
+            <a href="./store" target="_blank"><img src="./images/app-store.png" alt="app store"></a>
+            <img src="./images/krk.png" onclick="play('./proxy?url=https://krunker.io')" alt="krunker">
             <img src="./images/vex6.jpeg" onclick="play('./game/vex6')" alt="vex 6">
         </div>
         <div class="slider one" id="sliderOne">
@@ -56,10 +57,10 @@
         <div class="bottom">
             <a href="https://youtube.com/c/blazerhm" target="_blank" alt="owners youtube channel"><i class="fa-brands fa-youtube" alt="owners youtube channel"></i></a>
             <a href="https://discord.gg/X2C6xqStDs" target="_blank" alt="iRepel discord server"><i class="fa-brands fa-discord" alt="iRepel discord server"></i></a>
-            <a href="store.html" target="_blank" alt="iRepel app store"><i class="fa-solid fa-store" alt="iRepel app store"></i></a>
+            <a href="./store" target="_blank" alt="iRepel app store"><i class="fa-solid fa-store" alt="iRepel app store"></i></a>
         </div>
     </div>
+
+    <script is:inline src="./js/script.js"></script>
 </body>
 </html>
-
-<script src="js/script.js"></script>
