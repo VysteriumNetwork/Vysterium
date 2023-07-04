@@ -32,7 +32,7 @@ app.use(config.loginloc, (req, res, next) => {
     res.redirect('/')
   }
 });
-const middle =  createProxyMiddleware({ target: config.edusite, changeOrigin: true, secure: true, ws: true });
+const middle =  createProxyMiddleware({ target: config.edusite, changeOrigin: true, secure: true, ws: false });
 app.get('/server', (req, res, next) => {
   if (!req.session.loggedin && config.password == "true") {
     next(); 
