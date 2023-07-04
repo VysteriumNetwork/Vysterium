@@ -97,6 +97,8 @@ app.use(async (req, res, next) => {
 });
 const rh = createRammerhead();
 const rammerheadScopes = [
+  '/hammerhead.js',
+  '/rammerhead.js',
 	'/transport-worker.js',
 	'/task.js',
 	'/iframe-task.js',
