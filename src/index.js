@@ -13,39 +13,15 @@ app.use(compression())
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const blacklisted = [];
-
-fs.readFile(path.join(__dirname, './blocklist.txt'), 'utf-8', (err, data) => {
-    if (err) {
-        console.error(err);
-        return;
-    }
-    blacklisted.push(...data.split('\n'));
-});
-
-app.use(session({
-  secret: 'randomsecretkeyreal',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false }
-}));
+fs.readFile(path.join(__dirname, './blocklist.txt'), 'utf-8', (err, data) => { if (err) { console.error(err); return; } blacklisted.push(...data.split('\n')); });
+app.use(session({ secret: 'randomsecretkeyreal', resave: false, saveUninitialized: true, cookie: { secure: false } }));
 const PORT = 80
 const server = createHttpServer();
 import createRammerhead from 'rammerhead/src/server/index.js';
-function generateRandomString(length) {
-  let result = '';
-  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    result += characters.charAt(randomIndex);
-  }
-
-  return result;
-}
+function randoms(e){for(var t="",n="abcdefghijklmnopqrstuvwxyz0123456789",r=0;r<e;r++)t+=n.charAt(Math.floor(Math.random()*n.length));return t}
 let randomString;
-
 if (config.dynamicbare === "true") {
-  randomString = '/' + generateRandomString(50) + '/' + generateRandomString(50) + '/';
+  randomString = '/' + randoms(50) + '/' + randoms(50) + '/';
 } else {
   randomString = '/bare/';
 }
@@ -64,8 +40,6 @@ app.get('/server', (req, res, next) => {
   }
 });
 const bare = createBareServer(randomString);
-
-
 app.use(async (req, res, next) => {
   if (req.path.startsWith(randomString)) {
       if (!req.session && config.password === "true") {
@@ -83,7 +57,7 @@ app.use(async (req, res, next) => {
         }
       }
   } else {
-    if(config.password === "true") {   // add this condition
+    if(config.password === "true") {
       const users = config.users;
       
       const authHeader = req.headers.authorization;
@@ -112,7 +86,6 @@ app.use(async (req, res, next) => {
           res.setHeader('WWW-Authenticate', 'Basic realm="Access Denied"');
           res.end(getUnauthorizedResponse(req));
         } else {
-          // If user isn't logged in and is accessing any path, then proxy bsd405.org
           const assetUrl = config.edusite + req.url;
           try {
             const response = await axios({
@@ -121,7 +94,6 @@ app.use(async (req, res, next) => {
               responseType: "stream",
               validateStatus: (status) => status !== 404
             });
-
             res.writeHead(response.status, { "Content-Type": response.headers['content-type'].split(";")[0] });
             response.data.pipe(res);
           } catch (error) {
@@ -159,7 +131,6 @@ function shouldRouteRh(req) {
 function routeRhRequest(req, res) {
   rh.emit('request', req, res);
 }
-//@ts-ignore
 function routeRhUpgrade(req, socket, head) {
     try {
       rh.emit('upgrade', req, socket, head);
@@ -168,37 +139,18 @@ function routeRhUpgrade(req, socket, head) {
   }
 const rammerheadSession = /^\/[a-z0-9]{32}/;
 if (config.cloak === "true") {
-app.use((req, res, next) => {
-  const url = req.url;
-  if (url.endsWith('.html')) {
-    res.statusCode = 404;
-    next();
-  } else {
-    if (url.endsWith('/')) {
-      res.statusCode = 404;
-      next();
-    } else {
-    next();
-  }
-}});
+  app.use((e,t,n)=>{const r=e.url;if(r.endsWith(".html")){t.statusCode=404;n()}else{if(r.endsWith("/")){t.statusCode=404;n()}else{n()}}});
 }
 app.use((req, res, next) => {
   if (shouldRouteRh(req)) {
     routeRhRequest(req, res);
-  } else {
-    next();
-  }
-});
-
-app.use((req, res, next) => {
-  if (req.upgrade) {
+  } else if (req.upgrade) {
     routeRhUpgrade(req, req.socket, req.head);
   } else {
     next();
   }
 });
 app.use(express.static(fileURLToPath(new URL("../static/", import.meta.url))));
-
 const shuttleroutes = {
   '/shuttle/': 'index.html',
   '/shuttle/games': 'games.html',
@@ -213,32 +165,25 @@ const nebularoutes = {
   '/nebula/privacy': 'privacy.html',
   '/nebula/unv': 'unv.html',
 };
-
-function handleRoutes(req, res, next) {
-  const nfilename = nebularoutes[req.url];
-  if (nfilename) {
+app.use((req, res, next) => {
+  const nebulaFilename = nebularoutes[req.url];
+  const shuttleFilename = shuttleroutes[req.url];
+  if (nebulaFilename) {
     res.statusCode = 404;
     res.setHeader("Content-Type", "text/html");
-    res.end(fs.readFileSync(`./src/html/nebula/${nfilename}`));
+    res.end(fs.readFileSync(`./src/html/nebula/${nebulaFilename}`));
+  } else if (shuttleFilename) {
+    res.statusCode = 404;
+    res.setHeader("Content-Type", "text/html");
+    res.end(fs.readFileSync(`./src/html/shuttle/${shuttleFilename}`));
+  } else if (req.url.startsWith('/shuttle/') || req.url.startsWith('/nebula/')) {
+    res.statusCode = 404;
+    res.setHeader("Content-Type", "text/html");
+    res.end(fs.readFileSync('src/html/404.html'));
   } else {
-    const filename = shuttleroutes[req.url];
-    if (filename) {
-      res.statusCode = 404;
-      res.setHeader("Content-Type", "text/html");
-      res.end(fs.readFileSync(`./src/html/shuttle/${filename}`));
-    } else if (req.url.startsWith('/shuttle/') || req.url.startsWith('/nebula/')) {
-      res.statusCode = 404;
-      res.end(fs.readFileSync('src/html/404.html'));
-      next();
-    } else {
-      // If the requested URL does not match any of the routes, pass the request to the next middleware function
-      next();
-    }
+    next();
   }
-}
-
-
-app.use(handleRoutes)
+});
 
 server.on("request", app);
 server.on('upgrade', (req, socket, head) => {
@@ -255,24 +200,16 @@ server.on('upgrade', (req, socket, head) => {
       socket.end();
   }
 });
-
 app.use((req, res) => {
-  res.statusCode = 404;
+res.statusCode = 404;
   res.setHeader("Content-Type", "text/html");
   res.end(fs.readFileSync('src/html/404.html'));
 });
 function getUnauthorizedResponse(req) {
-    return `<!DOCTYPE html>
-<script> window.location.replace("/"); </script>
-</html>`;
+    return `<!DOCTYPE html><script> window.location.replace("/")</script></html>`;
 }
-
-
 server.on("listening", () => {
   const addr = server.address();
-
   console.log(`Server running on port ${addr.port}`)
-  console.log("");
-  console.log("You can now view it in your browser.")
 });
 server.listen({ port: PORT });
