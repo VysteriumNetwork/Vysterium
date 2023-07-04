@@ -1,1 +1,1 @@
-git clone git@github.com:VysteriumNetwork/Vysterium-Static.git static
+git clone --depth 1 git@github.com:VysteriumNetwork/Vysterium-Static.git static
