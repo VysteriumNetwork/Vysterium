@@ -27,7 +27,7 @@ if( window.location.pathname == "/"){
   if(params.url){
     var frameUrl = params.url;
   } else {
-    var frameUrl = "/main.html";
+    var frameUrl = "/utopia/main";
   }
   document.querySelector(".frame").src = window.location.origin + frameUrl;
 

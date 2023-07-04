@@ -1,18 +1,13 @@
+---
+---
+<html>
 <head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RD0VC48YMW"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-RD0VC48YMW');
-  </script>
+  <title></title>
 </head>
-
 <body>
-<script src="/script/bundle.js"></script>
-<script src="/script/config.js"></script>
-<script>
+  <script is:inline src="/script/bundle.js"></script>
+  <script is:inline src="/script/config.js"></script>
+  <script is:inline>
 function encodeUrl(str){
   if (!str) return str;
   return encodeURIComponent(str.toString().split('').map((char, ind) => ind % 2 ? String.fromCharCode(char.charCodeAt() ^ 2) : char).join(''));
@@ -23,7 +18,6 @@ window.navigator.serviceWorker.register('/sw.js', {
 }).then(() => {
     console.log("Service worker (for Quick Link) registered.");
 });
-
-</script>
-
+  </script>
 </body>
+</html>
