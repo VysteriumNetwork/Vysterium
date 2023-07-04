@@ -26,7 +26,7 @@
     "express-session": "^1.17.3",
     "fs": "^0.0.1-security",
     "http-proxy-middleware": "^2.0.6",
-    "rammerhead": "https://github.com/VysteriumNetwork/rhnew/releases/download/idk/rh.tgz",
+    "rammerhead": "https://github.com/holy-unblocker/rammerhead/releases/download/v1.2.41-holy.5/rammerhead-1.2.41-holy.5.tgz",
     "tailwindcss": "^3.3.2"
   },
   "engines": {
