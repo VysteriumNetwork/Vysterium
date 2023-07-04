@@ -2,11 +2,11 @@ import createBareServer from "@tomphttp/bare-server-node";
 import { fileURLToPath } from "node:url";
 import { createServer as createHttpServer } from "node:http";
 import fs from 'fs';
+import { createProxyMiddleware } from 'http-proxy-middleware'
 import compression from 'compression'
 import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
-import axios from 'axios';
 const app = express();
 import path from 'path';
 app.use(compression())
@@ -32,6 +32,7 @@ app.use(config.loginloc, (req, res, next) => {
     res.redirect('/')
   }
 });
+const middle =  createProxyMiddleware({ target: config.edusite, changeOrigin: true, secure: true, ws: true });
 app.get('/server', (req, res, next) => {
   if (!req.session.loggedin && config.password == "true") {
     next(); 
@@ -86,19 +87,7 @@ app.use(async (req, res, next) => {
           res.setHeader('WWW-Authenticate', 'Basic realm="Access Denied"');
           res.end(getUnauthorizedResponse(req));
         } else {
-          const assetUrl = config.edusite + req.url;
-          try {
-            const response = await axios({
-              method: req.method,
-              url: assetUrl,
-              responseType: "stream",
-              validateStatus: (status) => status !== 404
-            });
-            res.writeHead(response.status, { "Content-Type": response.headers['content-type'].split(";")[0] });
-            response.data.pipe(res);
-          } catch (error) {
-            next(error);
-          }
+        middle(req, res, next)
         }
       }
     } else {
