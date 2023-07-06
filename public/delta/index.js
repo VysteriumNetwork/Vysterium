@@ -10,7 +10,7 @@ document.getElementById('proi').addEventListener('keydown', function(e) {
    
           const iframee = document.querySelector(`.browser-tab-content-iframe[active]`);
           var surelol = input.split("genow://")[1]
-      let pageThing = './hostedPages/' + surelol + '.html'
+      let pageThing = './hostedPages/' + surelol
        iframee.src = pageThing;
      } else if (input.indexOf("example.com") > -1){
        const iframee = document.querySelector(`.browser-tab-content-iframe[active]`);

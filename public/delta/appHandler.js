@@ -3,14 +3,14 @@ var defaultApps = {
     title =  "Settings",
     icon = "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fdownload_144812.png&f=1&nofb=1",
     relativeUrl = true,
-    url = './settings.html',
+    url = './settings',
     uninstallable = false
   ],
   Terminal: [
    title = "Terminal",
    icon = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn2.iconfinder.com%2Fdata%2Ficons%2Fthe-circle-icons%2F512%2Fterminal.png&f=1&nofb=1",
    relativeUrl = true,
-   url = './term.html',
+   url = './term',
    uninstallable = false
   ]
 }
