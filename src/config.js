@@ -6,8 +6,11 @@ export const config = {
     enableSessionExpiration: true,
     edusite: "https://www.nhaschools.com/",
     users: {
-        "sus": 'imposter',
+        "a": {
+            password: "b",
+            maxAge: null // null means default maxAge below
+          },
     },
-    maxAge: 1
+    maxAge: 60 * 24 * 31 // 1 month
     //maxage is in minutes, 60 is 1 hour, 60 * 24 is a day and 60 * 24 * 365 is a year
 };

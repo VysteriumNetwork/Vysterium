@@ -56,12 +56,13 @@ app.use(async (req, res, next) => {
       const authHeader = req.headers.authorization;
 
       if (req.session.loggedin) {
-        if (Date.now() - req.session.cookie.originalMaxAge >= config.maxAge * 60 * 1000) {
+        const userMaxAge = users[req.session.username]?.maxAge || config.maxAge;
+        if (Date.now() - req.session.cookie.originalMaxAge >= userMaxAge * 60 * 1000) {
           req.session.destroy(err => {
             if (err) {
               console.log(err);
             }
-            res.status(401).send('Please login again');
+            res.status(401).send('Your session expired due to site restrictions from your local administrator');
             return;
           });
         } else {
@@ -70,17 +71,17 @@ app.use(async (req, res, next) => {
       } else if (authHeader) {
         const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf8');
         const [username, password] = auth.split(':');
-        const userPassword = users[username];
+        const userDetails = users[username];
 
-        if (userPassword && userPassword === password) {
+        if (userDetails && userDetails.password === password) {
           req.session.loggedin = true;
-          
+          req.session.username = username;
           req.session.cookie.originalMaxAge = Date.now();
-          if (req.path === config.loginloc) {
-            res.redirect('/');
-            return;
-          }
+          if (req.path == config.loginloc) {
+            res.redirect('/')
+          } else {
           next();
+          }
           return;
         }
       } else {
@@ -97,9 +98,6 @@ app.use(async (req, res, next) => {
     }
   }
 });
-
-
-
 
 const rh = createRammerhead();
 const rammerheadScopes = [
