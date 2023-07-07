@@ -9,6 +9,8 @@ import { config } from './config.js';
 import express from 'express';
 const app = express();
 import path from 'path';
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(compression())
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,7 +35,67 @@ app.get('/server', (req, res, next) => {
     res.json({ bare: randomString });
   }
 });
+fs.watch('./src/logins.json', (eventType, filename) => {
+  if (eventType === 'change') {
+    console.log(`logins.json changed`);
+    config.users = JSON.parse(fs.readFileSync('./src/logins.json', 'utf-8'));
+  }
+});
 const bare = createBareServer(randomString);
+app.get('/logout', (req, res, next) => {
+  if (req.session.loggedin) {
+  req.session.destroy((err) => {
+    if (err) {
+      console.log(err);
+    }
+    // Send a 401 status to indicate that the user is now logged out.
+    res.status(401).end();
+  });
+} else {
+  next();
+}
+});
+if (config.signup == true) {
+  app.get(config.signuppath, async (req, res) => {
+    res.sendFile(__dirname + '/signup.html');
+  })
+  app.post(config.signuppath, async (req, res) => {
+    let username = req.body.username;
+    let password = req.body.password;
+    let loginTime = req.body.loginTime;
+  
+    // Password requirements: at least 8 characters and includes a symbol
+    const passwordRequirements = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+  
+    if (!username || !password || !loginTime) {
+      return res.status(400).json({ message: 'Missing username, password or login time.' });
+    }
+  
+    let users = readUsersFromFile();
+  
+    if (users[username]) {
+      return res.status(409).json({ message: 'Username already exists.' });
+    }
+  
+    // Store user
+    users[username] = {
+      password: password,
+      maxAge: loginTime
+    };
+  
+    // Write users back to the file
+    fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
+  
+    res.status(200).json({ message: 'User successfully created.' });
+  });
+  
+  function readUsersFromFile() {
+      let rawdata = fs.readFileSync('./src/logins.json');
+      let users = JSON.parse(rawdata);
+      return users;
+  }
+  
+}
 app.use(async (req, res, next) => {
   if (req.path.startsWith(randomString)) {
     if (bare.shouldRoute(req)) {
@@ -91,8 +153,8 @@ app.use(async (req, res, next) => {
           res.end('Please provide login credentials');
         } else {
           middle(req, res, next);
+          }
         }
-      }
     } else {
       next();
     }
@@ -200,9 +262,6 @@ res.statusCode = 404;
   res.setHeader("Content-Type", "text/html");
   res.end(fs.readFileSync('src/html/404.html'));
 });
-function getUnauthorizedResponse(req) {
-    return `<!DOCTYPE html><script> window.location.replace("/")</script></html>`;
-}
 server.on("listening", () => {
   const addr = server.address();
   console.log(`Server running on port ${addr.port}`)
