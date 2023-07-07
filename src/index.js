@@ -25,13 +25,6 @@ if (config.dynamicbare === "true") {
 } else {
   randomString = '/bare/';
 }
-app.use(config.loginloc, (req, res, next) => {
-  if (!req.session.loggedin && config.password == "true") {
-    next(); 
-  } else {
-    res.redirect('/')
-  }
-});
 const middle =  createProxyMiddleware({ target: config.edusite, changeOrigin: true, secure: true, ws: false });
 app.get('/server', (req, res, next) => {
   if (!req.session.loggedin && config.password == "true") {
@@ -43,33 +36,46 @@ app.get('/server', (req, res, next) => {
 const bare = createBareServer(randomString);
 app.use(async (req, res, next) => {
   if (req.path.startsWith(randomString)) {
-      if (!req.session && config.password === "true") {
-        res.redirect('/');
-      } else {
-        if (bare.shouldRoute(req)) {
-          try {
-            for (let i in blacklisted) {
-              if (req.headers['x-bare-host']?.includes(blacklisted[i])) {
-                return res.end('Denied, this may be an ad or is blacklisted.');
-              }
-            }
-          } catch (e) {}
-          bare.routeRequest(req, res);
+    if (bare.shouldRoute(req)) {
+      try {
+        for (let i in blacklisted) {
+          if (req.headers['x-bare-host']?.includes(blacklisted[i])) {
+            return res.end('Denied, this may be an ad or is blacklisted.');
+          }
         }
+      } catch (e) {
+        console.log(e);
       }
+      bare.routeRequest(req, res);
+    } else {
+      next();
+    }
   } else {
-    if(config.password === "true") {
+    if (config.password === "true") {
       const users = config.users;
-      
       const authHeader = req.headers.authorization;
-  
-      if (authHeader) {
+
+      if (req.session.loggedin) {
+        if (Date.now() - req.session.cookie.originalMaxAge >= config.maxAge * 60 * 1000) {
+          req.session.destroy(err => {
+            if (err) {
+              console.log(err);
+            }
+            res.status(401).send('Please login again');
+            return;
+          });
+        } else {
+          next();
+        }
+      } else if (authHeader) {
         const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf8');
         const [username, password] = auth.split(':');
         const userPassword = users[username];
-          
+
         if (userPassword && userPassword === password) {
           req.session.loggedin = true;
+          
+          req.session.cookie.originalMaxAge = Date.now();
           if (req.path === config.loginloc) {
             res.redirect('/');
             return;
@@ -77,17 +83,13 @@ app.use(async (req, res, next) => {
           next();
           return;
         }
-      }
-          
-      if (req.session.loggedin) {
-        next();
       } else {
         if (req.path === config.loginloc) {
           res.status(401);
           res.setHeader('WWW-Authenticate', 'Basic realm="Access Denied"');
-          res.end(getUnauthorizedResponse(req));
+          res.end('Please provide login credentials');
         } else {
-        middle(req, res, next)
+          middle(req, res, next);
         }
       }
     } else {
@@ -95,6 +97,10 @@ app.use(async (req, res, next) => {
     }
   }
 });
+
+
+
+
 const rh = createRammerhead();
 const rammerheadScopes = [
   '/hammerhead.js',
