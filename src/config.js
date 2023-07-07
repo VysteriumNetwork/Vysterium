@@ -6,8 +6,8 @@ export const config = {
     enableSessionExpiration: true,
     edusite: "https://www.nhaschools.com/",
     users: {
-        "a": {
-            password: "b",
+        "sus": {
+            password: "imposter",
             maxAge: null // null means default maxAge below
           },
     },
