@@ -144,7 +144,6 @@ app.use(async (req, res, next) => {
           } else {
           next();
           }
-          return;
         }
       } else {
         if (req.path === config.loginloc) {
