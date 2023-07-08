@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup</title>
-    <div id="notification" class="hidden">
-        <div id="close-btn" onclick="closeNotification()">×</div>
-        <p id="notification-message"></p>
-    </div>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,16 +20,23 @@
             color: #333;
         }
         #signup-form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 300px;
-            margin-top: 50px;
-            display: flex;
-            flex-direction: column;
-        }
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* make items fill the width of the box */
+}
+
+#signup-form > * {
+    flex: 1 1 auto; 
+}
+
+
         label {
             display: block;
             margin-bottom: 5px;
@@ -84,45 +87,66 @@
             margin: 0;
             vertical-align: middle;
         }
-        #notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px;
-    background-color: #fff;
-    color: #007BFF;
-    border-radius: 5px;
-    min-width: 300px;
-    max-width: 80%;
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-    transition: opacity 0.5s, transform 0.5s;
-    transform: translateY(-20px);
-    opacity: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 50px;
+        #loginTime, #loginTimeLabel {
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out;
     overflow: hidden;
 }
 
-#notification.show {
-    transform: translateY(0);
+#loginTimeLabel {
+    margin-bottom: 2px;
+}
+.hidden {
+    max-height: 0 !important;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+    opacity: 0 !important;
+}
+
+.show {
+    max-height: 100px;
     opacity: 1;
+    padding: 10px;
+    margin-bottom: 10px;
 }
-#notification.hide {
-    transform: translateY(0);
-    opacity: 1;
-}
-#close-btn {
-    cursor: pointer;
-    font-size: 18px;
-    background: transparent;
-    border: none;
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 5px;
-}
+
+        #notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            background-color: #fff;
+            color: #007BFF;
+            border-radius: 5px;
+            min-width: 300px;
+            max-width: 80%;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+            transition: opacity 0.5s, transform 0.5s;
+            transform: translateY(-20px);
+            opacity: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 50px;
+            overflow: hidden;
+        }
+        #notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        #notification.hide {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        #close-btn {
+            cursor: pointer;
+            font-size: 18px;
+            background: transparent;
+            border: none;
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
@@ -136,19 +160,35 @@
             <input type="checkbox" id="permAccess" name="permAccess" checked>
             <label for="permAccess">Permanent Access</label>
         </div>
-        <label for="loginTime" id="loginTimeLabel" class="hidden">Login Time (in minutes):</label>
-        <input type="number" id="loginTime" name="loginTime" class="hidden">
+        <label id="loginTimeLabel" class="hidden">Login Session Time:</label>
+        <div id="loginTime" class="hidden">
+            <input type="number" id="loginWeeks" name="loginWeeks" placeholder="Weeks" min="0">
+            <input type="number" id="loginDays" name="loginDays" placeholder="Days" min="0">
+            <input type="number" id="loginHours" name="loginHours" placeholder="Hours" min="0" max="23">
+            <input type="number" id="loginMinutes" name="loginMinutes" placeholder="Minutes" min="0" max="59">
+        </div>
         <input type="submit" value="Signup">
     </form>
+    <div id="notification" class="hidden">
+        <div id="close-btn" onclick="closeNotification()">×</div>
+        <p id="notification-message"></p>
+    </div>
     <script>
     document.getElementById('signup-form').addEventListener('submit', function(e) {
         e.preventDefault();
         let username = document.getElementById('username').value;
         let password = document.getElementById('password').value;
-        let loginTime = document.getElementById('loginTime').value;
+        let loginDays = document.getElementById('loginDays').value;
+        let loginWeeks = document.getElementById('loginWeeks').value;
+        let loginHours = document.getElementById('loginHours').value;
+        let loginMinutes = document.getElementById('loginMinutes').value;
         let permAccess = document.getElementById('permAccess').checked;
+
+        let totalLoginTime;
         if (permAccess) {
-            loginTime = 60 * 24 * 365 * 10; // 10 years in minutes
+            totalLoginTime = 60 * 24 * 365 * 10; // 10 years in minutes
+        } else {
+            totalLoginTime = (loginWeeks * 7 * 24 * 60) + (loginDays * 24 * 60) + (loginHours * 60) + Number(loginMinutes);
         }
 
         fetch('/signup', {
@@ -159,7 +199,7 @@
             body: JSON.stringify({
                 username: username,
                 password: password,
-                loginTime: loginTime
+                loginTime: totalLoginTime
             }),
         })
         .then(response => response.json())
@@ -178,17 +218,29 @@
 
     document.getElementById('permAccess').addEventListener('change', function(e) {
         if (this.checked) {
-            document.getElementById('loginTime').removeAttribute("required");
+            document.getElementById('loginTimeLabel').style.display = "block";
+            document.getElementById('loginTime').style.display = "flex";
         } else {
-            document.getElementById('loginTime').setAttribute("required", "");
+            document.getElementById('loginTimeLabel').style.display = "show";
+            document.getElementById('loginTime').style.display = "flex";
         }
     });
-
-    function closeNotification() {
-        document.getElementById('notification').classList.remove('show');
-        document.getElementById('notification').classList.add('hidden');
+    document.getElementById('permAccess').addEventListener('change', function(e) {
+    if (this.checked) {
+        document.getElementById('loginTime').removeAttribute("required");
+        document.getElementById('loginTime').classList.remove("show");
+        document.getElementById('loginTime').classList.add("hidden");
+        document.getElementById('loginTimeLabel').classList.remove("show");
+        document.getElementById('loginTimeLabel').classList.add("hidden");
+    } else {
+        document.getElementById('loginTime').setAttribute("required", "");
+        document.getElementById('loginTime').classList.remove("hidden");
+        document.getElementById('loginTime').classList.add("show");
+        document.getElementById('loginTimeLabel').classList.remove("hidden");
+        document.getElementById('loginTimeLabel').classList.add("show");
     }
+});
+
     </script>
-    
-</body>
-</html>
+    </body>
+    </html>
