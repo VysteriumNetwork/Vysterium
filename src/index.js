@@ -43,14 +43,15 @@ fs.watch('./src/logins.json', (eventType, filename) => {
   }
 });
 const bare = createBareServer(randomString);
-app.get('/logout', (req, res, next) => {
+app.get(config.logouturl, (req, res, next) => {
   if (req.session.loggedin) {
   req.session.destroy((err) => {
     if (err) {
       console.log(err);
     }
     // Send a 401 status to indicate that the user is now logged out.
-    res.status(401).end();
+    res.status(401);
+    res.sendFile(__dirname + '/endsession.html');
   });
 } else {
   next();

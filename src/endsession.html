@@ -35,25 +35,25 @@
 
             setTimeout(function() {
                 message1.style.opacity = "1";
-            }, 500); // Start fading in after 0.5 second
+            }, 1500);
 
             setTimeout(function() {
                 message1.style.opacity = "0";
-            }, 2500); // Start fading out after 2.5 seconds
+            }, 5000);
 
             setTimeout(function() {
                 message1.style.display = 'none';
                 message2.style.opacity = "1";
-            }, 4500); // Start fading in second message after 4.5 seconds
+            }, 6500);
 
             setTimeout(function() {
                 message2.style.opacity = "0";
-                body.style.backgroundColor = "#808080"; // Fade to grey
-            }, 6500); // Start fading out second message after 6.5 seconds
+                body.style.backgroundColor = "#5A5A5A";
+            }, 8000);
 
             setTimeout(function() {
                 window.location.href = "/";
-            }, 8000); // Redirect after 9 seconds
+            }, 11000);
         };
     </script>
 </head>

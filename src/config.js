@@ -14,5 +14,6 @@ export let config = {
     signup: true,
     signuppath: '/signup',
     maxsignins: 2,
-    signintimeout: 300 * 1000 // 5 mins
+    signintimeout: 300 * 1000, // 5 mins
+    logouturl: '/logout'
 };
