@@ -4,6 +4,7 @@ import { createServer as createHttpServer } from "node:http";
 import fs from 'fs';
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import compression from 'compression'
+import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
@@ -37,7 +38,7 @@ app.get('/server', (req, res, next) => {
 });
 fs.watch('./src/logins.json', (eventType, filename) => {
   if (eventType === 'change') {
-    console.log(`logins.json changed`);
+    console.log(`new user added`);
     config.users = JSON.parse(fs.readFileSync('./src/logins.json', 'utf-8'));
   }
 });
@@ -56,10 +57,16 @@ app.get('/logout', (req, res, next) => {
 }
 });
 if (config.signup == true) {
+  const signupLimiter = rateLimit({
+    windowMs: 300 * 1000, // 1 hour
+    max: 99, // limit each IP to 1 request per windowMs
+    message: "Too many signups from this IP, please try again after five minutes"
+  });
+  
   app.get(config.signuppath, async (req, res) => {
     res.sendFile(__dirname + '/signup.html');
   })
-  app.post(config.signuppath, async (req, res) => {
+  app.post(config.signuppath, signupLimiter, async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
     let loginTime = req.body.loginTime;
@@ -90,11 +97,10 @@ if (config.signup == true) {
   });
   
   function readUsersFromFile() {
-      let rawdata = fs.readFileSync('./src/logins.json');
-      let users = JSON.parse(rawdata);
-      return users;
-  }
-  
+    let rawdata = fs.readFileSync('./src/logins.json');
+    let users = JSON.parse(rawdata);
+    return users;
+  }  
 }
 app.use(async (req, res, next) => {
   if (req.path.startsWith(randomString)) {
