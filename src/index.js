@@ -50,7 +50,7 @@ app.get(config.logouturl, (req, res, next) => {
       console.log(err);
     }
     res.status(401);
-    res.sendFile(__dirname + '/endsession.html');
+    res.sendFile(__dirname + '/html/endsession.html');
   });
 } else {
   next();
@@ -64,7 +64,7 @@ if (config.signup == true) {
   });
   
   app.get(config.signuppath, async (req, res) => {
-    res.sendFile(__dirname + '/signup.html');
+    res.sendFile(__dirname + '/html/signup.html');
   })
   app.post(config.signuppath, signupLimiter, async (req, res) => {
     let username = req.body.username;
@@ -127,7 +127,7 @@ app.use(async (req, res, next) => {
               console.log(err);
             }
             res.status(401)
-            res.sendFile(__dirname + '/endsession.html');
+            res.sendFile(__dirname + '/html/endsession.html');
             return;
           });
         } else {
