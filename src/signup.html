@@ -160,7 +160,7 @@
             <input type="checkbox" id="permAccess" name="permAccess" checked>
             <label for="permAccess">Permanent Access</label>
         </div>
-        <label id="loginTimeLabel" class="hidden">Login Session Time:</label>
+        <label id="loginTimeLabel" class="hidden">Session Duration:</label>
         <div id="loginTime" class="hidden">
             <input type="number" id="loginWeeks" name="loginWeeks" placeholder="Weeks" min="0">
             <input type="number" id="loginDays" name="loginDays" placeholder="Days" min="0">
@@ -186,7 +186,7 @@
 
         let totalLoginTime;
         if (permAccess) {
-            totalLoginTime = 60 * 24 * 365 * 10; // 10 years in minutes
+            totalLoginTime = "perm"
         } else {
             totalLoginTime = (loginWeeks * 7 * 24 * 60) + (loginDays * 24 * 60) + (loginHours * 60) + Number(loginMinutes);
         }

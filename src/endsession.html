@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Over</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            position: relative;
+            transition: background-color 2s ease-in-out;
+        }
+        .message {
+            font-size: 24px;
+            color: #333;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            position: absolute;
+            text-align: center;
+            width: 100%;
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            var message1 = document.getElementById('message1');
+            var message2 = document.getElementById('message2');
+            var body = document.body;
+
+            setTimeout(function() {
+                message1.style.opacity = "1";
+            }, 500); // Start fading in after 0.5 second
+
+            setTimeout(function() {
+                message1.style.opacity = "0";
+            }, 2500); // Start fading out after 2.5 seconds
+
+            setTimeout(function() {
+                message1.style.display = 'none';
+                message2.style.opacity = "1";
+            }, 4500); // Start fading in second message after 4.5 seconds
+
+            setTimeout(function() {
+                message2.style.opacity = "0";
+                body.style.backgroundColor = "#808080"; // Fade to grey
+            }, 6500); // Start fading out second message after 6.5 seconds
+
+            setTimeout(function() {
+                window.location.href = "/";
+            }, 8000); // Redirect after 9 seconds
+        };
+    </script>
+</head>
+<body>
+    <div id="message1" class="message">
+        Your browsing session is over.
+    </div>
+    <div id="message2" class="message">
+        Please log in again.
+    </div>
+</body>
+</html>

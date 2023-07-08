@@ -121,16 +121,21 @@ app.use(async (req, res, next) => {
 
       if (req.session.loggedin) {
         const userMaxAge = users[req.session.username]?.maxAge || config.maxAge;
-        if (Date.now() - req.session.cookie.originalMaxAge >= userMaxAge * 60 * 1000) {
+        if (Date.now() - req.session.cookie.originalMaxAge >= userMaxAge * 60 * 1000 && userMaxAge != "perm") {
           req.session.destroy(err => {
             if (err) {
               console.log(err);
             }
-            res.status(401).send('Your session expired due to site restrictions from your local administrator');
+            res.status(401)
+            res.sendFile(__dirname + '/endsession.html');
             return;
           });
         } else {
+          if (req.path == config.loginloc) {
+            res.redirect('/')
+          } else {
           next();
+          }
         }
       } else if (authHeader) {
         const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf8');
@@ -151,7 +156,7 @@ app.use(async (req, res, next) => {
         if (req.path === config.loginloc) {
           res.status(401);
           res.setHeader('WWW-Authenticate', 'Basic realm="Access Denied"');
-          res.end('Please provide login credentials');
+          res.end('Please Login again');
         } else {
           middle(req, res, next);
           }

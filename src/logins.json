@@ -2,5 +2,9 @@
   "sus": {
     "password": "imposter",
     "maxAge": null
+  },
+  "verygood": {
+    "password": "amogus",
+    "maxAge": "perm"
   }
 }
