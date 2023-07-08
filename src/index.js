@@ -49,7 +49,6 @@ app.get(config.logouturl, (req, res, next) => {
     if (err) {
       console.log(err);
     }
-    // Send a 401 status to indicate that the user is now logged out.
     res.status(401);
     res.sendFile(__dirname + '/endsession.html');
   });
@@ -141,23 +140,27 @@ app.use(async (req, res, next) => {
       } else if (authHeader) {
         const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf8');
         const [username, password] = auth.split(':');
-        const userDetails = users[username];
-
-        if (userDetails && userDetails.password === password) {
+        const userPassword = users[username];
+        if (userPassword && userPassword.password === password) {
           req.session.loggedin = true;
           req.session.username = username;
           req.session.cookie.originalMaxAge = Date.now();
           if (req.path == config.loginloc) {
-            res.redirect('/')
-          } else {
-          next();
+            res.redirect('/');
+            return;
           }
+          next();
+          return;
+        } else {
+          res.status(401);
+            res.setHeader('WWW-Authenticate', 'Basic realm="401');
+            res.end(getUnauthorizedResponse(req));
         }
       } else {
         if (req.path === config.loginloc) {
-          res.status(401);
-          res.setHeader('WWW-Authenticate', 'Basic realm="Access Denied"');
-          res.end('Please Login again');
+            res.status(401);
+            res.setHeader('WWW-Authenticate', 'Basic realm="401');
+            res.end(getUnauthorizedResponse(req));
         } else {
           middle(req, res, next);
           }
@@ -269,6 +272,11 @@ res.statusCode = 404;
   res.setHeader("Content-Type", "text/html");
   res.end(fs.readFileSync('src/html/404.html'));
 });
+function getUnauthorizedResponse() {
+  return `<!DOCTYPE html>
+  <script> window.location.replace("/"); </script>
+  </html>`;
+}
 server.on("listening", () => {
   const addr = server.address();
   console.log(`Server running on port ${addr.port}`)
