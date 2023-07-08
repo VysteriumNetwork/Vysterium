@@ -13,4 +13,6 @@ export let config = {
     //maxage is in minutes, 60 is 1 hour, 60 * 24 is a day and 60 * 24 * 365 is a year
     signup: true,
     signuppath: '/signup',
+    maxsignins: 2,
+    signintimeout: 300 * 1000 // 5 mins
 };

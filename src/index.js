@@ -58,8 +58,8 @@ app.get('/logout', (req, res, next) => {
 });
 if (config.signup == true) {
   const signupLimiter = rateLimit({
-    windowMs: 300 * 1000, // 1 hour
-    max: 99, // limit each IP to 1 request per windowMs
+    windowMs: config.signintimeout, // 1 hour
+    max: config.maxsignins, // limit each IP to 1 request per windowMs
     message: "Too many signups from this IP, please try again after five minutes"
   });
   
@@ -70,10 +70,6 @@ if (config.signup == true) {
     let username = req.body.username;
     let password = req.body.password;
     let loginTime = req.body.loginTime;
-  
-    // Password requirements: at least 8 characters and includes a symbol
-    const passwordRequirements = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-  
     if (!username || !password || !loginTime) {
       return res.status(400).json({ message: 'Missing username, password or login time.' });
     }
