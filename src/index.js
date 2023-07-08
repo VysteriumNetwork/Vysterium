@@ -152,10 +152,12 @@ app.use(async (req, res, next) => {
           next();
           return;
         } else {
+          if (req.path == config.loginloc) {
           res.status(401);
             res.setHeader('WWW-Authenticate', 'Basic realm="401');
             res.end(getUnauthorizedResponse(req));
         }
+      }
       } else {
         if (req.path === config.loginloc) {
             res.status(401);
