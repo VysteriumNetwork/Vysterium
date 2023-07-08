@@ -34,6 +34,9 @@
             display: block;
             margin-bottom: 5px;
         }
+        label.important {
+            font-weight: bold;
+        }
         input[type="text"], input[type="password"], input[type="number"] {
             width: 100%;
             padding: 10px;
@@ -82,9 +85,9 @@
 <body>
     <h1>Signup</h1>
     <form id="signup-form">
-        <label for="username">Username:</label>
+        <label for="username" class="important">Username:</label>
         <input type="text" id="username" name="username" required>
-        <label for="password">Password:</label>
+        <label for="password" class="important">Password:</label>
         <input type="password" id="password" name="password" required>
         <div id="perm-access">
             <input type="checkbox" id="permAccess" name="permAccess" checked>
@@ -94,7 +97,6 @@
         <input type="number" id="loginTime" name="loginTime" class="hidden" required>
         <input type="submit" value="Signup">
     </form>
-
     <script>
         document.getElementById('signup-form').addEventListener('submit', function(e) {
             e.preventDefault();
