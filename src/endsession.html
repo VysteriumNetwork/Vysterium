@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Session Over</title>
+    <link rel="icon" type="data:image/svg+xml" href="data:image/svg+xml;charset=UTF-8,%3c?xml version='1.0' encoding='UTF-8'?%3e%3c!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3e%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' width='225px' height='225px' style='shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd' xmlns:xlink='http://www.w3.org/1999/xlink'%3e%3cg%3e%3cpath style='opacity:1' fill='%23f5f5f5' d='M -0.5,-0.5 C 74.5,-0.5 149.5,-0.5 224.5,-0.5C 224.5,74.5 224.5,149.5 224.5,224.5C 149.5,224.5 74.5,224.5 -0.5,224.5C -0.5,149.5 -0.5,74.5 -0.5,-0.5 Z'/%3e%3c/g%3e%3cg%3e%3cpath style='opacity:1' fill='%23211e1f' d='M 141.5,25.5 C 143.167,25.5 144.833,25.5 146.5,25.5C 146.495,42.3478 139.162,54.8478 124.5,63C 120.272,64.4123 115.939,65.2456 111.5,65.5C 112.008,44.9982 122.008,31.6649 141.5,25.5 Z'/%3e%3c/g%3e%3cg%3e%3cpath style='opacity:1' fill='%23221e1f' d='M 78.5,67.5 C 83.5658,67.3399 88.5658,67.8399 93.5,69C 99.9576,71.3131 106.458,73.4798 113,75.5C 120.511,72.9964 128.011,70.4964 135.5,68C 152.068,65.2992 165.902,70.1326 177,82.5C 177.667,83.1667 177.667,83.8333 177,84.5C 162.768,94.512 157.101,108.179 160,125.5C 163.428,137.934 170.928,147.101 182.5,153C 177.368,168.935 168.702,182.601 156.5,194C 152.231,196.734 147.564,198.234 142.5,198.5C 135.435,196.646 128.435,194.479 121.5,192C 116.096,191.228 110.762,191.561 105.5,193C 97.9266,196.895 89.9266,198.561 81.5,198C 77.1266,196.287 73.2933,193.787 70,190.5C 47.7017,165.321 38.7017,135.987 43,102.5C 48.1624,83.836 59.9957,72.1693 78.5,67.5 Z'/%3e%3c/g%3e%3c/svg%3e">
+    <img id="logo" src="data:image/svg+xml;charset=UTF-8,%3c?xml version='1.0' encoding='UTF-8'?%3e%3c!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3e%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' width='256px' height='256px' style='shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd' xmlns:xlink='http://www.w3.org/1999/xlink'%3e%3cg%3e%3cpath style='opacity:0.932' fill='%23fefffe' d='M 171.5,-0.5 C 173.833,-0.5 176.167,-0.5 178.5,-0.5C 179.418,30.5393 165.085,50.3727 135.5,59C 132.518,59.498 129.518,59.6646 126.5,59.5C 127.134,28.5542 142.134,8.55422 171.5,-0.5 Z'/%3e%3c/g%3e%3cg%3e%3cpath style='opacity:0.984' fill='%23fefffe' d='M 180.5,255.5 C 175.833,255.5 171.167,255.5 166.5,255.5C 155.632,250.269 144.132,246.936 132,245.5C 128.131,245.728 124.298,246.228 120.5,247C 112.685,249.768 105.018,252.601 97.5,255.5C 92.8333,255.5 88.1667,255.5 83.5,255.5C 74.1668,251.693 66.3335,245.693 60,237.5C 29.5612,199.849 18.5612,157.183 27,109.5C 39.7176,73.4004 64.8843,58.2338 102.5,64C 111.025,67.8387 119.858,70.672 129,72.5C 140.268,69.4113 151.434,65.9113 162.5,62C 188.459,57.9225 209.459,66.0892 225.5,86.5C 213.813,95.0224 205.313,106.022 200,119.5C 193.892,149.375 204.059,171.708 230.5,186.5C 231.631,188.074 231.798,189.741 231,191.5C 222.496,213.325 209.996,232.492 193.5,249C 189.353,251.74 185.02,253.907 180.5,255.5 Z'/%3e%3c/g%3e%3c/svg%3e " style="opacity:0">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -32,7 +34,7 @@
             var message1 = document.getElementById('message1');
             var message2 = document.getElementById('message2');
             var body = document.body;
-
+            let logo = document.getElementById('logo');
             setTimeout(function() {
                 message1.style.opacity = "1";
             }, 1500);
@@ -48,7 +50,9 @@
 
             setTimeout(function() {
                 message2.style.opacity = "0";
-                body.style.backgroundColor = "#5A5A5A";
+                logo.style.transition = "opacity 2s ease-in-out";
+                logo.style.opacity = "1";
+                body.style.backgroundColor = "#000000";
             }, 8000);
 
             setTimeout(function() {
