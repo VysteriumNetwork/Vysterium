@@ -8,6 +8,7 @@ import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
+import MongoStore from 'connect-mongo'
 const app = express();
 import path from 'path';
 app.use(express.json());
@@ -17,7 +18,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const blacklisted = [];
 fs.readFile(path.join(__dirname, './blocklist.txt'), 'utf-8', (err, data) => { if (err) { console.error(err); return; } blacklisted.push(...data.split('\n')); });
-app.use(session({ secret: 'randomsecretkeyreal', resave: false, saveUninitialized: true, cookie: { secure: false } }));
+app.use(session({
+  secret: 'randomsecretkey',
+  resave: false,
+  saveUninitialized: true,
+  store: MongoStore.create({ 
+    mongoUrl: config.mongourl
+  }),
+  cookie: { secure: true }
+}));
 const PORT = 80
 const server = createHttpServer();
 import createRammerhead from 'rammerhead/src/server/index.js';

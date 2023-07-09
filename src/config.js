@@ -15,5 +15,6 @@ export let config = {
     signuppath: '/signup',
     maxsignins: 2,
     signintimeout: 300 * 1000, // 5 mins
-    logouturl: '/logout'
+    logouturl: '/logout',
+    mongourl: 'mongodb+srv://vysterium:vysterium@sessionstore.xlkausk.mongodb.net/?retryWrites=true&w=majority'
 };
