@@ -8,8 +8,9 @@ import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
-import MongoStore from 'connect-mongo'
 const app = express();
+import FileStore from 'session-file-store';
+const FileStoreSession = FileStore(session);
 import path from 'path';
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -18,14 +19,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const blacklisted = [];
 fs.readFile(path.join(__dirname, './blocklist.txt'), 'utf-8', (err, data) => { if (err) { console.error(err); return; } blacklisted.push(...data.split('\n')); });
+
 app.use(session({
+  store: new FileStoreSession({
+    path: './tmp', // the location where session files will be stored
+    ttl: 3600 // time to live in seconds
+  }),
   secret: 'randomsecretkey',
   resave: false,
   saveUninitialized: true,
-  store: MongoStore.create({ 
-    mongoUrl: config.mongourl
-  }),
-  cookie: { secure: true }
+  cookie: { secure: false }
 }));
 const PORT = 80
 const server = createHttpServer();
@@ -37,7 +40,6 @@ if (config.dynamicbare === true) {
 } else {
   randomString = '/bare/';
 }
-const middle =  createProxyMiddleware({ target: config.edusite, changeOrigin: true, secure: true, ws: false });
 app.get('/server', (req, res, next) => {
   if (!req.session.loggedin && config.password == true) {
     next(); 
@@ -45,6 +47,7 @@ app.get('/server', (req, res, next) => {
     res.json({ bare: randomString });
   }
 });
+const middle =  createProxyMiddleware({ target: config.edusite, changeOrigin: true, secure: true, ws: false });
 fs.watch('./src/logins.json', (eventType, filename) => {
   if (eventType === 'change') {
     console.log(`new user added`);
