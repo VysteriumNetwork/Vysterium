@@ -2,13 +2,5 @@
   "sus": {
     "password": "imposter",
     "maxAge": null
-  },
-  "verygood": {
-    "password": "amogus",
-    "maxAge": false
-  },
-  "gay": {
-    "password": "ew",
-    "maxAge": false
   }
 }
