@@ -92,22 +92,55 @@
     overflow: hidden;
 }
 
+#loginTime {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; /* wrap the inputs onto multiple lines on smaller screens */
+}
+
+#loginTime > input {
+    width: 22%; /* make the width less than 25% to account for margins */
+    margin-bottom: 0; /* remove the bottom margin */
+}
+
 #loginTimeLabel {
-    margin-bottom: 2px;
+    margin-bottom: 10px; /* add some space above the inputs */
 }
-.hidden {
-    max-height: 0 !important;
-    padding: 0 !important;
-    margin-bottom: 0 !important;
-    opacity: 0 !important;
+
+#advanced-options {
+    cursor: pointer;
+    margin-bottom: 10px;
+    user-select: none; /* prevent text selection */
+    display: flex;
+    justify-content: space-between;
+    padding: 15px; /* Increased padding */
+    border-radius: 10px; /* Less rounded */
+    background-color: #e0e0fa; /* More bluish tint of lavender */
+    border: 1px solid #D1D1E0; /* Solid border */
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1); /* Enhanced shadow for 3D effect */
 }
+
+
+#advanced-options:hover #arrow {
+    opacity: 1; /* Visible on hover */
+    visibility: visible; /* Visible on hover */
+}
+
+.arrow-up {
+    transform: rotate(180deg);
+}
+
+
+
+/* Rest of your CSS */
 
 .show {
     max-height: 100px;
     opacity: 1;
-    padding: 10px;
+    padding: 0; /* remove padding when shown */
     margin-bottom: 10px;
 }
+
 
         #notification {
             position: fixed;
@@ -147,6 +180,7 @@
             right: 0;
             padding: 5px;
         }
+
     </style>
 </head>
 <body>
@@ -156,9 +190,8 @@
         <input type="text" id="username" name="username" required>
         <label for="password" class="important">Password:</label>
         <input type="password" id="password" name="password" required>
-        <div id="perm-access">
-            <input type="checkbox" id="permAccess" name="permAccess" checked>
-            <label for="permAccess">Permanent Session</label>
+        <div id="advanced-options">
+            <div>Advanced Options <span id="arrow"></span></div>
         </div>
         <label id="loginTimeLabel" class="hidden">Session Duration:</label>
         <div id="loginTime" class="hidden">
@@ -167,6 +200,7 @@
             <input type="number" id="loginHours" name="loginHours" placeholder="Hours" min="0" max="23">
             <input type="number" id="loginMinutes" name="loginMinutes" placeholder="Minutes" min="0" max="59">
         </div>
+        
         <input type="submit" value="Signup">
     </form>
     <div id="notification" class="hidden">
@@ -182,16 +216,15 @@
         let loginWeeks = document.getElementById('loginWeeks').value;
         let loginHours = document.getElementById('loginHours').value;
         let loginMinutes = document.getElementById('loginMinutes').value;
-        let permAccess = document.getElementById('permAccess').checked;
 
         let totalLoginTime;
-        if (permAccess) {
+        if (loginDays == null && loginWeeks == null && loginHours == null && loginMinutes == null) {
             totalLoginTime = false
         } else {
             totalLoginTime = (loginWeeks * 7 * 24 * 60) + (loginDays * 24 * 60) + (loginHours * 60) + Number(loginMinutes);
         }
 
-        fetch('/signup', {
+        fetch(location.href, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -216,29 +249,25 @@
         });
     });
 
-    document.getElementById('permAccess').addEventListener('change', function(e) {
-        if (this.checked) {
-            document.getElementById('loginTimeLabel').style.display = "block";
-            document.getElementById('loginTime').style.display = "flex";
-        } else {
-            document.getElementById('loginTimeLabel').style.display = "show";
-            document.getElementById('loginTime').style.display = "flex";
-        }
-    });
-    document.getElementById('permAccess').addEventListener('change', function(e) {
-    if (this.checked) {
-        document.getElementById('loginTime').removeAttribute("required");
-        document.getElementById('loginTime').classList.remove("show");
-        document.getElementById('loginTime').classList.add("hidden");
-        document.getElementById('loginTimeLabel').classList.remove("show");
-        document.getElementById('loginTimeLabel').classList.add("hidden");
-    } else {
-        document.getElementById('loginTime').setAttribute("required", "");
+    document.getElementById('advanced-options').addEventListener('click', function(e) {
+    this.classList.toggle('open');
+    const isHidden = document.getElementById('loginTime').classList.contains('hidden');
+    if (isHidden) {
         document.getElementById('loginTime').classList.remove("hidden");
         document.getElementById('loginTime').classList.add("show");
         document.getElementById('loginTimeLabel').classList.remove("hidden");
         document.getElementById('loginTimeLabel').classList.add("show");
+    } else {
+        document.getElementById('loginTime').classList.remove("show");
+        document.getElementById('loginTime').classList.add("hidden");
+        document.getElementById('loginTimeLabel').classList.remove("show");
+        document.getElementById('loginTimeLabel').classList.add("hidden");
     }
+});
+document.getElementById('advanced-options').addEventListener('click', function() {
+    document.getElementById('loginTime').classList.toggle('show');
+    document.getElementById('loginTimeLabel').classList.toggle('show');
+    document.getElementById('arrow').classList.toggle('arrow-up');
 });
 
     </script>
