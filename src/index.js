@@ -23,14 +23,14 @@ const server = createHttpServer();
 import createRammerhead from 'rammerhead/src/server/index.js';
 function randoms(e){for(var t="",n="abcdefghijklmnopqrstuvwxyz0123456789",r=0;r<e;r++)t+=n.charAt(Math.floor(Math.random()*n.length));return t}
 let randomString;
-if (config.dynamicbare === "true") {
+if (config.dynamicbare === true) {
   randomString = '/' + randoms(50) + '/' + randoms(50) + '/';
 } else {
   randomString = '/bare/';
 }
 const middle =  createProxyMiddleware({ target: config.edusite, changeOrigin: true, secure: true, ws: false });
 app.get('/server', (req, res, next) => {
-  if (!req.session.loggedin && config.password == "true") {
+  if (!req.session.loggedin && config.password == true) {
     next(); 
   } else {
     res.json({ bare: randomString });
@@ -70,7 +70,7 @@ if (config.signup == true) {
     let username = req.body.username;
     let password = req.body.password;
     let loginTime = req.body.loginTime;
-    if (!username || !password || !loginTime) {
+    if (!username || !password || !loginTime && loginTime != false) {
       return res.status(400).json({ message: 'Missing username, password or login time.' });
     }
   
@@ -115,13 +115,13 @@ app.use(async (req, res, next) => {
       next();
     }
   } else {
-    if (config.password === "true") {
+    if (config.password === true) {
       const users = config.users;
       const authHeader = req.headers.authorization;
 
       if (req.session.loggedin) {
         const userMaxAge = users[req.session.username]?.maxAge || config.maxAge;
-        if (Date.now() - req.session.cookie.originalMaxAge >= userMaxAge * 60 * 1000 && userMaxAge != "perm") {
+        if (Date.now() - req.session.cookie.originalMaxAge >= userMaxAge * 60 * 1000 && userMaxAge != false) {
           req.session.destroy(err => {
             if (err) {
               console.log(err);
@@ -207,7 +207,7 @@ function routeRhUpgrade(req, socket, head) {
     catch (error) {}
   }
 const rammerheadSession = /^\/[a-z0-9]{32}/;
-if (config.cloak === "true") {
+if (config.cloak === true) {
   app.use((e,t,n)=>{const r=e.url;if(r.endsWith(".html")){t.statusCode=404;n()}else{if(r.endsWith("/")){t.statusCode=404;n()}else{n()}}});
 }
 app.use((req, res, next) => {
@@ -235,24 +235,29 @@ const nebularoutes = {
   '/nebula/unv': 'unv.html',
 };
 app.use((req, res, next) => {
-  const nebulaFilename = nebularoutes[req.url];
-  const shuttleFilename = shuttleroutes[req.url];
-  if (nebulaFilename) {
-    res.statusCode = 404;
-    res.setHeader("Content-Type", "text/html");
-    res.end(fs.readFileSync(`./src/html/nebula/${nebulaFilename}`));
-  } else if (shuttleFilename) {
-    res.statusCode = 404;
-    res.setHeader("Content-Type", "text/html");
-    res.end(fs.readFileSync(`./src/html/shuttle/${shuttleFilename}`));
-  } else if (req.url.startsWith('/shuttle/') || req.url.startsWith('/nebula/')) {
-    res.statusCode = 404;
-    res.setHeader("Content-Type", "text/html");
-    res.end(fs.readFileSync('src/html/404.html'));
-  } else {
-    next();
+  let status = 404
+  if (config.cloak == true) {
+  status = 200
   }
-});
+    const nebulaFilename = nebularoutes[req.url];
+  const shuttleFilename = shuttleroutes[req.url];
+    if (nebulaFilename) {
+      res.statusCode = status;
+      res.setHeader("Content-Type", "text/html");
+      res.end(fs.readFileSync(`./src/html/nebula/${nebulaFilename}`));
+    } else if (shuttleFilename) {
+      res.statusCode = status;
+      res.setHeader("Content-Type", "text/html");
+      res.end(fs.readFileSync(`./src/html/shuttle/${shuttleFilename}`));
+    } else if (req.url.startsWith('/shuttle/') || req.url.startsWith('/nebula/')) {
+      res.statusCode = 404;
+      res.setHeader("Content-Type", "text/html");
+      res.end(fs.readFileSync('src/html/404.html'));
+    } else {
+      next();
+    }
+  });
+  
 
 server.on("request", app);
 server.on('upgrade', (req, socket, head) => {

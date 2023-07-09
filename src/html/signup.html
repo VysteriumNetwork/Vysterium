@@ -186,7 +186,7 @@
 
         let totalLoginTime;
         if (permAccess) {
-            totalLoginTime = "perm"
+            totalLoginTime = false
         } else {
             totalLoginTime = (loginWeeks * 7 * 24 * 60) + (loginDays * 24 * 60) + (loginHours * 60) + Number(loginMinutes);
         }

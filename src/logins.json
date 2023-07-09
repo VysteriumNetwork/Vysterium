@@ -5,6 +5,10 @@
   },
   "verygood": {
     "password": "amogus",
-    "maxAge": "perm"
+    "maxAge": false
+  },
+  "gay": {
+    "password": "ew",
+    "maxAge": false
   }
 }

@@ -2,9 +2,9 @@ import fs from 'fs';
 
 let logins = JSON.parse(fs.readFileSync('./src/logins.json', 'utf-8'));
 export let config = {
-    dynamicbare: "true",
-    cloak: "true",
-    password: "true",
+    dynamicbare: true,
+    cloak: true,
+    password: true,
     loginloc: "/login",
     enableSessionExpiration: true,
     edusite: "https://www.nhaschools.com/",
