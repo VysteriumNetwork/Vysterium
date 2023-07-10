@@ -82,26 +82,34 @@ if (config.signup == true) {
     let username = req.body.username;
     let password = req.body.password;
     let loginTime = req.body.loginTime;
+    
+    // Check if username or password contains blacklisted characters
+    let regex = /["\\']/;
+    if (regex.test(username) || regex.test(password) || regex.test(loginTime)) {
+      return res.status(400).json({ message: 'Invalid input. Quotes are not allowed.' });
+    }
+    
     if (!username || !password || !loginTime && loginTime != false) {
       return res.status(400).json({ message: 'Missing username, password or login time.' });
     }
-  
+    
     let users = readUsersFromFile();
-  
+    
     if (users[username]) {
       return res.status(409).json({ message: 'Username already exists.' });
     }
-  
+    
     // Store user
     users[username] = {
       password: password,
       maxAge: loginTime
     };
-  
+    
     // Write users back to the file
     fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
-  
+    
     res.status(200).json({ message: 'User successfully created.' });
+    
   });
   
   function readUsersFromFile() {

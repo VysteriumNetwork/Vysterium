@@ -114,12 +114,20 @@
     display: flex;
     justify-content: space-between;
     padding: 15px; /* Increased padding */
+    align-items: center;
     border-radius: 5px; /* Less rounded */
-    background-color: #e0e0fa; /* More bluish tint of lavender */
-    border: 1px solid #D1D1E0; /* Solid border */
+    background-color: #c3cde6; /* More bluish tint of lavender */
+    border: 1px solid #b0c4de; /* Solid border */
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1); /* Enhanced shadow for 3D effect */
 }
-
+#arrow {
+    display: inline-block;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid black;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Added transform to the transition */
+    opacity: 0; /* Hidden by default */
+}
 
 #advanced-options:hover #arrow {
     opacity: 1; /* Visible on hover */
@@ -191,14 +199,19 @@
         <label for="password" class="important">Password:</label>
         <input type="password" id="password" name="password" required>
         <div id="advanced-options">
-            <div>Advanced Options <span id="arrow"></span></div>
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                Advanced Options 
+                <span id="arrow"></span>
+
+            </div>
         </div>
+        
         <label id="loginTimeLabel" class="hidden">Session Duration:</label>
         <div id="loginTime" class="hidden">
-            <input type="number" id="loginWeeks" name="loginWeeks" placeholder="Weeks" min="0">
-            <input type="number" id="loginDays" name="loginDays" placeholder="Days" min="0">
-            <input type="number" id="loginHours" name="loginHours" placeholder="Hours" min="0" max="23">
-            <input type="number" id="loginMinutes" name="loginMinutes" placeholder="Minutes" min="0" max="59">
+            <input type="text" id="loginWeeks" name="loginWeeks" placeholder="Weeks" oninput="this.value = this.value.replace(/[^0-9\+\-\*\/]/g, '');">
+            <input type="text" id="loginDays" name="loginDays" placeholder="Days" oninput="this.value = this.value.replace(/[^0-9\+\-\*\/]/g, '');">
+            <input type="text" id="loginHours" name="loginHours" placeholder="Hours" oninput="this.value = this.value.replace(/[^0-9\+\-\*\/]/g, '');">
+            <input type="text" id="loginMinutes" name="loginMinutes" placeholder="Minutes" oninput="this.value = this.value.replace(/[^0-9\+\-\*\/]/g, '');">                      
         </div>
         
         <input type="submit" value="Signup">

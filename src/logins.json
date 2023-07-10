@@ -2,5 +2,9 @@
   "sus": {
     "password": "imposter",
     "maxAge": null
+  },
+  "ireally": {
+    "password": "stink",
+    "maxAge": 0.01
   }
 }
