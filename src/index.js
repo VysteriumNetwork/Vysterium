@@ -81,12 +81,26 @@ if (config.signup == true) {
     message: "Too many signups from this IP, please try again after five minutes"
   });
   
-  app.get(config.signuppath, async (req, res) => {
-    res.status(404);
-    res.sendFile(__dirname + '/html/signup.html');
+  app.get(config.signuppath, async (req, res, next) => {
+    if (config.restrictsignuptoadmin == true) {
+      if (req.session.admin) {
+        res.status(404)
+        res.sendFile(__dirname + '/html/signup.html');
+      } else {
+        res.redirect('/')
+      }
+    } else {
+      res.status(404)
+      res.sendFile(__dirname + '/html/signup.html');
+    }
   })
+  
 
-  app.post(config.signuppath, signupLimiter, async (req, res) => {
+  app.post(config.signuppath, signupLimiter, async (req, res, next) => {
+    if (config.restrictsignuptoadmin == true && !req.session.admin) {
+      return res.status(403).send('Access denied. Only admin users can create new users.');
+    }
+  
     let username = req.body.username;
     let password = req.body.password;
     let loginTime = req.body.loginTime;
@@ -116,6 +130,7 @@ if (config.signup == true) {
     // Generate a hashed password using the salt
     let hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
     let hashedkey = crypto.pbkdf2Sync(secretCode, salt, 10000, 64, 'sha512').toString('hex');
+  
     // Store user
     users[username] = {
       password: hashedPassword,
@@ -129,6 +144,39 @@ if (config.signup == true) {
   
     res.status(200).json({ message: 'User successfully created. Your secret code is: ' + secretCode + ' make sure to save it or you will not have access to userpanel features!' });
   });
+// GET route
+app.get(config.deleteuserurl, (req, res) => {
+  if (!req.session.admin) {
+    return res.redirect('/')
+  }
+
+  res.sendFile(__dirname + '/html/delete.html');
+});
+
+// POST route
+app.post(config.deleteuserurl, (req, res) => {
+  if (!req.session.admin) {
+    return res.status(403).send('Access denied. Only admin users can delete users.');
+  }
+
+  let usernameToDelete = req.body.user;
+  
+  if (!usernameToDelete) {
+    return res.status(400).send('Missing user parameter.');
+  }
+
+  let users = readUsersFromFile();
+
+  if (!users[usernameToDelete]) {
+    return res.status(404).send('User not found.');
+  }
+
+  delete users[usernameToDelete];
+
+  fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
+
+  res.status(200).send('User successfully deleted.');
+});  
   
   
 }
@@ -309,6 +357,9 @@ app.use(async (req, res, next) => {
           // Hash the incoming password with the stored salt and compare it to the stored hashed password
           const hashedPassword = crypto.pbkdf2Sync(password, user.salt, 10000, 64, 'sha512').toString('hex');
           if (hashedPassword === user.password) {
+            if (config.adminusers.includes(username)) {
+              req.session.admin = true
+            }
             req.session.loggedin = true;
             req.session.username = username;
             req.session.cookie.originalMaxAge = Date.now();
