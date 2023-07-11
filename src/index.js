@@ -8,6 +8,7 @@ import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
+import crypto from 'crypto'
 const app = express();
 import FileStore from 'session-file-store';
 const FileStoreSession = FileStore(session);
@@ -18,6 +19,11 @@ app.use(compression())
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const blacklisted = [];
+function readUsersFromFile() {
+  let rawdata = fs.readFileSync('./src/logins.json');
+  let users = JSON.parse(rawdata);
+  return users;
+}  
 fs.readFile(path.join(__dirname, './blocklist.txt'), 'utf-8', (err, data) => { if (err) { console.error(err); return; } blacklisted.push(...data.split('\n')); });
 
 app.use(session({
@@ -50,7 +56,7 @@ app.get('/server', (req, res, next) => {
 const middle =  createProxyMiddleware({ target: config.edusite, changeOrigin: true, secure: true, ws: false });
 fs.watch('./src/logins.json', (eventType, filename) => {
   if (eventType === 'change') {
-    console.log(`new user added`);
+    console.log(`users changed`);
     config.users = JSON.parse(fs.readFileSync('./src/logins.json', 'utf-8'));
   }
 });
@@ -78,6 +84,7 @@ if (config.signup == true) {
   app.get(config.signuppath, async (req, res) => {
     res.sendFile(__dirname + '/html/signup.html');
   })
+
   app.post(config.signuppath, signupLimiter, async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
@@ -89,7 +96,7 @@ if (config.signup == true) {
       return res.status(400).json({ message: 'Invalid input. Quotes are not allowed.' });
     }
     
-    if (!username || !password || !loginTime && loginTime != false) {
+    if (!username || !password || (!loginTime && loginTime != false)) {
       return res.status(400).json({ message: 'Missing username, password or login time.' });
     }
     
@@ -99,25 +106,98 @@ if (config.signup == true) {
       return res.status(409).json({ message: 'Username already exists.' });
     }
     
+    // Generate a secret code for the user
+    let secretCode = crypto.randomBytes(16).toString('hex');
+    
     // Store user
     users[username] = {
       password: password,
-      maxAge: loginTime
+      maxAge: loginTime,
+      secretCode: secretCode
     };
     
     // Write users back to the file
     fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
     
-    res.status(200).json({ message: 'User successfully created.' });
-    
+    res.status(200).json({ message: 'User successfully created. Your secret code is: ' + secretCode + ' make sure to save it or you will not have access to your cookies across devices!' });
   });
   
-  function readUsersFromFile() {
-    let rawdata = fs.readFileSync('./src/logins.json');
-    let users = JSON.parse(rawdata);
-    return users;
-  }  
 }
+app.get(config.userpanelurl, (req, res, next) => {
+  if (!req.session.loggedin && config.password == true) {
+    next(); 
+  } else {
+  res.sendFile(path.join(__dirname, '/html/userpanel.html'));
+  }
+});
+
+app.post(config.userpanelurl, async (req, res, next) => {
+  if (!req.session.loggedin && config.password == true) {
+    next(); 
+  } else {
+  const { username, password, secretCode, messageType, newUsername, newPassword, newSecretCode, cookie } = req.body;
+
+  if (!username || !password || !secretCode || !messageType) {
+    return res.status(400).json({ message: 'Missing required fields.' });
+  }
+
+  let users = readUsersFromFile();
+
+  const user = users[username];
+  
+  if (!user) {
+    return res.status(404).json({ message: 'User not found.' });
+  }
+  if (config.defaultuser.includes(user)) {
+    return res.status(403).json({ message: 'Operation not permitted for Default Users.' });
+  }
+  if (user.password !== password || user.secretCode !== secretCode) {
+    return res.status(403).json({ message: 'Invalid credentials.' });
+  }
+  switch(messageType) {
+    case 'delete':
+      delete users[username];
+    case 'setCookie':
+      if (!cookie) {
+        return res.status(400).json({ message: 'Missing cookie.' });
+      }
+      user.cookie = cookie;
+      res.status(200).json({ message: 'Cookie successfully updated.' });
+      break;
+
+    case 'getCookie':
+      if (!user.cookie) {
+        return res.status(404).json({ message: 'No cookie found.' });
+      }
+      res.status(200).json({ cookie: user.cookie });
+      break;
+
+    case 'changeCredentials':
+      if (!newUsername || !newPassword || !newSecretCode) {
+        return res.status(400).json({ message: 'Missing new credentials.' });
+      }
+      if(users[newUsername]){
+        return res.status(400).json({ message: 'Username already exists.' });
+      }
+      delete users[username];
+      users[newUsername] = {
+        password: newPassword,
+        maxAge: user.maxAge,
+        secretCode: newSecretCode,
+        cookie: user.cookie // retain existing cookie
+      };
+      res.status(200).json({ message: 'User credentials successfully updated.' });
+      break;
+
+    default:
+      res.status(400).json({ message: 'Invalid messageType.' });
+  }
+
+  // Write users back to the file
+  fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
+}
+});
+
 app.use(async (req, res, next) => {
   if (req.path.startsWith(randomString)) {
     if (bare.shouldRoute(req)) {

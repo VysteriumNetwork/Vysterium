@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Panel</title>
+    <link href="./tailwind.css" rel="stylesheet" type="text/css" />
+    <script src="./userpanel.js"></script>
+</head>
+<body class="flex items-center justify-center h-screen bg-gray-800">
+    <div class="w-full max-w-md bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h1 class="mb-6 text-3xl text-center text-white">User Panel</h1>
+
+        <div class="mb-4">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="username">
+                Username
+            </label>
+            <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-200" id="username" type="text" placeholder="Username">
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="password">
+                Password
+            </label>
+            <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-gray-200" id="password" type="password" placeholder="******************">
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="secretCode">
+                Secret Code
+            </label>
+            <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-200" id="secretCode" type="password" placeholder="Secret Code">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="newUsername">
+                New Username (Only used for changepassword)
+            </label>
+            <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-gray-200" id="changeUsername" type="text" placeholder="New Username">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="changePassword">
+                New Password (Only used for changepassword)
+            </label>
+            <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-gray-200" id="changePassword" type="password" placeholder="New Password">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="changeSecretCode">
+                New Secret Code (Only used for changepassword)
+            </label>
+            <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-gray-200" id="changeSecretCode" type="text" placeholder="******************">
+        </div>
+        <div class="mb-4">
+            <button class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="changeCredentials()">
+                Change Credentials
+            </button>
+        </div>
+
+        <div class="mb-4">
+            <button class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="setCookie()">
+                Set Cookie
+            </button>
+        </div>
+
+        <div class="mb-4">
+            <button class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="getCookie()">
+                Get Cookie
+            </button>
+        
+        <div class="mb-4">
+            <button class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="deleteUser()">
+                Delete User
+            </button>
+        </div>
+    </div>
+</body>
+</html>

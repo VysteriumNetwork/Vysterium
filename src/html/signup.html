@@ -250,9 +250,7 @@
         })
         .then(response => response.json())
         .then(data => {
-            document.getElementById('notification-message').innerText = data.message;
-            document.getElementById('notification').classList.remove('hidden')
-            document.getElementById('notification').classList.add('show'); // Display the notification
+            alert(data.message);
         })
         .catch((error) => {
             document.getElementById('notification-message').innerText = error;

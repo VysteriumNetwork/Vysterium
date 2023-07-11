@@ -13,8 +13,9 @@ export let config = {
     //maxage is in minutes, 60 is 1 hour, 60 * 24 is a day and 60 * 24 * 365 is a year
     signup: true,
     signuppath: '/signup',
+    userpanelurl: '/userpanel',
     maxsignins: 2,
     signintimeout: 300 * 1000, // 5 mins
     logouturl: '/logout',
-    mongourl: 'mongodb+srv://vysterium:vysterium@sessionstore.xlkausk.mongodb.net/?retryWrites=true&w=majority'
+    defaultuser: '["sus"]' // seperate by commas
 };

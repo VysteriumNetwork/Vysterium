@@ -1,10 +1,12 @@
 {
   "sus": {
     "password": "imposter",
-    "maxAge": null
+    "maxAge": null,
+    "defaultuser": true
   },
-  "ireally": {
-    "password": "stink",
-    "maxAge": 0.01
+  "cuh": {
+    "password": "boi",
+    "maxAge": 0,
+    "secretCode": "70e4b86664c1096276e096f81a73e73c"
   }
 }
