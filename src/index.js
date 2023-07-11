@@ -119,7 +119,7 @@ if (config.signup == true) {
     // Write users back to the file
     fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
     
-    res.status(200).json({ message: 'User successfully created. Your secret code is: ' + secretCode + ' make sure to save it or you will not have access to your cookies across devices!' });
+    res.status(200).json({ message: 'User successfully created. Your secret code is: ' + secretCode + ' make sure to save it or you will not have access to userpanel features!' });
   });
   
 }
