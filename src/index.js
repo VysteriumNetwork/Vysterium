@@ -82,6 +82,7 @@ if (config.signup == true) {
   });
   
   app.get(config.signuppath, async (req, res) => {
+    res.status(404);
     res.sendFile(__dirname + '/html/signup.html');
   })
 
@@ -127,6 +128,7 @@ app.get(config.userpanelurl, (req, res, next) => {
   if (!req.session.loggedin && config.password == true) {
     next(); 
   } else {
+    res.status(404);
   res.sendFile(path.join(__dirname, '/html/userpanel.html'));
   }
 });
