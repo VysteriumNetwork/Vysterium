@@ -1,12 +1,12 @@
 {
   "sus": {
     "password": "imposter",
-    "maxAge": null,
-    "defaultuser": true
+    "maxAge": null
   },
-  "cuh": {
-    "password": "boi",
+  "realuser": {
+    "password": "real",
     "maxAge": 0,
-    "secretCode": "70e4b86664c1096276e096f81a73e73c"
+    "secretCode": "lol",
+    "cookie": "W29iamVjdCBPYmplY3Rd"
   }
 }

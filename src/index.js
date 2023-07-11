@@ -135,7 +135,7 @@ app.post(config.userpanelurl, async (req, res, next) => {
   if (!req.session.loggedin && config.password == true) {
     next(); 
   } else {
-  const { username, password, secretCode, messageType, newUsername, newPassword, newSecretCode, cookie } = req.body;
+  let { username, password, secretCode, messageType, newUsername, newPassword, newSecretCode, cookie } = req.body;
 
   if (!username || !password || !secretCode || !messageType) {
     return res.status(400).json({ message: 'Missing required fields.' });
@@ -156,6 +156,13 @@ app.post(config.userpanelurl, async (req, res, next) => {
   }
   switch(messageType) {
     case 'delete':
+      req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+        }
+        res.status(401);
+        res.sendFile(__dirname + '/html/endsession.html');
+      });
       delete users[username];
     case 'setCookie':
       if (!cookie) {
@@ -173,17 +180,17 @@ app.post(config.userpanelurl, async (req, res, next) => {
       break;
 
     case 'changeCredentials':
-      if (!newUsername || !newPassword || !newSecretCode) {
-        return res.status(400).json({ message: 'Missing new credentials.' });
+      if (!newUsername) {
+        newUsername = username
       }
       if(users[newUsername]){
         return res.status(400).json({ message: 'Username already exists.' });
       }
       delete users[username];
       users[newUsername] = {
-        password: newPassword,
+        password: newPassword || password,
         maxAge: user.maxAge,
-        secretCode: newSecretCode,
+        secretCode: newSecretCode || secretCode,
         cookie: user.cookie // retain existing cookie
       };
       res.status(200).json({ message: 'User credentials successfully updated.' });
