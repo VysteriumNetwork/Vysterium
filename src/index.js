@@ -90,38 +90,46 @@ if (config.signup == true) {
     let username = req.body.username;
     let password = req.body.password;
     let loginTime = req.body.loginTime;
-    
+  
     // Check if username or password contains blacklisted characters
     let regex = /["\\']/;
     if (regex.test(username) || regex.test(password) || regex.test(loginTime)) {
       return res.status(400).json({ message: 'Invalid input. Quotes are not allowed.' });
     }
-    
+  
     if (!username || !password || (!loginTime && loginTime != false)) {
       return res.status(400).json({ message: 'Missing username, password or login time.' });
     }
-    
+  
     let users = readUsersFromFile();
-    
+  
     if (users[username]) {
       return res.status(409).json({ message: 'Username already exists.' });
     }
-    
+  
     // Generate a secret code for the user
     let secretCode = crypto.randomBytes(16).toString('hex');
-    
+  
+    // Generate a salt for hashing
+    let salt = crypto.randomBytes(16).toString('hex');
+  
+    // Generate a hashed password using the salt
+    let hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+    let hashedkey = crypto.pbkdf2Sync(secretCode, salt, 10000, 64, 'sha512').toString('hex');
     // Store user
     users[username] = {
-      password: password,
+      password: hashedPassword,
+      salt: salt,
       maxAge: loginTime,
-      secretCode: secretCode
+      secretCode: hashedkey
     };
-    
+  
     // Write users back to the file
     fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
-    
+  
     res.status(200).json({ message: 'User successfully created. Your secret code is: ' + secretCode + ' make sure to save it or you will not have access to userpanel features!' });
   });
+  
   
 }
 app.get(config.userpanelurl, (req, res, next) => {
@@ -137,75 +145,122 @@ app.post(config.userpanelurl, async (req, res, next) => {
   if (!req.session.loggedin && config.password == true) {
     next(); 
   } else {
-  let { username, password, secretCode, messageType, newUsername, newPassword, newSecretCode, cookie } = req.body;
+    let { username, password, secretCode, messageType, newUsername, newPassword, newSecretCode, cookie } = req.body;
 
-  if (!username || !password || !secretCode || !messageType) {
-    return res.status(400).json({ message: 'Missing required fields.' });
-  }
+    if (!username || !password || !secretCode || !messageType) {
+      return res.status(400).json({ message: 'Missing required fields.' });
+    }
 
-  let users = readUsersFromFile();
+    let users = readUsersFromFile();
 
-  const user = users[username];
+    const user = users[username];
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    function generateKey() {
+      return crypto.randomBytes(32);
+    }
+    
+    function encrypt(text, key) {
+      let iv = crypto.randomBytes(16);
+      let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
+      let encrypted = cipher.update(text);
+      encrypted = Buffer.concat([encrypted, cipher.final()]);
+      return iv.toString('hex') + ':' + encrypted.toString('hex');
+    }
+    
+    function decrypt(text, key) {
+      let textParts = text.split(':');
+      let iv = Buffer.from(textParts.shift(), 'hex');
+      let encryptedText = Buffer.from(textParts.join(':'), 'hex');
+      let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
+      let decrypted = decipher.update(encryptedText);
+      decrypted = Buffer.concat([decrypted, decipher.final()]);
+      return decrypted.toString();
+    }
+    let hashedPassword = crypto.pbkdf2Sync(password, user.salt, 10000, 64, 'sha512').toString('hex');
+    let hashedSecretCode = crypto.pbkdf2Sync(secretCode, user.salt, 10000, 64, 'sha512').toString('hex');
+    let saltstore = user.salt
+    if (config.defaultuser.includes(user)) {
+      return res.status(403).json({ message: 'Operation not permitted for Default Users.' });
+    }
+    
+    if (user.password !== hashedPassword || user.secretCode !== hashedSecretCode) {
+      return res.status(403).json({ message: 'Invalid credentials.' });
+    }
+    
+    switch(messageType) {
+      case 'delete':
+        req.session.destroy((err) => {
+          if (err) {
+            console.log(err);
+          }
+          res.status(401);
+          res.sendFile(__dirname + '/html/endsession.html');
+        });
+        delete users[username];
+
+        case 'setCookie':
+          if (!cookie) {
+            return res.status(400).json({ message: 'Missing cookie.' });
+          }
+          // Generate a new key for each cookie set
+          user.AES = generateKey();
+          user.cookie = encrypt(cookie, user.AES);
+          res.status(200).json({ message: 'Cookie successfully updated.' });
+          break;
+        
+        case 'getCookie':
+          if (!user.cookie || !user.AES) {
+            return res.status(404).json({ message: 'No cookie or AES key found.' });
+          }
+          res.status(200).json({ cookie: decrypt(user.cookie, user.AES) });
+          break;
   
-  if (!user) {
-    return res.status(404).json({ message: 'User not found.' });
-  }
-  if (config.defaultuser.includes(user)) {
-    return res.status(403).json({ message: 'Operation not permitted for Default Users.' });
-  }
-  if (user.password !== password || user.secretCode !== secretCode) {
-    return res.status(403).json({ message: 'Invalid credentials.' });
-  }
-  switch(messageType) {
-    case 'delete':
-      req.session.destroy((err) => {
-        if (err) {
-          console.log(err);
+      case 'changeCredentials':
+        if (!newUsername) {
+          newUsername = username;
         }
-        res.status(401);
-        res.sendFile(__dirname + '/html/endsession.html');
-      });
-      delete users[username];
-    case 'setCookie':
-      if (!cookie) {
-        return res.status(400).json({ message: 'Missing cookie.' });
-      }
-      user.cookie = cookie;
-      res.status(200).json({ message: 'Cookie successfully updated.' });
-      break;
+        
+        if(users[newUsername]){
+          return res.status(400).json({ message: 'Username already exists.' });
+        }
+        
+        // if newPassword is provided, hash it with user's salt
+        if (newPassword) {
+          newPassword = crypto.pbkdf2Sync(newPassword, user.salt, 10000, 64, 'sha512').toString('hex');
+        }
 
-    case 'getCookie':
-      if (!user.cookie) {
-        return res.status(404).json({ message: 'No cookie found.' });
-      }
-      res.status(200).json({ cookie: user.cookie });
-      break;
+        // if newSecretCode is provided, hash it with user's salt
+        if (newSecretCode) {
+          newSecretCode = crypto.pbkdf2Sync(newSecretCode, user.salt, 10000, 64, 'sha512').toString('hex');
+        }
+        
+        delete users[username];
+        
+        users[newUsername] = {
+          password: newPassword || password,
+          maxAge: user.maxAge,
+          salt: saltstore,
+          secretCode: newSecretCode || secretCode,
+          cookie: user.cookie, // retain existing cookie
+          AES: user.AES
+        };
 
-    case 'changeCredentials':
-      if (!newUsername) {
-        newUsername = username
-      }
-      if(users[newUsername]){
-        return res.status(400).json({ message: 'Username already exists.' });
-      }
-      delete users[username];
-      users[newUsername] = {
-        password: newPassword || password,
-        maxAge: user.maxAge,
-        secretCode: newSecretCode || secretCode,
-        cookie: user.cookie // retain existing cookie
-      };
-      res.status(200).json({ message: 'User credentials successfully updated.' });
-      break;
-
-    default:
-      res.status(400).json({ message: 'Invalid messageType.' });
+        res.status(200).json({ message: 'User credentials successfully updated.' });
+        break;
+        
+      default:
+        res.status(400).json({ message: 'Invalid messageType.' });
+    }
+    
+    // Write users back to the file
+    fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
   }
-
-  // Write users back to the file
-  fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
-}
 });
+
 
 app.use(async (req, res, next) => {
   if (req.path.startsWith(randomString)) {
@@ -241,41 +296,45 @@ app.use(async (req, res, next) => {
           });
         } else {
           if (req.path == config.loginloc) {
-            res.redirect('/')
+            res.redirect('/');
           } else {
-          next();
+            next();
           }
         }
       } else if (authHeader) {
         const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf8');
         const [username, password] = auth.split(':');
-        const userPassword = users[username];
-        if (userPassword && userPassword.password === password) {
-          req.session.loggedin = true;
-          req.session.username = username;
-          req.session.cookie.originalMaxAge = Date.now();
-          if (req.path == config.loginloc) {
-            res.redirect('/');
+        const user = users[username];
+        if (user) {
+          // Hash the incoming password with the stored salt and compare it to the stored hashed password
+          const hashedPassword = crypto.pbkdf2Sync(password, user.salt, 10000, 64, 'sha512').toString('hex');
+          if (hashedPassword === user.password) {
+            req.session.loggedin = true;
+            req.session.username = username;
+            req.session.cookie.originalMaxAge = Date.now();
+            if (req.path == config.loginloc) {
+              res.redirect('/');
+              return;
+            }
+            next();
             return;
-          }
-          next();
-          return;
+          } 
         } else {
           if (req.path == config.loginloc) {
-          res.status(401);
-            res.setHeader('WWW-Authenticate', 'Basic realm="401');
-            res.end(getUnauthorizedResponse(req));
-        }
-      }
-      } else {
-        if (req.path === config.loginloc) {
             res.status(401);
             res.setHeader('WWW-Authenticate', 'Basic realm="401');
             res.end(getUnauthorizedResponse(req));
-        } else {
-          middle(req, res, next);
           }
         }
+      } else {
+        if (req.path === config.loginloc) {
+          res.status(401);
+          res.setHeader('WWW-Authenticate', 'Basic realm="401');
+          res.end(getUnauthorizedResponse(req));
+        } else {
+          middle(req, res, next);
+        }
+      }
     } else {
       next();
     }
