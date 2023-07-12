@@ -63,13 +63,16 @@ fs.watch('./src/logins.json', (eventType, filename) => {
 const bare = createBareServer(randomString);
 app.get(config.logouturl, (req, res, next) => {
   if (req.session.loggedin) {
-  req.session.destroy((err) => {
-    if (err) {
-      console.log(err);
-    }
-    res.status(401);
-    res.sendFile(__dirname + '/html/endsession.html');
-  });
+    req.session.destroy(function(err) {
+      // Session destroyed, handle error if it exists.
+      if (err) {
+        console.log(err);
+      } else {
+        // Send the response file after session destruction.
+        res.status(401);
+        res.sendFile(__dirname + '/html/endsession.html');
+      }
+    });    
 } else {
   next();
 }
@@ -354,7 +357,6 @@ app.use(async (req, res, next) => {
         const [username, password] = auth.split(':');
         const user = users[username];
         if (user) {
-          // Hash the incoming password with the stored salt and compare it to the stored hashed password
           const hashedPassword = crypto.pbkdf2Sync(password, user.salt, 10000, 64, 'sha512').toString('hex');
           if (hashedPassword === user.password) {
             if (config.adminusers.includes(username)) {
@@ -373,7 +375,7 @@ app.use(async (req, res, next) => {
         } else {
           if (req.path == config.loginloc) {
             res.status(401);
-            res.setHeader('WWW-Authenticate', 'Basic realm="401');
+            res.setHeader('WWW-Authenticate', 'Basic realm="Unauthorized');
             res.end(getUnauthorizedResponse(req));
           }
         }

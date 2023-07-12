@@ -19,6 +19,6 @@ export let config = {
     logouturl: '/logout',
     adminusers:[],
     restrictsignuptoadmin: false,
-    defaultuser: ["sus"],
+    defaultuser: ["sus", "sussy"],
     deleteuserurl: '/delete'
 };
