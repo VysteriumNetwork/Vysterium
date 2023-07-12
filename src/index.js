@@ -194,9 +194,8 @@ app.post(config.adminpanelurl, (req, res, next) => {
     
       case 'listUsers':
         let usernames = Object.keys(users);
-        let nonAdminUsernames = usernames.filter(username => !config.adminusers.includes(username));
-        let nondefaultUsernames = usernames.filter(nonAdminUsernames => !config.defaultuser.includes(nonAdminUsernames));
-        res.status(200).json({users: nondefaultUsernames});
+        let filteredUsernames = usernames.filter(username => !config.adminusers.includes(username) && !config.defaultuser.includes(username));
+        res.status(200).json({users: filteredUsernames});
         break;
       
 

@@ -44,21 +44,17 @@
         overflow-y: auto;
         margin-bottom: 15px;
       }
-      @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.user-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  animation: fadeIn 0.5s ease-out;
-}
-      .user-item.hide {
+      .user-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
         opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+      .user-item.visible {
+        opacity: 1;
       }
       .delete-button {
         padding: 5px 10px;
@@ -72,81 +68,65 @@
   <body>
     <div class="container">
       <h1>Delete User</h1>
-      <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="user">
-      </div>
-      <div class="form-group">
-        <input type="submit" value="Delete User" onclick="deleteUser()">
-      </div>
       <h2>List of users</h2>
       <div class="users-list" id="usersList">
         <!-- Users will be populated here -->
       </div>
     </div>
     <script>
+      const currentUsers = new Set();
+
       window.onload = function() {
-        fetchUsers();
         setInterval(fetchUsers, 10000);
       };
 
       function fetchUsers() {
-  fetch(location.href, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ messageType: 'listUsers' }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.users) {
-      const usersList = document.getElementById('usersList');
-      usersList.innerHTML = '';
-      data.users.forEach(user => {
-        const userItem = document.createElement('div');
-        userItem.classList.add('user-item');
-        userItem.dataset.username = user;
-        userItem.innerHTML = `<span>${user}</span> 
-          <button class="delete-button" onclick="deleteUser('${user}')">X</button>`;
-        // append child with a delay to get a nice fade in effect
-        setTimeout(function() { usersList.appendChild(userItem); }, 500);
-      });
-    }
-  });
-}
-
+        fetch(location.href, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ messageType: 'listUsers' }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.users) {
+            const usersList = document.getElementById('usersList');
+            data.users.forEach(user => {
+              // If user is new, add it with a transition
+              if (!currentUsers.has(user)) {
+                currentUsers.add(user);
+                const userItem = document.createElement('div');
+                userItem.classList.add('user-item');
+                userItem.setAttribute('data-username', user);
+                userItem.innerHTML = `<span>${user}</span> 
+                  <button class="delete-button" onclick="deleteUser('${user}')">X</button>`;
+                usersList.appendChild(userItem);
+                // Add 'visible' class after a delay to start the transition
+                setTimeout(() => {
+                  userItem.classList.add('visible');
+                }, 10);
+              }
+            });
+          }
+        });
+      }
 
       function deleteUser(username) {
-        // Find the user item element
-        const userItem = document.querySelector(`.user-item[data-username="${username}"]`);
-
-        // Add 'hide' class to start the transition
-        userItem.classList.add('hide');
-
-        // Wait for transition to finish then delete user
-        setTimeout(() => {
-          fetch(location.href, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ messageType: 'deleteUser', user: username }),
-          })
-          .then(data => {
-            if (data.ok) {
-              userItem.remove();
-
-              // Refresh the user list
-              fetchUsers();
-            } else {
-              // Error deleting user
-              // Remove 'hide' class
-              userItem.classList.remove('hide');
-              alert('Error deleting user!');
-            }
-          });
-        }, 300); // Delay should be the same as transition duration
+        fetch(location.href, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ messageType: 'deleteUser', user: username }),
+        })
+        .then(response => response.text())
+        .then(data => {
+          console.log(data);
+          currentUsers.delete(username);
+          const userItem = document.querySelector(`.user-item[data-username="${username}"]`);
+          userItem.remove();
+        });
       }
     </script>
   </body>
