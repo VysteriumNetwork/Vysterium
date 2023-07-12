@@ -17,8 +17,8 @@ export let config = {
     maxsignins: 2,
     signintimeout: 300 * 1000, // 5 mins
     logouturl: '/logout',
-    adminusers:[],
+    adminusers:["admin"],
     restrictsignuptoadmin: false,
     defaultuser: ["sus", "sussy"],
-    deleteuserurl: '/delete'
+    adminpanelurl: '/admin'
 };

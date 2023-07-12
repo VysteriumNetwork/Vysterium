@@ -148,7 +148,7 @@ if (config.signup == true) {
     res.status(200).json({ message: 'User successfully created. Your secret code is: ' + secretCode + ' make sure to save it or you will not have access to userpanel features!' });
   });
 // GET route
-app.get(config.deleteuserurl, (req, res) => {
+app.get(config.adminpanelurl, (req, res, next) => {
   if (!req.session.admin) {
     return res.redirect('/')
   }
@@ -157,29 +157,54 @@ app.get(config.deleteuserurl, (req, res) => {
 });
 
 // POST route
-app.post(config.deleteuserurl, (req, res) => {
+app.post(config.adminpanelurl, (req, res, next) => {
   if (!req.session.admin) {
-    return res.status(403).send('Access denied. Only admin users can delete users.');
-  }
-
-  let usernameToDelete = req.body.user;
-  
-  if (!usernameToDelete) {
-    return res.status(400).send('Missing user parameter.');
+   next();
   }
 
   let users = readUsersFromFile();
+  let usernameToDelete = req.body.user;
+  let messageType = req.body.messageType;
 
-  if (!users[usernameToDelete]) {
-    return res.status(404).send('User not found.');
+  if (!messageType) {
+    return res.status(400).send('Missing messageType parameter.');
   }
 
-  delete users[usernameToDelete];
+  switch (messageType) {
+    case 'deleteUser':
+      if (!usernameToDelete) {
+        return res.status(400).send('Missing user parameter.');
+      }
+      if (config.adminusers.includes(usernameToDelete)) {
+        return res.status(404).send("You can't delete admin users!")
+      }
+      if (config.defaultuser.includes(usernameToDelete)) {
+        return res.status(404).send("You can't delete admin users!")
+      }
+      if (!users[usernameToDelete]) {
+        return res.status(404).send('User not found.');
+      }
 
-  fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
+      delete users[usernameToDelete];
 
-  res.status(200).send('User successfully deleted.');
-});  
+      fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
+
+      res.status(200).send('User successfully deleted.');
+      break;
+    
+      case 'listUsers':
+        let usernames = Object.keys(users);
+        let nonAdminUsernames = usernames.filter(username => !config.adminusers.includes(username));
+        let nondefaultUsernames = usernames.filter(nonAdminUsernames => !config.defaultuser.includes(nonAdminUsernames));
+        res.status(200).json({users: nondefaultUsernames});
+        break;
+      
+
+    default:
+      res.status(400).send('Invalid messageType.');
+  }
+});
+
   
   
 }
