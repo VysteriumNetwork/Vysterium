@@ -27,10 +27,7 @@ function readUsersFromFile() {
 fs.readFile(path.join(__dirname, './blocklist.txt'), 'utf-8', (err, data) => { if (err) { console.error(err); return; } blacklisted.push(...data.split('\n')); });
 
 app.use(session({
-  store: new FileStoreSession({
-    path: './tmp', // the location where session files will be stored
-    ttl: 3600 // time to live in seconds
-  }),
+  store: new FileStoreSession({ path: './tmp', ttl: 3600 }),
   secret: 'randomsecretkey',
   resave: false,
   saveUninitialized: true,
@@ -375,8 +372,6 @@ app.post(config.userpanelurl, async (req, res, next) => {
     fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
   }
 });
-
-
 app.use(async (req, res, next) => {
   if (req.path.startsWith(randomString)) {
     if (bare.shouldRoute(req)) {
@@ -412,8 +407,10 @@ app.use(async (req, res, next) => {
         } else {
           if (req.path == config.loginloc) {
             res.redirect('/');
+            return;
           } else {
             next();
+            return;
           }
         }
       } else if (authHeader) {
@@ -435,21 +432,29 @@ app.use(async (req, res, next) => {
             }
             next();
             return;
-          } 
+          } else {
+              req.headers.authorization = null
+              req.session.destroy()
+              res.status(401);
+              res.sendFile(__dirname + '/html/endsession.html');
+              return;
+          }
         } else {
           if (req.path == config.loginloc) {
-            res.status(401);
-            res.setHeader('WWW-Authenticate', 'Basic realm="Unauthorized');
-            res.end(getUnauthorizedResponse(req));
+            res.sendFile(__dirname + '/html/login.html')
+            return;
+          } else {
+            middle(req, res, next); // Middle function is called only when user is not logged in
+            return;
           }
         }
       } else {
         if (req.path === config.loginloc) {
-          res.status(401);
-          res.setHeader('WWW-Authenticate', 'Basic realm="401');
-          res.end(getUnauthorizedResponse(req));
+          res.sendFile(__dirname + '/html/login.html')
+          return;
         } else {
-          middle(req, res, next);
+          middle(req, res, next); // Middle function is called only when user is not logged in
+          return;
         }
       }
     } else {
