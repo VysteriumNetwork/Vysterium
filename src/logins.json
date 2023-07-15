@@ -1,0 +1,14 @@
+{
+  "admin": {
+    "password": "fce9bb6bb1946fdd0fd383e7c11edac4d1ec87338a1f5573ff596bca27714de294b902e9588788f83ea7d847d9c7aa56f227a641c07da8a53a47362183a2f29c",
+    "salt": "2cb07f53b87fa29e7abfedf8fae5b672",
+    "maxAge": 0,
+    "secretCode": "4b4a9647e560cea7099b1203b8f32c7422f9aba0dbaded1d535da62fd7ca2e9f442329a4d4539de0aa7884dda3c44d7f45f23fb5cb53d4bb5b44c57022fc3d19"
+  },
+  "fwef": {
+    "password": "19d1cdb10c3c28f3a43f752c3f3331ae3c26fc570ac55ebb52543ffa651c5d10f9e83c77ffd8fa55c4f8ce9578dc14707c8561e567081fa172f8289eb149b87f",
+    "salt": "bdee215a43cdb86b0f4f413597f737fa",
+    "maxAge": 0,
+    "secretCode": "5629fa30096acdd805547b6e6b4f8c282a44fef3269dfb08062ce5d93520646d02dcdec04ec5800173ef5056370174e437aae6bc3fec991f237f1f4182f55a5c"
+  }
+}
