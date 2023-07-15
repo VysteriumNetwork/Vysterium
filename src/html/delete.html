@@ -19,25 +19,25 @@
       }
       .form-group label {
         display: block;
+        font-size: 1.3em;  /* Make the text bigger */
+        font-weight: bold;  /* Make the text bold */
         margin-bottom: 5px;
       }
-      .form-group input[type="text"] {
+      .form-group input[type="text"], .form-group input[type="password"] {
         width: 100%;
-        padding: 10px;
-        font-size: 16px;
+        padding: 15px;
+        font-size: 18px;
         border-radius: 5px;
         border: 1px solid #ddd;
       }
-      .form-group input[type="submit"] {
-        padding: 10px 20px;
+      .form-group button[type="button"] {
+        padding: 15px 30px;
         background-color: #007BFF;
         color: white;
         border-radius: 5px;
         border: none;
         cursor: pointer;
-      }
-      .form-group input[type="submit"]:hover {
-        background-color: #0056b3;
+        font-size: 18px;
       }
       .users-list {
         max-height: 200px;
@@ -48,26 +48,101 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px;
+        padding: 15px;
         border-bottom: 1px solid #ddd;
         opacity: 0;
         transition: opacity 0.5s ease;
       }
       .user-item.remove {
-  max-height: 0;
-  opacity: 0;
-  transition: opacity 0.5s ease, max-height 0.5s ease;
-}
+        max-height: 0;
+        opacity: 0;
+        transition: opacity 0.5s ease, max-height 0.5s ease;
+      }
       .user-item.visible {
         opacity: 1;
       }
-      .delete-button {
-        padding: 5px 10px;
+      .delete-button, .reset-button {
+        padding: 10px 20px;
         background-color: red;
         color: white;
         border: none;
         cursor: pointer;
+        font-size: 18px;
+        border-radius: 5px;
       }
+      .logoutUsers {
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        border-radius: 5px;
+      }
+      .reset-button {
+        background-color: #007BFF;
+        border-radius: 5px;
+      }
+      .reset-form-container {
+        display: none;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+      }
+      .reset-form {
+        background-color: #fff;
+        padding: 30px;
+        max-width: 500px;
+        width: 100%;
+        border-radius: 5px;
+      }
+
+      .reset-form #submit-button {
+        width: 100%;
+        padding: 15px;
+        font-size: 20px;
+        background-color: white;
+        color: #007BFF;
+        border: 2px solid #007BFF;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .reset-form #submit-button:hover {
+        background-color: #007BFF;
+        color: white;
+      }
+
+      .reset-form input[type="text"],
+      .reset-form input[type="password"] {
+        width: 80%;
+        padding: 15px;  /* Increase padding */
+        font-size: 20px;  /* Increase font size */
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        margin-bottom: 20px;  /* Add space between fields */
+      }
+      .close-button {
+        float: right;
+        cursor: pointer;
+        font-size: 24px;
+        font-weight: bold;
+        border: none;
+        background: transparent;
+      }
+      #close-button {
+    font-family: Arial, sans-serif;  /* Use a font that supports the multiplication symbol */
+    font-size: 20px;  /* Adjust as needed */
+    padding: 0;  /* Remove padding */
+    line-height: 1;  /* Adjust line-height */
+  }
     </style>
   </head>
   <body>
@@ -75,10 +150,28 @@
       <h1>Delete User</h1>
       <h2>List of users</h2>
       <div class="users-list" id="usersList">
-        <!-- Users will be populated here -->
+      </div>
+      <h1>End sessions</h1>
+      <button class="logoutUsers" onclick=logoutUsers()> Logout Users</button>
+    </div>
+    <div class="reset-form-container" id="resetFormContainer">
+      <div class="reset-form" id="resetForm">
+        <button class="close-button" onclick="closeResetForm()">x</button>
+        <div class="form-group">
+          <label for="newPassword">New Password:</label>
+          <input type="password" id="newPassword">
+        </div>
+        <div class="form-group">
+          <label for="newSecretKey">New Secret Key:</label>
+          <input type="text" id="newSecretKey">
+        </div>
+        <div class="form-group">
+          <button id="submit-button" onclick="resetUserInfo()">Submit</button>
+        </div>
       </div>
     </div>
     <script>
+      let currentUsername = null;
       const currentUsers = new Set();
 
       window.onload = function() {
@@ -106,7 +199,8 @@
                 userItem.classList.add('user-item');
                 userItem.setAttribute('data-username', user);
                 userItem.innerHTML = `<span>${user}</span> 
-                  <button class="delete-button" onclick="deleteUser('${user}')">X</button>`;
+                  <button class="reset-button" onclick="openResetForm('${user}')">Reset</button>
+                  <button class="delete-button" onclick="deleteUser('${user}')">Delete</button>`;
                 usersList.appendChild(userItem);
                 // Add 'visible' class after a delay to start the transition
                 setTimeout(() => {
@@ -117,7 +211,19 @@
           }
         });
       }
-
+      function logoutUsers() {
+        fetch(location.href, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ messageType: 'logoutUsers'}),
+        })
+        .then(response => response.text())
+        .then(data => {
+          alert(data)
+        });
+      }
       function deleteUser(username) {
         fetch(location.href, {
           method: 'POST',
@@ -133,6 +239,44 @@
           const userItem = document.querySelector(`.user-item[data-username="${username}"]`);
           userItem.remove();
         });
+      }
+      function openResetForm(username) {
+        const formContainer = document.getElementById('resetFormContainer');
+        formContainer.style.display = 'flex';
+        currentUsername = username;
+      }
+      function closeResetForm() {
+        const formContainer = document.getElementById('resetFormContainer');
+        formContainer.style.display = 'none';
+        currentUsername = null;
+      }
+      function resetUserInfo() {
+        const newPassword = document.getElementById('newPassword').value;
+        const newSecretKey = document.getElementById('newSecretKey').value;
+
+        if (newPassword && newSecretKey) {
+          fetch(location.href, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              messageType: 'changeCredentials',
+              user: currentUsername,
+              newPassword: newPassword,
+              newSecretKey: newSecretKey
+            }),
+          })
+          .then(response => response.text())
+          .then(data => {
+            alert(data);
+            fetchUsers();
+            // Hide the form after the request is complete
+            closeResetForm();
+          });
+        } else {
+          alert("Both password and secret key are required.");
+        }
       }
     </script>
   </body>

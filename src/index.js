@@ -161,7 +161,8 @@ app.post(config.adminpanelurl, (req, res, next) => {
   if (!req.session.admin) {
    next();
   }
-
+  let newPassword = req.body.newPassword;
+  let newSecretCode = req.body.newSecretCode;
   let users = readUsersFromFile();
   let usernameToDelete = req.body.user;
   let messageType = req.body.messageType;
@@ -171,6 +172,45 @@ app.post(config.adminpanelurl, (req, res, next) => {
   }
 
   switch (messageType) {
+    case 'logoutUsers':
+      fs.rm('./tmp', { recursive: true, force: true }, (err) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send('Error ending sessions');
+        } else {
+          res.status(200).send('Sessions ended');
+        }
+      });
+      break;
+      case 'changeCredentials':
+        if (!usernameToDelete) {
+          return res.status(400).send('Missing user parameter.');
+        }
+  
+        let user = users[usernameToDelete];
+        if (!user) {
+          return res.status(404).send('User not found.');
+        }
+  
+        if (newPassword) {
+          newPassword = crypto.pbkdf2Sync(newPassword, user.salt, 10000, 64, 'sha512').toString('hex');
+        }
+  
+        if (newSecretCode) {
+          newSecretCode = crypto.pbkdf2Sync(newSecretCode, user.salt, 10000, 64, 'sha512').toString('hex');
+          
+        }
+        users[usernameToDelete] = {
+          password: newPassword || user.password,
+          maxAge: user.maxAge,
+          salt: user.salt,  // assuming that salt is stored in user object
+          secretCode: newSecretCode || user.secretCode,  // assuming that secretCode is stored in user object
+          cookie: user.cookie, // retain existing cookie
+          AES: user.AES  // assuming that AES is stored in user object
+        };
+        fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
+        res.status(200).send('User credentials successfully changed.');
+        break;
     case 'deleteUser':
       if (!usernameToDelete) {
         return res.status(400).send('Missing user parameter.');
