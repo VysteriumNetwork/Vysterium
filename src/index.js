@@ -407,10 +407,8 @@ app.use(async (req, res, next) => {
         } else {
           if (req.path == config.loginloc) {
             res.redirect('/');
-            return;
           } else {
             next();
-            return;
           }
         }
       } else if (authHeader) {
@@ -432,29 +430,21 @@ app.use(async (req, res, next) => {
             }
             next();
             return;
-          } else {
-              req.headers.authorization = null
-              req.session.destroy()
-              res.status(401);
-              res.sendFile(__dirname + '/html/endsession.html');
-              return;
-          }
+          } 
         } else {
           if (req.path == config.loginloc) {
-            res.sendFile(__dirname + '/html/login.html')
-            return;
-          } else {
-            middle(req, res, next); // Middle function is called only when user is not logged in
-            return;
+            res.status(401);
+            res.setHeader('WWW-Authenticate', 'Basic realm="Unauthorized');
+            res.end();
           }
         }
       } else {
         if (req.path === config.loginloc) {
-          res.sendFile(__dirname + '/html/login.html')
-          return;
+          res.status(401);
+          res.setHeader('WWW-Authenticate', 'Basic realm="401');
+          res.end();
         } else {
-          middle(req, res, next); // Middle function is called only when user is not logged in
-          return;
+          middle(req, res, next);
         }
       }
     } else {
