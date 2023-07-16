@@ -540,12 +540,13 @@ app.use((req, res, next) => {
             border-radius: 25px;
             padding: 20px;
             color: black;
-            z-index: 99999;
+            z-index: 0;
             transition: opacity 0.7s ease;
         }
 
         .panel.show {
             opacity: 1;
+            z-index: 99999;
         }
 
         .panel a {
