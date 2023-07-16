@@ -511,7 +511,7 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  if (req.path.endsWith('.html') || req.path === '/') {
+  if (req.path.endsWith('.html') || req.path.endsWith('/')) {
     // Construct the path to the file
     let filePath = path.join(__dirname, '../static', req.path);
     if (req.path === '/') {
