@@ -191,7 +191,7 @@ app.post(config.adminpanelurl, (req, res, next) => {
   
         if (newPassword) {
           newPassword = crypto.pbkdf2Sync(newPassword, user.salt, 10000, 64, 'sha512').toString('hex');
-        }
+        }gi
   
         if (newSecretCode) {
           newSecretCode = crypto.pbkdf2Sync(newSecretCode, user.salt, 10000, 64, 'sha512').toString('hex');
@@ -509,7 +509,81 @@ app.use((req, res, next) => {
     next();
   }
 });
-app.use(express.static(fileURLToPath(new URL("../static/", import.meta.url))));
+
+app.use((req, res, next) => {
+  if (req.path.endsWith('.html') || req.path === '/') {
+    // Construct the path to the file
+    let filePath = path.join(__dirname, '../static', req.path);
+    if (req.path === '/') {
+      filePath = path.join(filePath, 'index.html');
+    }
+
+    // Read the file from disk
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        next(err);
+        return;
+      }
+
+      // Inject the HTML
+      const injectedData = data.replace('</body>', `
+      <style>
+            .panel {
+            opacity: 0;
+            position: fixed;
+            width: 300px;
+            height: 200px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #404040;
+            border-radius: 25px;
+            padding: 20px;
+            color: black;
+            z-index: 99999;
+            transition: opacity 0.7s ease;
+        }
+
+        .panel.show {
+            opacity: 1;
+        }
+
+        .panel a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            background: #007BFF; /* dark gray */
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+  </style>
+      <div class="panel" id="myPanel">
+      <a href=${config.adminpanelurl}>Admin</a>
+      <a href=${config.userpanelurl}>User Panel</a>
+  </div>
+
+  <script>
+  document.body.addEventListener('keydown', function(e) {
+    var panel = document.getElementById('myPanel');
+    if (e.code === 'ShiftRight') {
+        panel.classList.add('show');
+    } else if (e.code === 'Escape') {
+        panel.classList.remove('show');
+    }
+});
+  </script>
+    </body>`);
+
+      // Send the response
+      res.send(injectedData);
+    });
+  } else {
+    // For non-HTML files, fall back to express.static
+    express.static(fileURLToPath(new URL("../static/", import.meta.url)))(req, res, next);
+  }
+});
 const shuttleroutes = {
   '/shuttle/': 'index.html',
   '/shuttle/games': 'games.html',
