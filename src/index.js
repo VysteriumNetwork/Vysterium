@@ -528,6 +528,9 @@ app.use((req, res, next) => {
       // Inject the HTML
       const injectedData = data.replace('</body>', `
       <style>
+      body {
+        font-family: Arial, sans-serif;
+    }
             .panel {
             opacity: 0;
             position: fixed;
