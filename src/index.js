@@ -70,9 +70,9 @@ app.get(config.logouturl, (req, res, next) => {
         res.sendFile(__dirname + '/html/endsession.html');
       }
     });    
-} else {
-  next();
-}
+  } else {
+    return next()
+  }
 });
 if (config.signup == true) {
   const signupLimiter = rateLimit({
@@ -151,8 +151,39 @@ app.get(config.adminpanelurl, (req, res, next) => {
   if (!req.session.admin) {
     return next();
   }
-  res.sendFile(__dirname + '/html/delete.html');
+
+  const script = `
+    <script>
+      function logoutUsers() {
+        fetch(location.href, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ messageType: 'logoutUsers'}),
+        })
+        .then(response => response.text())
+        .then(data => {
+          const url = window.location.origin;
+          alert(data);
+          window.location.replace(\"${config.logouturl}\");
+        });
+      }
+    </script>
+  `;
+
+  fs.readFile(__dirname + '/html/delete.html', 'utf8', (err, html) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+      return;
+    }
+
+    const finalHtml = html.replace('</body>', script + '</body>');
+    res.send(finalHtml);
+  });
 });
+
 
 // POST route
 app.post(config.adminpanelurl, (req, res, next) => {
@@ -596,6 +627,9 @@ app.use((req, res, next) => {
   </div>
 
   <script>
+  if (document.referrer == location.origin + \"${config.logouturl}\") {
+    location.reload(true);
+}
   document.body.addEventListener('keydown', function(e) {
     var panel = document.getElementById('myPanel');
     if (e.code === 'ShiftRight') {
@@ -670,6 +704,9 @@ server.on('upgrade', (req, socket, head) => {
 });
 app.use((req, res) => {
 res.statusCode = 404;
+res.set('Cache-Control', 'no-store, must-revalidate');
+res.set('Pragma', 'no-cache');
+res.set('Expires', '0');
   res.setHeader("Content-Type", "text/html");
   res.end(fs.readFileSync('src/html/404.html'));
 });

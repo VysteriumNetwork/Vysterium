@@ -216,21 +216,6 @@
           }
         });
       }
-      function logoutUsers() {
-        fetch(location.href, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ messageType: 'logoutUsers'}),
-        })
-        .then(response => response.text())
-        .then(data => {
-          const url = window.location.origin
-          alert(data)
-          window.location.replace("test:test@" + url)
-        });
-      }
       function deleteUser(username) {
         fetch(location.href, {
           method: 'POST',
