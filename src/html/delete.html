@@ -1,7 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Delete User</title>
+    <title>Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+  name="description"
+  content="This admin panel is made for Vysterium, it is for managing users. From logging out all users to resetting a user's password, Vysterium's admin panel is great.">
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -19,7 +23,7 @@
       }
       .form-group label {
         display: block;
-        font-size: 1.3em;  /* Make the text bigger */
+        font-size: 18px;  /* Make the text bigger */
         font-weight: bold;  /* Make the text bold */
         margin-bottom: 5px;
       }
@@ -32,7 +36,7 @@
       }
       .form-group button[type="button"] {
         padding: 15px 30px;
-        background-color: #007BFF;
+        background-color: #153E9D;
         color: white;
         border-radius: 5px;
         border: none;
@@ -48,6 +52,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        font-size: 18px;
         padding: 15px;
         border-bottom: 1px solid #ddd;
         opacity: 0;
@@ -63,7 +68,7 @@
       }
       .delete-button, .reset-button {
         padding: 10px 20px;
-        background-color: red;
+        background-color: #9C1C1C;
         color: white;
         border: none;
         cursor: pointer;
@@ -72,7 +77,7 @@
       }
       .logoutUsers {
         padding: 10px 20px;
-        background-color: #007BFF;
+        background-color: #153E9D;
         color: white;
         border: none;
         cursor: pointer;
@@ -80,7 +85,7 @@
         border-radius: 5px;
       }
       .reset-button {
-        background-color: #007BFF;
+        background-color: #153E9D;
         border-radius: 5px;
       }
       .reset-form-container {
@@ -108,15 +113,15 @@
         padding: 15px;
         font-size: 20px;
         background-color: white;
-        color: #007BFF;
-        border: 2px solid #007BFF;
+        color: #153E9D;
+        border: 2px solid #153E9D;
         border-radius: 10px;
         cursor: pointer;
         transition: background-color 0.3s ease, color 0.3s ease;
       }
 
       .reset-form #submit-button:hover {
-        background-color: #007BFF;
+        background-color: #153E9D;
         color: white;
       }
 
@@ -221,7 +226,9 @@
         })
         .then(response => response.text())
         .then(data => {
+          const url = window.location.origin
           alert(data)
+          window.location.replace("test:test@" + url)
         });
       }
       function deleteUser(username) {

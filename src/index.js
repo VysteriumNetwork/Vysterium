@@ -84,13 +84,15 @@ if (config.signup == true) {
   app.get(config.signuppath, async (req, res, next) => {
     if (config.restrictsignuptoadmin == true) {
       if (req.session.admin) {
+        res.setHeader('Cache-Control', 'max-age=31536000');
         res.status(404)
         res.sendFile(__dirname + '/html/signup.html');
       } else {
-        res.redirect('/')
+        next()
       }
     } else {
       res.status(404)
+      res.setHeader('Cache-Control', 'max-age=31536000');
       res.sendFile(__dirname + '/html/signup.html');
     }
   })
@@ -147,16 +149,15 @@ if (config.signup == true) {
 // GET route
 app.get(config.adminpanelurl, (req, res, next) => {
   if (!req.session.admin) {
-    return res.redirect('/')
+    return next();
   }
-
   res.sendFile(__dirname + '/html/delete.html');
 });
 
 // POST route
 app.post(config.adminpanelurl, (req, res, next) => {
   if (!req.session.admin) {
-   next();
+   return next();
   }
   let newPassword = req.body.newPassword;
   let newSecretCode = req.body.newSecretCode;
@@ -170,7 +171,7 @@ app.post(config.adminpanelurl, (req, res, next) => {
 
   switch (messageType) {
     case 'logoutUsers':
-      fs.rm('./tmp', { recursive: true, force: true }, (err) => {
+      fs.rmdir('tmp', { recursive: true, force: true }, (err) => {
         if (err) {
           console.log(err);
           res.status(500).send('Error ending sessions');
@@ -178,29 +179,37 @@ app.post(config.adminpanelurl, (req, res, next) => {
           res.status(200).send('Sessions ended');
         }
       });
+      setTimeout(() => {
+        fs.mkdir('tmp', { recursive: true, force: true }, (err) => {
+          console.log(err)
+        });
+      }, 10);
       break;
       case 'changeCredentials':
         if (!usernameToDelete) {
           return res.status(400).send('Missing user parameter.');
         }
-  
+        let salt = user.salt
+        if (newSecretCode && newPassword) {
+          salt = crypto.randomBytes(16).toString('hex');
+        }
         let user = users[usernameToDelete];
         if (!user) {
           return res.status(404).send('User not found.');
         }
   
         if (newPassword) {
-          newPassword = crypto.pbkdf2Sync(newPassword, user.salt, 10000, 64, 'sha512').toString('hex');
+          newPassword = crypto.pbkdf2Sync(newPassword, salt, 10000, 64, 'sha512').toString('hex');
         }gi
   
         if (newSecretCode) {
-          newSecretCode = crypto.pbkdf2Sync(newSecretCode, user.salt, 10000, 64, 'sha512').toString('hex');
+          newSecretCode = crypto.pbkdf2Sync(newSecretCode, salt, 10000, 64, 'sha512').toString('hex');
           
         }
         users[usernameToDelete] = {
           password: newPassword || user.password,
           maxAge: user.maxAge,
-          salt: user.salt,  // assuming that salt is stored in user object
+          salt: salt,  // assuming that salt is stored in user object
           secretCode: newSecretCode || user.secretCode,  // assuming that secretCode is stored in user object
           cookie: user.cookie, // retain existing cookie
           AES: user.AES  // assuming that AES is stored in user object
@@ -246,7 +255,7 @@ app.post(config.adminpanelurl, (req, res, next) => {
 }
 app.get(config.userpanelurl, (req, res, next) => {
   if (!req.session.loggedin && config.password == true) {
-    next(); 
+    return next();
   } else {
     res.status(404);
   res.sendFile(path.join(__dirname, '/html/userpanel.html'));
@@ -255,7 +264,7 @@ app.get(config.userpanelurl, (req, res, next) => {
 
 app.post(config.userpanelurl, async (req, res, next) => {
   if (!req.session.loggedin && config.password == true) {
-    next(); 
+    return next();
   } else {
     let { username, password, secretCode, messageType, newUsername, newPassword, newSecretCode, cookie } = req.body;
 
@@ -277,7 +286,7 @@ app.post(config.userpanelurl, async (req, res, next) => {
     
     function encrypt(text, key) {
       let iv = crypto.randomBytes(16);
-      let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
+      let cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(key), iv);
       let encrypted = cipher.update(text);
       encrypted = Buffer.concat([encrypted, cipher.final()]);
       return iv.toString('hex') + ':' + encrypted.toString('hex');
@@ -287,7 +296,7 @@ app.post(config.userpanelurl, async (req, res, next) => {
       let textParts = text.split(':');
       let iv = Buffer.from(textParts.shift(), 'hex');
       let encryptedText = Buffer.from(textParts.join(':'), 'hex');
-      let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
+      let decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(key), iv);
       let decrypted = decipher.update(encryptedText);
       decrypted = Buffer.concat([decrypted, decipher.final()]);
       return decrypted.toString();
@@ -330,7 +339,7 @@ app.post(config.userpanelurl, async (req, res, next) => {
           }
           res.status(200).json({ cookie: decrypt(user.cookie, user.AES) });
           break;
-  
+      let salt = user.salt
       case 'changeCredentials':
         if (!newUsername) {
           newUsername = username;
@@ -339,15 +348,17 @@ app.post(config.userpanelurl, async (req, res, next) => {
         if(users[newUsername]){
           return res.status(400).json({ message: 'Username already exists.' });
         }
-        
+        if (newPassword && newSecretCode) {
+          salt = crypto.randomBytes(16).toString('hex');
+        }
         // if newPassword is provided, hash it with user's salt
         if (newPassword) {
-          newPassword = crypto.pbkdf2Sync(newPassword, user.salt, 10000, 64, 'sha512').toString('hex');
+          newPassword = crypto.pbkdf2Sync(newPassword, salt, 10000, 64, 'sha512').toString('hex');
         }
 
         // if newSecretCode is provided, hash it with user's salt
         if (newSecretCode) {
-          newSecretCode = crypto.pbkdf2Sync(newSecretCode, user.salt, 10000, 64, 'sha512').toString('hex');
+          newSecretCode = crypto.pbkdf2Sync(newSecretCode, salt, 10000, 64, 'sha512').toString('hex');
         }
         
         delete users[username];
@@ -386,13 +397,25 @@ app.use(async (req, res, next) => {
       }
       bare.routeRequest(req, res);
     } else {
-      next();
+      return next();
     }
   } else {
     if (config.password === true) {
       const users = config.users;
       const authHeader = req.headers.authorization;
-
+      if (!authHeader && req.session.loggedin) {
+        req.session.destroy(function(err) {
+          // Session destroyed, handle error if it exists.
+          if (err) {
+            console.log(err);
+          } else {
+            // Send the response file after session destruction.
+            res.status(401);
+            res.end(getUnauthorizedResponse)
+          }
+        }); 
+        return;
+      }
       if (req.session.loggedin) {
         const userMaxAge = users[req.session.username]?.maxAge || config.maxAge;
         if (Date.now() - req.session.cookie.originalMaxAge >= userMaxAge * 60 * 1000 && userMaxAge != false) {
@@ -408,10 +431,10 @@ app.use(async (req, res, next) => {
           if (req.path == config.loginloc) {
             res.redirect('/');
           } else {
-            next();
+            return next();
           }
         }
-      } else if (authHeader) {
+      } else if (authHeader && req.session) {
         const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf8');
         const [username, password] = auth.split(':');
         const user = users[username];
@@ -428,14 +451,14 @@ app.use(async (req, res, next) => {
               res.redirect('/');
               return;
             }
-            next();
+            return next();
             return;
           } 
         } else {
           if (req.path == config.loginloc) {
             res.status(401);
             res.setHeader('WWW-Authenticate', 'Basic realm="Unauthorized');
-            res.end();
+            res.end('go back to home');
           }
         }
       } else {
@@ -448,7 +471,7 @@ app.use(async (req, res, next) => {
         }
       }
     } else {
-      next();
+      return next();
     }
   }
 });
@@ -488,7 +511,22 @@ function routeRhUpgrade(req, socket, head) {
   }
 const rammerheadSession = /^\/[a-z0-9]{32}/;
 if (config.cloak === true) {
-  app.use((e,t,n)=>{const r=e.url;if(r.endsWith(".html")){t.statusCode=404;n()}else{if(r.endsWith("/")){t.statusCode=404;n()}else{n()}}});
+  app.use((e, t, n) => {
+    const r = e.url;
+    if (r.endsWith(".html")) {
+      t.statusCode = 404;
+      t.setHeader("Cache-Control", "max-age=31536000");
+      n();
+    } else {
+      if (r.endsWith("/")) {
+        t.statusCode = 404;
+        t.setHeader("Cache-Control", "max-age=31536000");
+        n();
+      } else {
+        n();
+      }
+    }
+  });
 }
 app.use((req, res, next) => {
   if (shouldRouteRh(req)) {
@@ -501,14 +539,13 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  if (req.path.endsWith('.html') || req.path.endsWith('/')) {
-    // Construct the path to the file
+  res.setHeader('Cache-Control', 'public, max-age=31536000');
+  if (req.path == '/') {
     let filePath = path.join(__dirname, '../static', req.path);
     if (req.path === '/') {
       filePath = path.join(filePath, 'index.html');
     }
 
-    // Read the file from disk
     fs.readFile(filePath, 'utf8', (err, data) => {
       if (err) {
         next(err);
@@ -574,7 +611,6 @@ app.use((req, res, next) => {
       res.send(injectedData);
     });
   } else {
-    // For non-HTML files, fall back to express.static
     express.static(fileURLToPath(new URL("../static/", import.meta.url)))(req, res, next);
   }
 });
@@ -639,7 +675,7 @@ res.statusCode = 404;
 });
 function getUnauthorizedResponse() {
   return `<!DOCTYPE html>
-  <script> window.location.replace("/"); </script>
+  <script> window.location.replace(location.origin + ${config.logouturl}); </script>
   </html>`;
 }
 server.on("listening", () => {
