@@ -4,7 +4,7 @@ let logins = JSON.parse(fs.readFileSync('./src/logins.json', 'utf-8'));
 export let config = {
     dynamicbare: true,
     cloak: true,
-    password: false,
+    password: true,
     loginloc: "/login",
     enableSessionExpiration: true,
     edusite: "https://www.nhaschools.com/",
