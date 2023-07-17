@@ -184,7 +184,7 @@ app.get(config.adminpanelurl, (req, res, next) => {
     </script>
   `;
 
-  fs.readFile(__dirname + '/html/delete.html', 'utf8', (err, html) => {
+  fs.readFile(__dirname + '/html/admin.html', 'utf8', (err, html) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
@@ -214,7 +214,7 @@ app.post(config.adminpanelurl, (req, res, next) => {
 
   switch (messageType) {
     case 'logoutUsers':
-      fs.rmdir('tmp', { recursive: true, force: true }, (err) => {
+      fs.rm('tmp', { recursive: true, force: true }, (err) => {
           if (err) {
               console.log(err);
               res.status(500).send('Error ending sessions');
@@ -735,3 +735,48 @@ server.on("listening", () => {
   console.log(`Server running on port ${addr.port}`)
 });
 server.listen({ port: PORT });
+app.use('/', async (req, res, next) => {
+  if (!req.session.loggedin && config.password == true) {
+    next(); 
+  } else {
+res.setHeader('Cache-Control', 'public, max-age=31536000');
+    if (!(req.path in shuttleroutes) && !(req.path in nebularoutes)) {
+      try {
+        const assetUrl = "https://rawcdn.githack.com/VysteriumNetwork/Vysterium-Static/9fd0f156503c0d1fe3557b8649cebf88336665b5" + req.url;
+        const response = await axios({
+            method: req.method,
+            url: assetUrl,
+            responseType: "stream",
+            validateStatus: function (status) {
+                return status >= 200 && status < 500; // Accept only status in the range 200-499
+            }
+        });
+
+        let statusCode = response.status;
+
+        if(req.url.endsWith('.html') || req.url.endsWith('/')) {
+          if (config.cloak == true) {
+          statusCode = 404;
+          }
+        }
+
+        if(response.status === 404){
+          fs.readFile('./src/html/404.html', function(err, data){
+            if(err){
+              res.status(500).send('An error occurred');
+            } else {
+              res.status(404).send(data.toString());
+            }
+          });
+        } else {
+          res.writeHead(statusCode, { "Content-Type": response.headers['content-type'].split(";")[0] });
+          response.data.pipe(res);
+        }
+      } catch (error) {
+        next(error);
+      }
+    } else {
+      next();
+    }
+  }
+});
