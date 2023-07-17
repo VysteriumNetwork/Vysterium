@@ -77,7 +77,7 @@
       }
       .logoutUsers {
         padding: 10px 20px;
-        background-color: #153E9D;
+        background-color: #8B0000;
         color: white;
         border: none;
         cursor: pointer;
@@ -158,6 +158,8 @@
       </div>
       <h1>End sessions</h1>
       <button class="logoutUsers" onclick=logoutUsers()> Logout Users</button>
+      <button class="logoutUsers" onclick=shutdown()> Shut Down Server</button>
+      <button class="logoutUsers" onclick=restart()> Restart Server</button>
     </div>
     <div class="reset-form-container" id="resetFormContainer">
       <div class="reset-form" id="resetForm">
@@ -270,6 +272,33 @@
           alert("Both password and secret key are required.");
         }
       }
+      function shutdown() {
+          fetch(location.href, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              messageType: 'shutdown',
+            }),
+          })
+          .then(
+            alert('Process shut down'));
+        }
+        function restart() {
+          fetch(location.href, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              messageType: 'restart',
+            }),
+          })
+          .then(
+            alert('Process restarted down')
+          );
+        }
     </script>
   </body>
 </html>

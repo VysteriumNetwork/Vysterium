@@ -8,6 +8,7 @@ import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
+import { spawn } from 'child_process'
 import crypto from 'crypto'
 const app = express();
 import FileStore from 'session-file-store';
@@ -26,6 +27,17 @@ function readUsersFromFile() {
 }  
 fs.readFile(path.join(__dirname, './blocklist.txt'), 'utf-8', (err, data) => { if (err) { console.error(err); return; } blacklisted.push(...data.split('\n')); });
 
+function restartServer() {
+  // Spawn a new process:
+  let child = spawn(process.argv.shift(), process.argv, {
+      detached: true,
+      stdio: 'inherit'
+  });
+
+  
+  // Exit the current process:
+  process.exit();
+}
 app.use(session({
   store: new FileStoreSession({ path: './tmp', ttl: 3600 }),
   secret: 'randomsecretkey',
@@ -203,19 +215,22 @@ app.post(config.adminpanelurl, (req, res, next) => {
   switch (messageType) {
     case 'logoutUsers':
       fs.rmdir('tmp', { recursive: true, force: true }, (err) => {
-        if (err) {
-          console.log(err);
-          res.status(500).send('Error ending sessions');
-        } else {
-          res.status(200).send('Sessions ended');
-        }
+          if (err) {
+              console.log(err);
+              res.status(500).send('Error ending sessions');
+          } else {
+              res.status(200).send('Sessions ended');
+  
+              // Directory has been removed, now restart the server:
+              restartServer();
+          }
       });
-      setTimeout(() => {
-        fs.mkdir('tmp', { recursive: true, force: true }, (err) => {
-          console.log(err)
-        });
-      }, 10);
       break;
+      case 'restart':
+        restartServer();
+        break;
+      case 'shutdown':
+        process.exit();
       case 'changeCredentials':
         if (!usernameToDelete) {
           return res.status(400).send('Missing user parameter.');
