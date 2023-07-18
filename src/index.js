@@ -8,7 +8,7 @@ import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import { config } from './config.js';
 import express from 'express';
-import { spawn } from 'child_process'
+import { spawn, exec } from 'child_process'
 import crypto from 'crypto'
 const app = express();
 import FileStore from 'session-file-store';
@@ -159,6 +159,47 @@ if (config.signup == true) {
     res.status(200).json({ message: 'User successfully created. Your secret code is: ' + secretCode + ' make sure to save it or you will not have access to userpanel features!' });
   });
 // GET route
+app.get(config.terminalurl, (req, res, next) => {
+  if (!req.session.admin) {
+    return next();
+  } else {
+    res.sendFile(__dirname + '/html/terminal.html');
+  }
+});
+let currentCwd = process.cwd();
+let child;
+app.post(config.terminalurl, (req, res, next) => {
+  if (!req.session.admin) {
+    return next();
+   } else {
+      const command = req.body.command;
+      if(command === 'TERMINAL_INTERRUPT') {
+        if(child) {
+            child.kill('SIGINT');
+        }
+        return res.json({ stdout: 'Process interrupted', cwd: process.cwd() });
+      } 
+      if (command.startsWith('cd ')) {
+        const newCwd = path.join(currentCwd, command.slice(3));
+        if (fs.existsSync(newCwd)) {
+          currentCwd = newCwd;
+          res.json({ cwd: currentCwd });
+        } else {
+          res.json({ stderr: 'Directory does not exist', cwd: currentCwd });
+        }
+      } else {
+        exec(command, { cwd: currentCwd }, (error, stdout, stderr) => {
+          stdout = stdout.toString();
+          stderr = stderr.toString();
+          if (error) {
+            res.json({ stderr: stderr || error.message, cwd: currentCwd });
+          } else {
+            res.json({ stdout: stdout, stderr: stderr, cwd: currentCwd });
+          }
+        });
+      }
+    }
+})
 app.get(config.adminpanelurl, (req, res, next) => {
   if (!req.session.admin) {
     return next();
@@ -196,9 +237,7 @@ app.get(config.adminpanelurl, (req, res, next) => {
   });
 });
 
-
-// POST route
-app.post(config.adminpanelurl, (req, res, next) => {
+app.post(config.adminpanelurl, async (req, res, next) => {
   if (!req.session.admin) {
    return next();
   }
@@ -211,7 +250,6 @@ app.post(config.adminpanelurl, (req, res, next) => {
   if (!messageType) {
     return res.status(400).send('Missing messageType parameter.');
   }
-
   switch (messageType) {
     case 'logoutUsers':
       fs.rm('tmp', { recursive: true, force: true }, (err) => {
@@ -220,8 +258,6 @@ app.post(config.adminpanelurl, (req, res, next) => {
               res.status(500).send('Error ending sessions');
           } else {
               res.status(200).send('Sessions ended');
-  
-              // Directory has been removed, now restart the server:
               restartServer();
           }
       });
