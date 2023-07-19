@@ -2,9 +2,6 @@
 <html>
 <head>
     <title>Terminal Emulator</title>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <style>
         body, html {
             height: 100%;
@@ -70,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ command: command }),
+            body: JSON.stringify({ command: command, messageType: "terminal" }),
         }).then(response => {
             if (response.ok) {
                 return response.json();
@@ -108,10 +105,9 @@ document.addEventListener("DOMContentLoaded", function() {
             let command = input.value;
             fetchTerminalCommand(command);
         }
-        
     });
 
-    terminal.innerText += "Welcome to the Terminal. Type 'hi' for default interaction";
+    terminal.innerText += "Welcome to the Terminal. Type 'help' for default interaction";
 });
 
     </script>
