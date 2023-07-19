@@ -174,7 +174,15 @@ app.post(config.terminalurl, (req, res, next) => {
     return next();
    } else {
       const command = req.body.command;
-      if(command === 'TERMINAL_INTERRUPT') {
+
+  if (command === 'FETCH_HISTORY') {
+    commandHistoryIndex += data.index;
+    if (commandHistoryIndex < 0) commandHistoryIndex = 0;  // Ensure command history index is valid
+    if (commandHistoryIndex >= commandHistory.length) commandHistoryIndex = commandHistory.length - 1;  // Ensure command history index is valid
+    return res.json({ historyCommand: commandHistory[commandHistoryIndex] });
+  }
+
+      if(command === '^C') {
         if(child) {
             child.kill('SIGINT');
         }
