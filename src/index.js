@@ -120,7 +120,7 @@ if (config.signup == true) {
     let password = req.body.password;
     let loginTime = req.body.loginTime;
   
-    // Check if username or password contains blacklisted characters
+    const MAX_LENGTH = config.maxuserpasswordlength
     let regex = /["\\']/;
     if (regex.test(username) || regex.test(password) || regex.test(loginTime)) {
       return res.status(400).json({ message: 'Invalid input. Quotes are not allowed.' });
@@ -129,7 +129,13 @@ if (config.signup == true) {
     if (!username || !password || (!loginTime && loginTime != false)) {
       return res.status(400).json({ message: 'Missing username, password or login time.' });
     }
-  
+    if (username.length > MAX_LENGTH) {
+      return res.status(400).json({ message: 'Username is too long. Maximum length is 16.' });
+    }
+    
+    if (password.length > MAX_LENGTH) {
+      return res.status(400).json({ message: 'Password is too long. Maximum length is 16.' });
+    }
     let users = readUsersFromFile();
   
     if (users[username]) {
@@ -157,7 +163,7 @@ if (config.signup == true) {
     // Write users back to the file
     fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
   
-    res.status(200).json({ message: 'User successfully created. Your secret code is: ' + secretCode + ' make sure to save it or you will not have access to userpanel features!' });
+    res.status(200).json({ message: 'User successfully created. Your secret code is in the popup make sure to save it or you will not have access to userpanel features!', secretCode: secretCode});
   });
 // GET route
 app.get(config.terminalurl, (req, res, next) => {

@@ -21,5 +21,6 @@ export let config = {
     adminusers:["admin"],
     restrictsignuptoadmin: false,
     defaultuser: ["sus", "sussy"],
-    adminpanelurl: '/admin'
+    adminpanelurl: '/admin',
+    maxuserpasswordlength: 16
 };
