@@ -482,7 +482,7 @@ app.use(async (req, res, next) => {
           } else {
             // Send the response file after session destruction.
             res.status(401);
-            res.end(getUnauthorizedResponse)
+            res.end('error')
           }
         }); 
         return;
@@ -695,11 +695,6 @@ res.set('Expires', '0');
   res.setHeader("Content-Type", "text/html");
   res.end(fs.readFileSync('src/html/404.html'));
 });
-function getUnauthorizedResponse() {
-  return `<!DOCTYPE html>
-  <script> window.location.replace(location.origin + ${config.logouturl}); </script>
-  </html>`;
-}
 server.on("listening", () => {
   const addr = server.address();
   console.log(`Server running on port ${addr.port}`)
