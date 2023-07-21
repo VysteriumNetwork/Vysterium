@@ -1,9 +1,9 @@
-import createBareServer from "@tomphttp/bare-server-node";
+import { createBareServer } from "@tomphttp/bare-server-node";
 import { fileURLToPath } from "node:url";
 import { createServer as createHttpServer } from "node:http";
 import fs from 'fs';
 import { createProxyMiddleware } from 'http-proxy-middleware'
-import compression from 'compression'
+import compression from 'express-compression'
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import { config } from './config.js';
@@ -16,8 +16,8 @@ import FileStore from 'session-file-store';
 const FileStoreSession = FileStore(session);
 import path from 'path';
 app.use(express.json());
+app.use(compression({ brotli: { enabled: true, zlib: { } } }))
 app.use(express.urlencoded({ extended: true }));
-app.use(compression())
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const blacklisted = [];
@@ -29,14 +29,12 @@ function readUsersFromFile() {
 fs.readFile(path.join(__dirname, './blocklist.txt'), 'utf-8', (err, data) => { if (err) { console.error(err); return; } blacklisted.push(...data.split('\n')); });
 
 function restartServer() {
-  // Spawn a new process:
   let child = spawn(process.argv.shift(), process.argv, {
       detached: true,
       stdio: 'inherit'
   });
 
   
-  // Exit the current process:
   process.exit();
 }
 app.use(session({
@@ -689,9 +687,6 @@ server.on('upgrade', (req, socket, head) => {
 });
 app.use((req, res) => {
 res.statusCode = 404;
-res.set('Cache-Control', 'no-store, must-revalidate');
-res.set('Pragma', 'no-cache');
-res.set('Expires', '0');
   res.setHeader("Content-Type", "text/html");
   res.end(fs.readFileSync('src/html/404.html'));
 });
