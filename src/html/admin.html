@@ -282,8 +282,11 @@
               messageType: 'shutdown',
             }),
           })
-          .then(
-            alert('Process shut down'));
+          .then(response => response.text())
+          .then(data => 
+            alert(data)
+            );
+
         }
         function restart() {
           fetch(location.href, {

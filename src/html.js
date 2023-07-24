@@ -59,6 +59,7 @@ body {
 <a href=${config.adminpanelurl}>Admin</a>
 <a href=${config.userpanelurl}>User Panel</a>
 <a href=${config.terminalurl}>Admin Terminal</a>
+<a href=${config.logouturl}>Logout</a>
 </div>
 
 <script>

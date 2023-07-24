@@ -19,6 +19,7 @@ export let config = {
     signintimeout: 300 * 1000, // 5 mins
     logouturl: '/logout',
     adminusers:["admin"],
+    owners:["owner"],
     restrictsignuptoadmin: false,
     defaultuser: ["sus", "sussy"],
     adminpanelurl: '/admin',

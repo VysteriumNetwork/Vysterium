@@ -206,7 +206,7 @@ app.post(config.terminalurl, (req, res, next) => {
     }
 })
 app.get(config.adminpanelurl, (req, res, next) => {
-  if (!req.session.admin) {
+  if (!req.session.admin && !req.session.owner) {
     return next();
   }
 
@@ -253,7 +253,13 @@ app.post(config.adminpanelurl, async (req, res, next) => {
         restartServer();
         break;
       case 'shutdown':
+        if (req.session.owner) {
+          res.status(200).send('Server shut down!')
         process.exit();
+        } else {
+          res.status(200).send('admins cannot shut down the server')
+          return;
+        }
       case 'changeCredentials':
         if (!usernameToDelete) {
           return res.status(400).send('Missing user parameter.');
@@ -261,6 +267,11 @@ app.post(config.adminpanelurl, async (req, res, next) => {
         let salt = user.salt
         if (newSecretCode && newPassword) {
           salt = crypto.randomBytes(16).toString('hex');
+        }
+        if (!req.session.owner) {
+          if (config.adminusers.includes(users[usernameToDelete])) {
+            res.status(403).send('You are not an owner')
+          }
         }
         let user = users[usernameToDelete];
         if (!user) {
@@ -309,8 +320,10 @@ app.post(config.adminpanelurl, async (req, res, next) => {
     
       case 'listUsers':
         let usernames = Object.keys(users);
-        let filteredUsernames = usernames.filter(username => !config.adminusers.includes(username) && !config.defaultuser.includes(username));
-        res.status(200).json({users: filteredUsernames});
+      if (!req.session.owner) {
+        usernames = usernames.filter(username => !config.adminusers.includes(username) && !config.defaultuser.includes(username) && !config.owners.includes(username));
+      }
+        res.status(200).json({users: usernames});
         break;
       
 
@@ -512,6 +525,12 @@ app.use(async (req, res, next) => {
           if (hashedPassword === user.password) {
             if (config.adminusers.includes(username)) {
               req.session.admin = true
+            }
+            if (config.owners.includes(username)) {
+              req.session.owner = true
+              if (!req.session.admin) {
+req.session.admin = true
+              } 
             }
             req.session.loggedin = true;
             req.session.username = username;
