@@ -223,9 +223,10 @@ input[type="submit"]:hover {
             },
             body: JSON.stringify({username: username, password: password}),
         })
+        .then(response => response.text())
         .then(response => {
-            if (response.status === 200) 
-                window.location.replace('/')
+            alert(response)
+            location.replace('/')
         })
     });
 

@@ -484,22 +484,52 @@ app.use(async (req, res, next) => {
   } else {
     if (config.password === true) {
       const users = config.users;
-      const authHeader = req.headers.authorization;
-      if (!authHeader && req.session.loggedin) {
-        req.session.destroy(function(err) {
-          // Session destroyed, handle error if it exists.
-          if (err) {
-            console.log(err);
-          } else {
-            // Send the response file after session destruction.
-            res.status(401);
-            res.end('error')
-          }
-        }); 
+      
+      if (req.method === 'GET' && req.path === config.loginloc) {
+        if (req.session.loggedin) {
+          res.redirect('/')
+          return;
+        }
+        return res.sendFile(path.join(__dirname, './html/login.html'));
+      }
+
+      if (req.method === 'POST' && req.path === config.loginloc) {
+        if (req.session.loggedin) {
+          res.redirect('/')
+          return;
+        }
+        const { username, password } = req.body;
+
+        const user = users[username];
+        if (user) {
+          const hashedPassword = crypto.pbkdf2Sync(password, user.salt, 10000, 64, 'sha512').toString('hex');
+          if (hashedPassword === user.password) {
+            if (config.adminusers.includes(username)) {
+              req.session.admin = true
+            }
+            if (config.owners.includes(username)) {
+              req.session.admin = true
+              req.session.owner = true
+            }
+            req.session.loggedin = true;
+            req.session.username = username;
+            req.session.cookie.originalMaxAge = Date.now();
+            
+            res.end('Success!')
+            return;
+          } 
+        }
+
+        res.status(401);
+        res.end('Invalid username or password');
         return;
       }
+      
       if (req.session.loggedin) {
         const userMaxAge = users[req.session.username]?.maxAge || config.maxAge;
+        if (req.path == config.loginloc) { 
+          res.redirect('/')
+        }
         if (Date.now() - req.session.cookie.originalMaxAge >= userMaxAge * 60 * 1000 && userMaxAge != false) {
           req.session.destroy(err => {
             if (err) {
@@ -516,46 +546,20 @@ app.use(async (req, res, next) => {
             return next();
           }
         }
-      } else if (authHeader && req.session) {
-        const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf8');
-        const [username, password] = auth.split(':');
-        const user = users[username];
-        if (user) {
-          const hashedPassword = crypto.pbkdf2Sync(password, user.salt, 10000, 64, 'sha512').toString('hex');
-          if (hashedPassword === user.password) {
-            if (config.adminusers.includes(username)) {
-              req.session.admin = true
-            }
-            if (config.owners.includes(username)) {
-              req.session.owner = true
-              if (!req.session.admin) {
-req.session.admin = true
-              } 
-            }
-            req.session.loggedin = true;
-            req.session.username = username;
-            req.session.cookie.originalMaxAge = Date.now();
-            if (req.path == config.loginloc) {
-              res.redirect('/');
-              return;
-            }
-            return next();
-            return;
-          } 
-        } else {
-          if (req.path == config.loginloc) {
-            res.status(401);
-            res.setHeader('WWW-Authenticate', 'Basic realm="Unauthorized');
-            res.end('go back to home');
-          }
-        }
       } else {
-        if (req.path === config.loginloc) {
-          res.status(401);
-          res.setHeader('WWW-Authenticate', 'Basic realm="401');
-          res.end();
+        if (req.session && !req.session.loggedin) {
+          req.session.destroy(err => {
+            if (err) {
+              console.log(err);
+            }
+            res.end('Invalid creds')
+          });
         } else {
+          if (req.session.loggedin) {
+            return next();
+          } else {
           middle(req, res, next);
+          }
         }
       }
     } else {
@@ -563,7 +567,6 @@ req.session.admin = true
     }
   }
 });
-
 const rh = createRammerhead();
 const rammerheadScopes = [
   '/hammerhead.js',
