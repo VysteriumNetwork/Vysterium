@@ -8,7 +8,7 @@ export let config = {
     loginloc: "/amogus",
     enableSessionExpiration: true,
     users: logins,
-    edusite: "https://www.mtlaurelschools.org/",
+    edusite: "https://www.fultonschools.org",
     signup: true,
     signuppath: '/signup',
     terminalurl: '/terminal',
