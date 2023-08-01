@@ -2,15 +2,12 @@ import fs from 'fs';
 
 let logins = JSON.parse(fs.readFileSync('./src/logins.json', 'utf-8'));
 export let config = {
-    dynamicbare: true,
+    dynamicbare: false,
     cloak: true,
-    password: true,
+    password: false,
     loginloc: "/login",
     enableSessionExpiration: true,
-    edusite: "https://www.hartfordschools.org/",
-    users: logins,
-    maxAge: 60 * 24 * 31, // 1 month
-    //maxage is in minutes, 60 is 1 hour, 60 * 24 is a day and 60 * 24 * 365 is a year
+    edusite: "https://www.hartfordschools.org",
     signup: true,
     signuppath: '/signup',
     terminalurl: '/terminal',

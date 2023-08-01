@@ -1,12 +1,13 @@
 import { createBareServer } from "@tomphttp/bare-server-node";
 import { fileURLToPath } from "node:url";
-import { createServer as createHttpServer } from "node:http";
+import { createServer } from "node:http";
 import fs from 'fs';
-import { createProxyMiddleware } from 'http-proxy-middleware'
+import axios from 'axios'
 import compression from 'express-compression'
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import { config } from './config.js';
+import { uvPath } from '@titaniumnetwork-dev/ultraviolet'
 import express from 'express';
 import { spawn, exec } from 'child_process'
 import { pagescript, adminscript} from './html.js'
@@ -27,7 +28,6 @@ function readUsersFromFile() {
   return users;
 }  
 fs.readFile(path.join(__dirname, './blocklist.txt'), 'utf-8', (err, data) => { if (err) { console.error(err); return; } blacklisted.push(...data.split('\n')); });
-
 function restartServer() {
   let child = spawn(process.argv.shift(), process.argv, {
       detached: true,
@@ -42,11 +42,26 @@ app.use(session({
   secret: 'randomsecretkey',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false }
+  cookie: {
+    secure: false // By default, set an expiration time
+  },
 }));
-const PORT = 80
-const server = createHttpServer();
-import createRammerhead from 'rammerhead/src/server/index.js';
+const PORT = 8080
+const server = createServer();
+server.on("request", (req, res) => {
+  if (bare.shouldRoute(req)) {
+    bare.routeRequest(req, res);
+  } else {
+    app(req, res);
+  }
+});
+server.on("upgrade", (req, socket, head) => {
+  if (bare.shouldRoute(req)) {
+    bare.routeUpgrade(req, socket, head);
+  } else {
+    socket.end();
+  }
+});
 function randoms(e){for(var t="",n="abcdefghijklmnopqrstuvwxyz0123456789",r=0;r<e;r++)t+=n.charAt(Math.floor(Math.random()*n.length));return t}
 let randomString;
 if (config.dynamicbare === true) {
@@ -61,7 +76,6 @@ app.get('/server', (req, res, next) => {
     res.json({ bare: randomString });
   }
 });
-const middle =  createProxyMiddleware({ target: config.edusite, changeOrigin: true, secure: true, ws: false });
 fs.watch('./src/logins.json', (eventType, filename) => {
   if (eventType === 'change') {
     console.log(`users changed`);
@@ -72,11 +86,9 @@ const bare = createBareServer(randomString);
 app.get(config.logouturl, (req, res, next) => {
   if (req.session.loggedin) {
     req.session.destroy(function(err) {
-      // Session destroyed, handle error if it exists.
       if (err) {
         console.log(err);
       } else {
-        // Send the response file after session destruction.
         res.status(401);
         res.sendFile(__dirname + '/html/endsession.html');
       }
@@ -117,7 +129,7 @@ if (config.signup == true) {
     let username = req.body.username;
     let password = req.body.password;
     let loginTime = req.body.loginTime;
-  
+    let deleteuser = req.body.deleteuser;
     const MAX_LENGTH = config.maxuserpasswordlength
     let regex = /["\\']/;
     if (regex.test(username) || regex.test(password) || regex.test(loginTime)) {
@@ -149,10 +161,12 @@ if (config.signup == true) {
     // Generate a hashed password using the salt
     let hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
     let hashedkey = crypto.pbkdf2Sync(secretCode, salt, 10000, 64, 'sha512').toString('hex');
-  
-    // Store user
+    if (loginTime = "perm") {
+      loginTime = null
+    }
     users[username] = {
       password: hashedPassword,
+      deleteuser: deleteuser,
       salt: salt,
       maxAge: loginTime,
       secretCode: hashedkey
@@ -404,7 +418,7 @@ app.post(config.userpanelurl, async (req, res, next) => {
           res.sendFile(__dirname + '/html/endsession.html');
         });
         delete users[username];
-
+        fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
         case 'setCookie':
           if (!cookie) {
             return res.status(400).json({ message: 'Missing cookie.' });
@@ -421,7 +435,6 @@ app.post(config.userpanelurl, async (req, res, next) => {
           }
           res.status(200).json({ cookie: decrypt(user.cookie, user.AES) });
           break;
-      let salt = user.salt
       case 'changeCredentials':
         if (!newUsername) {
           newUsername = username;
@@ -431,16 +444,16 @@ app.post(config.userpanelurl, async (req, res, next) => {
           return res.status(400).json({ message: 'Username already exists.' });
         }
         if (newPassword && newSecretCode) {
-          salt = crypto.randomBytes(16).toString('hex');
+          saltstore = crypto.randomBytes(16).toString('hex');
         }
         // if newPassword is provided, hash it with user's salt
         if (newPassword) {
-          newPassword = crypto.pbkdf2Sync(newPassword, salt, 10000, 64, 'sha512').toString('hex');
+          newPassword = crypto.pbkdf2Sync(newPassword, saltstore, 10000, 64, 'sha512').toString('hex');
         }
 
         // if newSecretCode is provided, hash it with user's salt
         if (newSecretCode) {
-          newSecretCode = crypto.pbkdf2Sync(newSecretCode, salt, 10000, 64, 'sha512').toString('hex');
+          newSecretCode = crypto.pbkdf2Sync(newSecretCode, saltstore, 10000, 64, 'sha512').toString('hex');
         }
         
         delete users[username];
@@ -466,22 +479,9 @@ app.post(config.userpanelurl, async (req, res, next) => {
   }
 });
 app.use(async (req, res, next) => {
-  if (req.path.startsWith(randomString)) {
-    if (bare.shouldRoute(req)) {
-      try {
-        for (let i in blacklisted) {
-          if (req.headers['x-bare-host']?.includes(blacklisted[i])) {
-            return res.end('Denied, this may be an ad or is blacklisted.');
-          }
-        }
-      } catch (e) {
-        console.log(e);
-      }
-      bare.routeRequest(req, res);
-    } else {
-      return next();
-    }
-  } else {
+  if (req.session.tabexpire) {
+    req.session.cookie.expires = false;
+  }
     if (config.password === true) {
       const users = config.users;
       
@@ -516,6 +516,12 @@ app.use(async (req, res, next) => {
             req.session.locked = false;
             req.session.cookie.originalMaxAge = Date.now();
             res.end('Success!');
+            if (user.deleteuser = true) {
+              setTimeout(function() {
+              delete users[username]
+              fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
+              }, 1500)
+            }
             return;
           } else {
             req.session.locked = true;
@@ -527,8 +533,8 @@ app.use(async (req, res, next) => {
       }
 
       if (req.session && req.session.loggedin) {
-        const userMaxAge = users[req.session.username]?.maxAge || config.maxAge;
-        if (Date.now() - req.session.cookie.originalMaxAge >= userMaxAge * 60 * 1000 && userMaxAge != false) {
+        let userMaxAge = users[req.session.username]?.maxAge;
+        if (Date.now() - req.session.cookie.originalMaxAge >= userMaxAge * 60 * 1000 && userMaxAge != null) {
           req.session.destroy(err => {
             if (err) {
               console.log(err);
@@ -545,53 +551,27 @@ app.use(async (req, res, next) => {
           }
         }
       }
-      if (req.session.exist && !req.session.loggedin) {
-        return res.end('Please Login!')
-      }
+      //if (req.session.locked = true) {
+       // return res.end('Please Login!')
+      //}
       if (req.session.loggedin) {
         return next()
       }
-        middle(req, res, next); 
+      try {
+      const response = await axios({
+        method: req.method,
+        url: config.edusite + req.url,
+        responseType: "stream",
+        validateStatus: (status) => status !== 404
+      });
+      res.writeHead(response.status, { "Content-Type": response.headers.get("content-type").split(";")[0] });
+      response.data.pipe(res); 
+      } catch(e) {}
     } else {
       return next();
     }
-  }
-});
+  });
 
-const rh = createRammerhead();
-const rammerheadScopes = [
-  '/hammerhead.js',
-  '/rammerhead.js',
-	'/transport-worker.js',
-	'/task.js',
-	'/iframe-task.js',
-	'/worker-hammerhead.js',
-	'/messaging',
-	'/sessionexists',
-	'/deletesession',
-	'/newsession',
-	'/editsession',
-	'/needpassword',
-	'/syncLocalStorage',
-	'/api/shuffleDict',
-];
-function shouldRouteRh(req) {
-  const RHurl = new URL(req.url, 'https://0.0.0.0');
-  return (
-    rammerheadScopes.includes(RHurl.pathname) ||
-    rammerheadSession.test(RHurl.pathname)
-  );
-}
-function routeRhRequest(req, res) {
-  rh.emit('request', req, res);
-}
-function routeRhUpgrade(req, socket, head) {
-    try {
-      rh.emit('upgrade', req, socket, head);
-    }
-    catch (error) {}
-  }
-const rammerheadSession = /^\/[a-z0-9]{32}/;
 if (config.cloak === true) {
   app.use((e, t, n) => {
     const r = e.url;
@@ -610,15 +590,6 @@ if (config.cloak === true) {
     }
   });
 }
-app.use((req, res, next) => {
-  if (shouldRouteRh(req)) {
-    routeRhRequest(req, res);
-  } else if (req.upgrade) {
-    routeRhUpgrade(req, req.socket, req.head);
-  } else {
-    next();
-  }
-});
 
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=31536000');
@@ -644,6 +615,7 @@ app.use((req, res, next) => {
     express.static(fileURLToPath(new URL("../static/", import.meta.url)))(req, res, next);
   }
 });
+app.use("/script/", express.static(uvPath));
 const shuttleroutes = {
   '/shuttle/': 'index.html',
   '/shuttle/games': 'games.html',
@@ -682,22 +654,6 @@ app.use((req, res, next) => {
     }
   });
   
-
-server.on("request", app);
-server.on('upgrade', (req, socket, head) => {
-  if (bare.shouldRoute(req)) {
-      bare.routeUpgrade(req, socket, head);
-  } 
-  else if (shouldRouteRh(req)) {
-      try {
-          routeRhUpgrade(req, socket, head);
-      }
-      catch (error) {}
-  }
-  else {
-      socket.end();
-  }
-});
 app.use((req, res) => {
 res.statusCode = 404;
   res.setHeader("Content-Type", "text/html");
@@ -708,48 +664,3 @@ server.on("listening", () => {
   console.log(`Server running on port ${addr.port}`)
 });
 server.listen({ port: PORT });
-app.use('/', async (req, res, next) => {
-  if (!req.session.loggedin && config.password == true) {
-    next(); 
-  } else {
-res.setHeader('Cache-Control', 'public, max-age=31536000');
-    if (!(req.path in shuttleroutes) && !(req.path in nebularoutes)) {
-      try {
-        const assetUrl = "https://rawcdn.githack.com/VysteriumNetwork/Vysterium-Static/9fd0f156503c0d1fe3557b8649cebf88336665b5" + req.url;
-        const response = await axios({
-            method: req.method,
-            url: assetUrl,
-            responseType: "stream",
-            validateStatus: function (status) {
-                return status >= 200 && status < 500; // Accept only status in the range 200-499
-            }
-        });
-
-        let statusCode = response.status;
-
-        if(req.url.endsWith('.html') || req.url.endsWith('/')) {
-          if (config.cloak == true) {
-          statusCode = 404;
-          }
-        }
-
-        if(response.status === 404){
-          fs.readFile('./src/html/404.html', function(err, data){
-            if(err){
-              res.status(500).send('An error occurred');
-            } else {
-              res.status(404).send(data.toString());
-            }
-          });
-        } else {
-          res.writeHead(statusCode, { "Content-Type": response.headers['content-type'].split(";")[0] });
-          response.data.pipe(res);
-        }
-      } catch (error) {
-        next(error);
-      }
-    } else {
-      next();
-    }
-  }
-});

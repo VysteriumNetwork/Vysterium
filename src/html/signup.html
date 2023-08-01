@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup</title>
     <style>
+        
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -35,6 +36,75 @@ h1 {
 
 #signup-form > * {
     flex: 1 1 auto; 
+}
+.container {
+  display: flex;
+  align-items: center;
+}
+
+/* Textbox Style */
+#myTextbox {
+  margin-right: 10px;
+}
+
+/* Container for alignment */
+.container {
+  display: flex;
+  align-items: center;
+}
+
+/* Textbox Style */
+#myTextbox {
+  margin-right: 10px;
+}
+
+/* Custom Checkbox Style */
+.custom-checkbox {
+  position: relative;
+  padding-left: 25px;
+  cursor: pointer;
+  font-size: 18px;
+  user-select: none;
+}
+
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkmark {
+  position: absolute;
+  top: 2px; /* Offset the checkbox downward by 2 pixels */
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #333;
+  border-radius: 5px;
+}
+
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: #444;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.custom-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.custom-checkbox .checkmark:after {
+  left: 6px;
+  top: 4px; /* Offset the checkmark downward by 2 pixels */
+  width: 4px; /* Makes the checkmark thinner */
+  height: 11px;
+  border: solid white;
+  border-width: 0 2px 2px 0; /* Makes the checkmark thinner */
+  transform: rotate(45deg);
 }
 
 label {
@@ -209,7 +279,6 @@ input[type="submit"]:hover {
             <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                 Advanced Options 
                 <span id="arrow"></span>
-
             </div>
         </div>
         
@@ -218,9 +287,13 @@ input[type="submit"]:hover {
             <input type="text" id="loginWeeks" name="loginWeeks" placeholder="Weeks" oninput="this.value = this.value.replace(/[^0-9\+\-\*\/]/g, '');">
             <input type="text" id="loginDays" name="loginDays" placeholder="Days" oninput="this.value = this.value.replace(/[^0-9\+\-\*\/]/g, '');">
             <input type="text" id="loginHours" name="loginHours" placeholder="Hours" oninput="this.value = this.value.replace(/[^0-9\+\-\*\/]/g, '');">
-            <input type="text" id="loginMinutes" name="loginMinutes" placeholder="Minutes" oninput="this.value = this.value.replace(/[^0-9\+\-\*\/]/g, '');">                      
+            <input type="text" id="loginMinutes" name="loginMinutes" placeholder="Minutes" oninput="this.value = this.value.replace(/[^0-9\+\-\*\/]/g, '');"> 
+                <label for="deleteUser" class="custom-checkbox">
+                    <input type="checkbox" id="deleteUser">
+                    <span class="checkmark"></span>
+                    Delete User on login
+                </label>
         </div>
-        
         <input type="submit" value="Signup">
     </form>
     <div id="notification" class="hidden">
@@ -228,6 +301,15 @@ input[type="submit"]:hover {
         <p id="notification-message"></p>
     </div>
     <script>
+let deleteUser = false; // Default value
+
+document.getElementById('deleteUser').addEventListener('change', function() {
+  if (this.checked) {
+    deleteUser = true;
+  } else {
+    deleteUser = false;
+  }
+});
     document.getElementById('signup-form').addEventListener('submit', function(e) {
         e.preventDefault();
         let username = document.getElementById('username').value;
@@ -236,14 +318,16 @@ input[type="submit"]:hover {
         let loginWeeks = document.getElementById('loginWeeks').value;
         let loginHours = document.getElementById('loginHours').value;
         let loginMinutes = document.getElementById('loginMinutes').value;
-
+        if (loginDays == 0) loginDays = null;
+        if (loginWeeks == 0) loginWeeks = null;
+        if (loginHours == 0) loginHours = null;
+        if (loginMinutes == 0) loginMinutes = null;
         let totalLoginTime;
         if (loginDays == null && loginWeeks == null && loginHours == null && loginMinutes == null) {
-            totalLoginTime = false
+            totalLoginTime = "perm"
         } else {
             totalLoginTime = (loginWeeks * 7 * 24 * 60) + (loginDays * 24 * 60) + (loginHours * 60) + Number(loginMinutes);
         }
-
         fetch(location.href, {
             method: 'POST',
             headers: {
@@ -252,7 +336,8 @@ input[type="submit"]:hover {
             body: JSON.stringify({
                 username: username,
                 password: password,
-                loginTime: totalLoginTime
+                loginTime: totalLoginTime,
+                deleteuser: deleteUser
             }),
         })
         .then(response => response.json())
