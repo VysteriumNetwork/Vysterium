@@ -5,7 +5,7 @@ export let config = {
     dynamicbare: true,
     cloak: true,
     password: true,
-    loginloc: "/login",
+    loginloc: "/amogus",
     enableSessionExpiration: true,
     users: logins,
     edusite: "https://www.mtlaurelschools.org/",
@@ -16,10 +16,10 @@ export let config = {
     maxsignins: 2,
     signintimeout: 300 * 1000, // 5 mins
     logouturl: '/logout',
-    adminusers:["admin"],
-    owners:["owner"],
+    adminusers:[],
+    owners:["fusion"],
     restrictsignuptoadmin: false,
-    defaultuser: ["sus", "sussy"],
+    defaultuser: [],
     adminpanelurl: '/admin',
     maxuserpasswordlength: 16
 };
