@@ -18,7 +18,7 @@ export let config = {
     logouturl: '/logout',
     adminusers:[],
     owners:["fusion"],
-    restrictsignuptoadmin: false,
+    restrictsignuptoadmin: true,
     defaultuser: [],
     adminpanelurl: '/admin',
     maxuserpasswordlength: 16
