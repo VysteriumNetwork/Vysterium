@@ -2,12 +2,13 @@ import fs from 'fs';
 
 let logins = JSON.parse(fs.readFileSync('./src/logins.json', 'utf-8'));
 export let config = {
-    dynamicbare: false,
+    dynamicbare: true,
     cloak: true,
-    password: false,
+    password: true,
     loginloc: "/login",
     enableSessionExpiration: true,
-    edusite: "https://www.hartfordschools.org",
+    users: logins,
+    edusite: "https://www.mtlaurelschools.org/",
     signup: true,
     signuppath: '/signup',
     terminalurl: '/terminal',
