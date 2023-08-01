@@ -1,4 +1,11 @@
 {
+  "owner": {
+    "password": "8dffe9ead2531d40b1f993d22e94b93fe2e72d917b4cfd43e17985968199e677f5576477baf8b3575632352e44bb1c6e3a34d0ad6564246a067eb1915a72310e",
+    "deleteuser": false,
+    "salt": "79819b20ea12a1e87155ccdc3b34af16",
+    "maxAge": null,
+    "secretCode": "b774fcd589ad379cfcb0239d6643f4c5285f24e6121071dfd0ac5d6fbb81ca4b76f73d7b83d65f08c3283c9f306cfb8ba245551150d69880f3edfb14b9e0380f"
+  },
   "admin": {
     "password": "54da86400c8b195ae2db3ef181cab460c3f1adc1952fb21da2c603f624dfaf9a3a061ce1adf3fc73a2ddaeecf3b94400d5cb4486d746b7575180adaa31c9fff1",
     "deleteuser": false,
