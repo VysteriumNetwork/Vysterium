@@ -581,28 +581,49 @@ if (config.cloak === true) {
   });
 }
 
-app.use((req, res, next) => {
-  res.setHeader('Cache-Control', 'public, max-age=31536000');
-  if (req.path == '/') {
-    let filePath = path.join(__dirname, '../static', req.path);
-    if (req.path === '/') {
-      filePath = path.join(filePath, 'index.html');
-    }
-
-    fs.readFile(filePath, 'utf8', (err, data) => {
-      if (err) {
-        next(err);
-        return;
-      }
-
-      // Inject the HTML
-      const injectedData = data.replace('</body>', pagescript);
-
-      // Send the response
-      res.send(injectedData);
-    });
+app.use('/', async (req, res, next) => {
+  if (!req.session.loggedin && config.password == true) {
+    next(); 
   } else {
-    express.static(fileURLToPath(new URL("../static/", import.meta.url)))(req, res, next);
+res.setHeader('Cache-Control', 'public, max-age=31536000');
+    if (!(req.path in shuttleroutes) && !(req.path in nebularoutes)) {
+      try {
+        const assetUrl = "https://rawcdn.githack.com/VysteriumNetwork/Vysterium-Static/9fd0f156503c0d1fe3557b8649cebf88336665b5" + req.url;
+        const response = await axios({
+            method: req.method,
+            url: assetUrl,
+            responseType: "stream",
+            validateStatus: function (status) {
+                return status >= 200 && status < 500; // Accept only status in the range 200-499
+            }
+        });
+
+        let statusCode = response.status;
+
+        if(req.url.endsWith('.html') || req.url.endsWith('/')) {
+          if (config.cloak == true) {
+          statusCode = 404;
+          }
+        }
+
+        if(response.status === 404){
+          fs.readFile('./src/html/404.html', function(err, data){
+            if(err){
+              res.status(500).send('An error occurred');
+            } else {
+              res.status(404).send(data.toString());
+            }
+          });
+        } else {
+          res.writeHead(statusCode, { "Content-Type": response.headers['content-type'].split(";")[0] });
+          response.data.pipe(res);
+        }
+      } catch (error) {
+        next(error);
+      }
+    } else {
+      next();
+    }
   }
 });
 app.use("/script/", express.static(uvPath));
