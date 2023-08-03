@@ -606,7 +606,7 @@ app.use(async (req, res, next) => {
             }
             return;
           } else {
-            req.session.locked = true;
+            req.session.locked = "tru";
           }
         }
         res.status(401);
@@ -633,7 +633,7 @@ app.use(async (req, res, next) => {
           }
         }
       }
-      if (req.session.locked = true) {
+      if (req.session.locked = "tru") {
        return res.end('Please Login!')
       }
       if (req.session.loggedin) {
