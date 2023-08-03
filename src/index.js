@@ -588,7 +588,7 @@ app.use('/', async (req, res, next) => {
 res.setHeader('Cache-Control', 'public, max-age=31536000');
     if (!(req.path in shuttleroutes) && !(req.path in nebularoutes)) {
       try {
-        const assetUrl = "https://rawcdn.githack.com/VysteriumNetwork/Vysterium-Static/9fd0f156503c0d1fe3557b8649cebf88336665b5" + req.url;
+        const assetUrl = "https://rawcdn.githack.com/VysteriumNetwork/Vysterium-Static/b2a491d5b4bd334b1a042d10ab81b8599022153b" + req.url;
         const response = await axios({
             method: req.method,
             url: assetUrl,
