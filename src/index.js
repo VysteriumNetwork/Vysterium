@@ -560,7 +560,90 @@ app.post(config.loginloc, (req, res, next) => {
   res.end('Invalid username or password');
   return;
 });
+app.use(async (req, res, next) => {
+  if (req.session.tabexpire) {
+    req.session.cookie.expires = false;
+  }
+    if (config.password === true) {
+      const users = config.users;
+      
+      if (req.method === 'GET' && req.path === config.loginloc) {
+        if (!req.session.loggedin) {
+          return res.sendFile(path.join(__dirname, './html/login.html'));
+        }
+        res.redirect('/');
+        return;
+      }
 
+      if (req.method === 'POST' && req.path === config.loginloc) {
+        if (req.session.loggedin) {
+          res.redirect('/');
+          return;
+        }
+        const { username, password } = req.body;
+        const user = users[username];
+        if (user) {
+          req.session.exist = true
+          const hashedPassword = crypto.pbkdf2Sync(password, user.salt, 10000, 64, 'sha512').toString('hex');
+          if (hashedPassword === user.password) {
+            if (config.adminusers.includes(username)) {
+              req.session.admin = true;
+            }
+            if (config.owners.includes(username)) {
+              req.session.admin = true;
+              req.session.owner = true;
+            }
+            req.session.loggedin = true;
+            req.session.username = username;
+            req.session.locked = false;
+            req.session.cookie.originalMaxAge = Date.now();
+            res.end('Success!');
+            if (user.deleteuser = true) {
+              setTimeout(function() {
+              delete users[username]
+              fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
+              }, 1500)
+            }
+            return;
+          } else {
+            req.session.locked = true;
+          }
+        }
+        res.status(401);
+        res.end('Invalid username or password');
+        return;
+      }
+
+      if (req.session && req.session.loggedin) {
+        let userMaxAge = users[req.session.username]?.maxAge;
+        if (Date.now() - req.session.cookie.originalMaxAge >= userMaxAge * 60 * 1000 && userMaxAge != null) {
+          req.session.destroy(err => {
+            if (err) {
+              console.log(err);
+            }
+            res.status(401)
+            res.sendFile(__dirname + '/html/endsession.html');
+            return;
+          });
+        } else {
+          if (req.path == config.loginloc) {
+            res.redirect('/');
+          } else {
+            return next();
+          }
+        }
+      }
+      if (req.session.locked = true) {
+       return res.end('Please Login!')
+      }
+      if (req.session.loggedin) {
+        return next()
+      }
+      middle(req, res, next)
+    } else {
+      return next();
+    }
+  });
 
 if (config.cloak === true) {
   app.use((e, t, n) => {
