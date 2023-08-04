@@ -662,7 +662,12 @@ if (config.cloak === true) {
     }
   });
 }
-
+app.use("/script/", function(req, res, next) {
+  if (req.path.endsWith("uv.config.js")) {
+    return next();
+  }
+  express.static(uvPath)(req, res, next);
+});
 app.use('/', async (req, res, next) => {
   if (!req.session.loggedin && config.password == true) {
     return next(); 
