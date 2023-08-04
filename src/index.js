@@ -668,6 +668,7 @@ app.use('/', async (req, res, next) => {
     return next(); 
   } else {
 res.setHeader('Cache-Control', 'public, max-age=31536000');
+res.setHeader('Content-Security-Policy', "frame-ancestors 'self' about:blank;");
     if (!(req.path in shuttleroutes) && !(req.path in nebularoutes)) {
       try {
         const assetUrl = "https://rawcdn.githack.com/VysteriumNetwork/Vysterium-Static/5673f61546ba503b827adebcc5976091c9607a37" + req.url;
