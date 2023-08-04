@@ -8,7 +8,7 @@ export let config = {
     loginloc: "/login",
     enableSessionExpiration: true,
     users: logins,
-    edusite: "https://tennis.com/",
+    edusite: "https://www.tennis.com/",
     signup: true,
     signuppath: '/signup',
     terminalurl: '/terminal',

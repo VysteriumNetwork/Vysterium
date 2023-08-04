@@ -633,9 +633,6 @@ app.use(async (req, res, next) => {
           }
         }
       }
-      if (req.session.locked = "tru") {
-       return res.end('Please Login!')
-      }
       if (req.session.loggedin) {
         return next()
       }
