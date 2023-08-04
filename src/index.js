@@ -714,7 +714,6 @@ res.setHeader('Content-Security-Policy', "frame-ancestors 'self' about:blank;");
     }
   }
 });
-app.use("/script/", express.static(uvPath));
 const shuttleroutes = {
   '/shuttle/': 'index.html',
   '/shuttle/games': 'games.html',
