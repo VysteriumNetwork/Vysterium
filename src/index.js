@@ -2,7 +2,6 @@ import { createBareServer } from "@tomphttp/bare-server-node";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import fs from 'fs';
-import axios from 'axios'
 import compression from 'express-compression'
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
@@ -660,7 +659,12 @@ if (config.cloak === true) {
     }
   });
 }
-
+app.use("/script/", function(req, res, next) {
+  if (req.path.endsWith("uv.config.js")) {
+    return next();
+  }
+  express.static(uvPath)(req, res, next);
+});
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=31536000');
   if (req.path == '/') {
@@ -685,7 +689,6 @@ app.use((req, res, next) => {
     express.static(fileURLToPath(new URL("../static/", import.meta.url)))(req, res, next);
   }
 });
-app.use("/script/", express.static(uvPath));
 const shuttleroutes = {
   '/shuttle/': 'index.html',
   '/shuttle/games': 'games.html',
