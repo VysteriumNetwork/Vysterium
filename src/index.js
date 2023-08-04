@@ -662,6 +662,7 @@ if (config.cloak === true) {
 }
 
 app.use((req, res, next) => {
+  res.setHeader('Content-Security-Policy', "frame-ancestors 'self' about:blank;");
   res.setHeader('Cache-Control', 'public, max-age=31536000');
   if (req.path == '/') {
     let filePath = path.join(__dirname, '../static', req.path);
