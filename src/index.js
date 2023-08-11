@@ -353,13 +353,12 @@ app.get(config.userpanelurl, (req, res, next) => {
 });
 
 app.post(config.userpanelurl, async (req, res, next) => {
-  let users = readUsersFromFile();
-  const user = users[username];
   if (!req.session.loggedin && config.password == true) {
     return next();
   } else {
     let { username, password, secretCode, messageType, newUsername, newPassword, newSecretCode, cookie } = req.body;
-
+    let users = readUsersFromFile();
+    const user = users[username];
     if (!username || !password || !secretCode || !messageType) {
       return res.status(400).json({ message: 'Missing required fields.' });
     }

@@ -80,37 +80,4 @@
         </div>
     </div>
 </body>
-<script>
-    function toggleChangeCredentials() {
-        const action = document.getElementById('action').value;
-        const changeCredentialsFields = document.getElementById('changeCredentialsFields');
-
-        if (action === 'changeCredentials') {
-            changeCredentialsFields.classList.remove('hide');
-        } else {
-            changeCredentialsFields.classList.add('hide');
-        }
-    }
-
-    function performAction() {
-        const action = document.getElementById('action').value;
-
-        switch(action) {
-            case 'changeCredentials':
-                changeCredentials();
-                break;
-            case 'setCookie':
-                setCookie();
-                break;
-            case 'getCookie':
-                getCookie();
-                break;
-            case 'deleteUser':
-                deleteUser();
-                break;
-            default:
-                console.error('Invalid action:', action);
-        }
-    }
-</script>
 </html>
