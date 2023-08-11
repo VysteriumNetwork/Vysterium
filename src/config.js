@@ -8,7 +8,7 @@ export let config = {
     loginloc: "/login",
     enableSessionExpiration: true,
     users: logins,
-    edusite: "https://www.tennis.com/",
+    edusite: "https://www.ccsoh.us/",
     signup: true,
     signuppath: '/signup',
     terminalurl: '/terminal',
@@ -16,7 +16,7 @@ export let config = {
     maxsignins: 2,
     signintimeout: 300 * 1000, // 5 mins
     logouturl: '/logout',
-    adminusers:["admin"],
+    adminusers:["admin", "xprogramed"],
     owners:["owner"],
     restrictsignuptoadmin: false,
     defaultuser: ["sus", "sussy"],

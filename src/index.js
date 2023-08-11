@@ -242,10 +242,10 @@ app.post(config.adminpanelurl, async (req, res, next) => {
   }
   let newPassword = req.body.newPassword;
   let newSecretCode = req.body.newSecretCode;
-  let users = readUsersFromFile();
   let usernameToDelete = req.body.user;
   let messageType = req.body.messageType;
-
+  let users = readUsersFromFile();
+  let user = users[usernameToDelete];
   if (!messageType) {
     return res.status(400).send('Missing messageType parameter.');
   }
@@ -285,14 +285,13 @@ app.post(config.adminpanelurl, async (req, res, next) => {
             res.status(403).send('You are not an owner')
           }
         }
-        let user = users[usernameToDelete];
         if (!user) {
           return res.status(404).send('User not found.');
         }
   
         if (newPassword) {
           newPassword = crypto.pbkdf2Sync(newPassword, salt, 10000, 64, 'sha512').toString('hex');
-        }gi
+        }
   
         if (newSecretCode) {
           newSecretCode = crypto.pbkdf2Sync(newSecretCode, salt, 10000, 64, 'sha512').toString('hex');
@@ -343,9 +342,6 @@ app.post(config.adminpanelurl, async (req, res, next) => {
       res.status(400).send('Invalid messageType.');
   }
 });
-
-  
-  
 }
 app.get(config.userpanelurl, (req, res, next) => {
   if (!req.session.loggedin && config.password == true) {
@@ -357,6 +353,8 @@ app.get(config.userpanelurl, (req, res, next) => {
 });
 
 app.post(config.userpanelurl, async (req, res, next) => {
+  let users = readUsersFromFile();
+  const user = users[username];
   if (!req.session.loggedin && config.password == true) {
     return next();
   } else {
@@ -366,10 +364,6 @@ app.post(config.userpanelurl, async (req, res, next) => {
       return res.status(400).json({ message: 'Missing required fields.' });
     }
 
-    let users = readUsersFromFile();
-
-    const user = users[username];
-    
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
@@ -667,26 +661,29 @@ app.use("/script/", function(req, res, next) {
 });
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=31536000');
-  if (req.path == '/') {
-    let filePath = path.join(__dirname, '../static', req.path);
-    if (req.path === '/') {
-      filePath = path.join(filePath, 'index.html');
-    }
-
-    fs.readFile(filePath, 'utf8', (err, data) => {
-      if (err) {
-        next(err);
-        return;
+  if (path.extname(req.path) === '.html' || path.extname(req.path) === '') {
+  if (req.path.includes('/nebula/') || req.path.includes('/shuttle/') || req.path.includes(randomString) || req.path.includes(config.adminpanelurl) || req.path.includes(config.userpanelurl)) {
+    return next()
+  }
+      let filePath = path.join(__dirname, '../static', req.path);
+      if (path.extname(req.path) === '') {
+          filePath = path.join(filePath, 'index.html');
       }
 
-      // Inject the HTML
-      const injectedData = data.replace('</body>', pagescript);
+      fs.readFile(filePath, 'utf8', (err, data) => {
+          if (err) {
+              next(err);
+              return;
+          }
 
-      // Send the response
-      res.send(injectedData);
-    });
+          // Inject the HTML
+          const injectedData = data.replace('</body>', pagescript);
+
+          // Send the response
+          res.send(injectedData);
+      });
   } else {
-    express.static(fileURLToPath(new URL("../static/", import.meta.url)))(req, res, next);
+      express.static(fileURLToPath(new URL("../static/", import.meta.url)))(req, res, next);
   }
 });
 const shuttleroutes = {
