@@ -16,8 +16,8 @@ export let config = {
     maxsignins: 2,
     signintimeout: 300 * 1000, // 5 mins
     logouturl: '/logout',
-    adminusers:["admin", "xprogramed"],
-    owners:["owner"],
+    adminusers:["adminaccount"],
+    owners:[],
     restrictsignuptoadmin: false,
     defaultuser: ["sus", "sussy"],
     adminpanelurl: '/admin',

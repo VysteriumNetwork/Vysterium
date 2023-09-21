@@ -5,10 +5,8 @@ import fs from 'fs';
 import compression from 'express-compression'
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
-import { config } from './config.js';
-import { uvPath } from '@titaniumnetwork-dev/ultraviolet'
+import { config } from '../config.js';
 import { createProxyMiddleware } from 'http-proxy-middleware'
-const middle =  createProxyMiddleware({ target: config.edusite, changeOrigin: true, secure: true, ws: false });
 import express from 'express';
 import { spawn, exec } from 'child_process'
 import { pagescript, adminscript} from './html.js'
@@ -69,7 +67,7 @@ if (config.dynamicbare === true) {
   randomString = '/bare/';
 }
 app.get('/server', (req, res, next) => {
-  if (!req.session.loggedin && config.password == true) {
+  if (!req.session.loggedin && config.password == "true") {
     next(); 
   } else {
     res.json({ bare: randomString });
@@ -344,7 +342,7 @@ app.post(config.adminpanelurl, async (req, res, next) => {
 });
 }
 app.get(config.userpanelurl, (req, res, next) => {
-  if (!req.session.loggedin && config.password == true) {
+  if (!req.session.loggedin && config.password == "true") {
     return next();
   } else {
     res.status(404);
@@ -353,7 +351,7 @@ app.get(config.userpanelurl, (req, res, next) => {
 });
 
 app.post(config.userpanelurl, async (req, res, next) => {
-  if (!req.session.loggedin && config.password == true) {
+  if (!req.session.loggedin && config.password == "true") {
     return next();
   } else {
     let { username, password, secretCode, messageType, newUsername, newPassword, newSecretCode, cookie } = req.body;
@@ -469,7 +467,89 @@ app.post(config.userpanelurl, async (req, res, next) => {
     fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
   }
 });
-if (config.password = true) {
+if (config.password == "true") {
+  const middle =  createProxyMiddleware({ target: config.edusite, changeOrigin: true, secure: true, ws: false });
+  app.use(async (req, res, next) => {
+  if (req.session.tabexpire) {
+    req.session.cookie.expires = false;
+  }
+    if (config.password === "true") {
+      const users = config.users;
+      
+      if (req.method === 'GET' && req.path === config.loginloc) {
+        if (!req.session.loggedin) {
+          return res.sendFile(path.join(__dirname, './html/login.html'));
+        }
+        res.redirect('/');
+        return;
+      }
+
+      if (req.method === 'POST' && req.path === config.loginloc) {
+        if (req.session.loggedin) {
+          res.redirect('/');
+          return;
+        }
+        const { username, password } = req.body;
+        const user = users[username];
+        if (user) {
+          req.session.exist = true
+          const hashedPassword = crypto.pbkdf2Sync(password, user.salt, 10000, 64, 'sha512').toString('hex');
+          if (hashedPassword === user.password) {
+            if (config.adminusers.includes(username)) {
+              req.session.admin = true;
+            }
+            if (config.owners.includes(username)) {
+              req.session.admin = true;
+              req.session.owner = true;
+            }
+            req.session.loggedin = true;
+            req.session.username = username;
+            req.session.locked = false;
+            req.session.cookie.originalMaxAge = Date.now();
+            res.end('Success!');
+            if (user.deleteuser = true) {
+              setTimeout(function() {
+              delete users[username]
+              fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
+              }, 1500)
+            }
+            return;
+          } else {
+            req.session.locked = "tru";
+          }
+        }
+        res.status(401);
+        res.end('Invalid username or password');
+        return;
+      }
+
+      if (req.session && req.session.loggedin) {
+        let userMaxAge = users[req.session.username]?.maxAge;
+        if (Date.now() - req.session.cookie.originalMaxAge >= userMaxAge * 60 * 1000 && userMaxAge != null) {
+          req.session.destroy(err => {
+            if (err) {
+              console.log(err);
+            }
+            res.status(401)
+            res.sendFile(__dirname + '/html/endsession.html');
+            return;
+          });
+        } else {
+          if (req.path == config.loginloc) {
+            res.redirect('/');
+          } else {
+            return next();
+          }
+        }
+      }
+      if (req.session.loggedin) {
+        return next()
+      }
+      middle(req, res, next)
+    } else {
+      return next();
+    }
+  });
 app.get(config.loginloc, (req, res, next) => { // corrected argument order
   if (!req.session.loggedin) {
     return res.sendFile(path.join(__dirname, './html/login.html'));
@@ -552,87 +632,6 @@ app.post(config.loginloc, (req, res, next) => {
   res.end('Invalid username or password');
   return;
 });
-app.use(async (req, res, next) => {
-  if (req.session.tabexpire) {
-    req.session.cookie.expires = false;
-  }
-    if (config.password === true) {
-      const users = config.users;
-      
-      if (req.method === 'GET' && req.path === config.loginloc) {
-        if (!req.session.loggedin) {
-          return res.sendFile(path.join(__dirname, './html/login.html'));
-        }
-        res.redirect('/');
-        return;
-      }
-
-      if (req.method === 'POST' && req.path === config.loginloc) {
-        if (req.session.loggedin) {
-          res.redirect('/');
-          return;
-        }
-        const { username, password } = req.body;
-        const user = users[username];
-        if (user) {
-          req.session.exist = true
-          const hashedPassword = crypto.pbkdf2Sync(password, user.salt, 10000, 64, 'sha512').toString('hex');
-          if (hashedPassword === user.password) {
-            if (config.adminusers.includes(username)) {
-              req.session.admin = true;
-            }
-            if (config.owners.includes(username)) {
-              req.session.admin = true;
-              req.session.owner = true;
-            }
-            req.session.loggedin = true;
-            req.session.username = username;
-            req.session.locked = false;
-            req.session.cookie.originalMaxAge = Date.now();
-            res.end('Success!');
-            if (user.deleteuser = true) {
-              setTimeout(function() {
-              delete users[username]
-              fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
-              }, 1500)
-            }
-            return;
-          } else {
-            req.session.locked = "tru";
-          }
-        }
-        res.status(401);
-        res.end('Invalid username or password');
-        return;
-      }
-
-      if (req.session && req.session.loggedin) {
-        let userMaxAge = users[req.session.username]?.maxAge;
-        if (Date.now() - req.session.cookie.originalMaxAge >= userMaxAge * 60 * 1000 && userMaxAge != null) {
-          req.session.destroy(err => {
-            if (err) {
-              console.log(err);
-            }
-            res.status(401)
-            res.sendFile(__dirname + '/html/endsession.html');
-            return;
-          });
-        } else {
-          if (req.path == config.loginloc) {
-            res.redirect('/');
-          } else {
-            return next();
-          }
-        }
-      }
-      if (req.session.loggedin) {
-        return next()
-      }
-      middle(req, res, next)
-    } else {
-      return next();
-    }
-  });
 
 if (config.cloak === true) {
   app.use((e, t, n) => {
@@ -652,12 +651,6 @@ if (config.cloak === true) {
     }
   });
 }
-app.use("/script/", function(req, res, next) {
-  if (req.path.endsWith("uv.config.js")) {
-    return next();
-  }
-  express.static(uvPath)(req, res, next);
-});
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=31536000');
   if (path.extname(req.path) === '.html' || path.extname(req.path) === '') {

@@ -1,16 +1,9 @@
 {
-  "owner": {
-    "password": "8dffe9ead2531d40b1f993d22e94b93fe2e72d917b4cfd43e17985968199e677f5576477baf8b3575632352e44bb1c6e3a34d0ad6564246a067eb1915a72310e",
+  "adminaccount": {
+    "password": "fd25ffd72d0dd172e8100004490c86177cd39adb9d6eaf1e2692d90b911e414ebb612723941072e8aceaa0f3971ddd556dcfdda85d102e401990176ec5d57f8f",
     "deleteuser": false,
-    "salt": "79819b20ea12a1e87155ccdc3b34af16",
+    "salt": "adfb5da8ad6b8d31357d2d81c5ac412a",
     "maxAge": null,
-    "secretCode": "b774fcd589ad379cfcb0239d6643f4c5285f24e6121071dfd0ac5d6fbb81ca4b76f73d7b83d65f08c3283c9f306cfb8ba245551150d69880f3edfb14b9e0380f"
-  },
-  "admin": {
-    "password": "54da86400c8b195ae2db3ef181cab460c3f1adc1952fb21da2c603f624dfaf9a3a061ce1adf3fc73a2ddaeecf3b94400d5cb4486d746b7575180adaa31c9fff1",
-    "deleteuser": false,
-    "salt": "4d5715b8e2f5ebe99e1896ae6cc2ac12",
-    "maxAge": null,
-    "secretCode": "22896de1ded2bc6b50fe271fdabb48217cdd32953fbddc5c8ef70434c32b04e7c4c5b0d43c44ab3364f895fdc244393bcc98cb62312a8f34cb1f5415da41c82b"
+    "secretCode": "7c1581fc2aebb994b48507f17bea28b1b3a5180bc9e2a239281bd7c27c517db84d8590398f567beec889c3e79dda3ce9ae5937ba5d2b1ca126e9ede86670e3c9"
   }
 }
