@@ -653,10 +653,7 @@ if (config.cloak === true) {
 }
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=31536000');
-  if (path.extname(req.path) === '.html' || path.extname(req.path) === '') {
-  if (req.path.includes('/nebula/') || req.path.includes('/shuttle/') || req.path.includes(randomString) || req.path.includes(config.adminpanelurl) || req.path.includes(config.userpanelurl)) {
-    return next()
-  }
+  if (req.path === '/') {
       let filePath = path.join(__dirname, '../static', req.path);
       if (path.extname(req.path) === '') {
           filePath = path.join(filePath, 'index.html');
