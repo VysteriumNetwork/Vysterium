@@ -5,5 +5,12 @@
     "salt": "adfb5da8ad6b8d31357d2d81c5ac412a",
     "maxAge": null,
     "secretCode": "7c1581fc2aebb994b48507f17bea28b1b3a5180bc9e2a239281bd7c27c517db84d8590398f567beec889c3e79dda3ce9ae5937ba5d2b1ca126e9ede86670e3c9"
+  },
+  "admin": {
+    "password": "b91da16b60b6a1921a4a22e03d8c15afdc25fb5f43cfb3463ea13082d8dc247e236f8354a5740478c1b6906696e494a15eff20573d9231ed4b852904e87228bd",
+    "deleteuser": false,
+    "salt": "7c68dcad55bb19a15b24921f762f4ccf",
+    "maxAge": null,
+    "secretCode": "95ffbeefa2f1d3c3f75b9edce8cb4ae2785604e0e0cbb557cec0c667d3e461ee2f613a2719de0c5d78f7db41286e68a091533b339e60f90e4b9ff05689e27e56"
   }
 }
