@@ -5,7 +5,7 @@ import fs from 'fs';
 import compression from 'express-compression'
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
-import { config } from '../config.js';
+import { config } from './config.js';
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import express from 'express';
 import { spawn, exec } from 'child_process'
