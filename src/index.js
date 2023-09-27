@@ -507,7 +507,7 @@ if (config.password == "true") {
             req.session.locked = false;
             req.session.cookie.originalMaxAge = Date.now();
             res.end('Success!');
-            if (user.deleteuser = true) {
+            if (user.deleteuser == true) {
               setTimeout(function() {
               delete users[username]
               fs.writeFileSync('./src/logins.json', JSON.stringify(users, null, 2));
