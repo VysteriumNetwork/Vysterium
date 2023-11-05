@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Terminal Emulator</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: #000;
+            font-family: monospace;
+        }
+
+        #terminal-container {
+            background-color: black;
+            color: lime;
+            display: grid;
+            grid-template-rows: 1fr auto;
+            height: 100%;
+            padding: 10px;
+        }
+
+        #terminal {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-bottom: 10px;
+        }
+
+        #command-line {
+            padding-bottom: 20px;
+            display: flex;
+        }
+
+        #input {
+            flex-grow: 1;
+            border: none;
+            background: none;
+            color: inherit;
+            font: inherit;
+            outline: none;
+        }
+
+        #prompt {
+            margin-right: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <div style="overflow-y: auto;" id="terminal-container" >
+        <div id="terminal" ></div>
+        <div id="command-line">
+            <span id="prompt">$</span>
+            <input id="input" type="text" autofocus>
+        </div>
+    </div>
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    var terminal = document.getElementById('terminal');
+    var input = document.getElementById('input');
+    var prompt = document.getElementById('prompt');
+
+    function fetchTerminalCommand(command) {
+        terminal.innerText += command;
+        fetch(location.href, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ command: command, messageType: "terminal" }),
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Server response not OK');
+            }
+        })
+        .then(data => {
+            if(typeof data === "object") {
+                terminal.innerText += '\n' + (data.stdout || "") + '\n' + (data.stderr || "");
+                if (data.cwd) {
+                    prompt.innerText = data.cwd + " $";  // Removed \n from here
+                }
+            } else {
+                terminal.innerText += '\n' + data;
+            }
+            terminal.scrollTop = terminal.scrollHeight;
+        })
+        .catch((error) => {
+            terminal.innerText += '\nError: ' + error.message;
+        });
+        input.value = '';
+    }
+
+    input.addEventListener('keydown', function(event) {
+        if (event.ctrlKey && event.key === 'a') {  // Ctrl+A
+            event.preventDefault();
+            input.select();
+        } else if (event.ctrlKey && event.key === 'c') {  // Ctrl+C
+            event.preventDefault();
+            let command = '^C';
+            fetchTerminalCommand(command);
+        } else if (event.key === 'Enter') {  // Enter
+            event.preventDefault();
+            let command = input.value;
+            fetchTerminalCommand(command);
+        }
+    });
+
+    terminal.innerText += "Welcome to the Terminal. Type 'help' for default interaction";
+});
+
+    </script>
+</body>
+</html>

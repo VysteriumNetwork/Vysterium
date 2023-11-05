@@ -11,6 +11,8 @@ import express from 'express';
 import { spawn, exec } from 'child_process'
 import { pagescript, adminscript} from './html.js'
 import crypto from 'crypto'
+
+
 const app = express();
 import FileStore from 'session-file-store';
 const FileStoreSession = FileStore(session);
@@ -33,6 +35,9 @@ function restartServer() {
       stdio: 'inherit'
   });
   process.exit();
+} 
+if (config.autorestart == true) {
+setInterval(restartServer, 7200000)
 }
 app.use(session({
   store: new FileStoreSession({ path: './tmp', ttl: 3600 }),
