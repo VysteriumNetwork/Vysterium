@@ -141,11 +141,11 @@ if (config.signup == true) {
       return res.status(400).json({ message: 'Missing username, password or login time.' });
     }
     if (username.length > MAX_LENGTH) {
-      return res.status(400).json({ message: 'Username is too long. Maximum length is 16.' });
+      return res.status(400).json({ message: `Username is too long. Maximum length is ${MAX_LENGTH}.` });
     }
     
     if (password.length > MAX_LENGTH) {
-      return res.status(400).json({ message: 'Password is too long. Maximum length is 16.' });
+      return res.status(400).json({ message: `Password is too long. Maximum length is ${MAX_LENGTH}.` });
     }
     let users = readUsersFromFile();
   

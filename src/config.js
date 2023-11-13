@@ -5,10 +5,10 @@ export let config = {
     dynamicbare: true,
     cloak: true,
     password: "true",
-    loginloc: "/login",
+    loginloc: "/chin",
     enableSessionExpiration: true,
     users: logins,
-    edusite: edusites[Math.floor(Math.random()*edusites.length)],
+    edusite: edusites[Math.floor(Math.random()*edusites.length)], // serves random site in edusite list
     signup: true,
     signuppath: '/signup',
     terminalurl: '/terminal',
@@ -18,10 +18,10 @@ export let config = {
     logouturl: '/logout',
     adminusers:[],
     owners:["adminaccount"],
-    restrictsignuptoadmin: false,
+    restrictsignuptoadmin: true,
     defaultuser: ["sus", "sussy"],
     adminpanelurl: '/admin',
-    maxuserpasswordlength: 16,
+    maxuserpasswordlength: 32,
     autorestart: true
 };
 
