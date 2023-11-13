@@ -1,6 +1,6 @@
-import { createBareServer } from "@tomphttp/bare-server-node";
+import createServer from "@tomphttp/bare-server-node";
 import { fileURLToPath } from "node:url";
-import { createServer } from "node:http";
+import { http } from "node:http";
 import fs from 'fs';
 import compression from 'express-compression'
 import rateLimit from 'express-rate-limit';
@@ -49,7 +49,7 @@ app.use(session({
   },
 }));
 const PORT = 8080
-const server = createServer();
+const server = http.createServer();
 server.on("request", (req, res) => {
   if (bare.shouldRoute(req)) {
     bare.routeRequest(req, res);
@@ -83,7 +83,7 @@ fs.watch('./src/logins.json', (eventType, filename) => {
     config.users = JSON.parse(fs.readFileSync('./src/logins.json', 'utf-8'));
   }
 });
-const bare = createBareServer(randomString);
+const bare = createServer(randomString);
 app.get(config.logouturl, (req, res, next) => {
   if (req.session.loggedin) {
     req.session.destroy(function(err) {
