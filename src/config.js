@@ -24,5 +24,3 @@ export let config = {
     maxuserpasswordlength: 32,
     autorestart: true
 };
-
-  

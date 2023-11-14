@@ -1,6 +1,6 @@
 import createServer from "@tomphttp/bare-server-node";
 import { fileURLToPath } from "node:url";
-import { http } from "node:http";
+import http from 'http';
 import fs from 'fs';
 import compression from 'express-compression'
 import rateLimit from 'express-rate-limit';
