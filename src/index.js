@@ -83,14 +83,6 @@ app.get('/script/config.js', (req, res) => {
     next()
   }
 });
-
-app.get('/server', (req, res, next) => {
-  if (!req.session.loggedin && config.password == "true") {
-    next(); 
-  } else {
-    res.json({ bare: randomString });
-  }
-});
 fs.watch('./src/logins.json', (eventType, filename) => {
   if (eventType === 'change') {
     config.users = JSON.parse(fs.readFileSync('./src/logins.json', 'utf-8'));
