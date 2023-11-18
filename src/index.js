@@ -1,4 +1,4 @@
-import createServer from "@tomphttp/bare-server-node";
+import Server from "@tomphttp/bare-server-node";
 import { fileURLToPath } from "node:url";
 import http from 'http';
 import fs from 'fs';
@@ -11,6 +11,7 @@ import express from 'express';
 import { spawn, exec } from 'child_process'
 import { pagescript, adminscript} from './html.js'
 import crypto from 'crypto'
+import { func } from './uvconfig.js'
 
 
 const app = express();
@@ -51,15 +52,15 @@ app.use(session({
 const PORT = 8080
 const server = http.createServer();
 server.on("request", (req, res) => {
-  if (bare.shouldRoute(req)) {
-    bare.routeRequest(req, res);
+  if (bare.route_request(req, res)) {
+    return;
   } else {
     app(req, res);
   }
 });
 server.on("upgrade", (req, socket, head) => {
-  if (bare.shouldRoute(req)) {
-    bare.routeUpgrade(req, socket, head);
+  if (bare.route_upgrade(req, socket, head)) {
+    return;
   } else {
     socket.end();
   }
@@ -71,6 +72,18 @@ if (config.dynamicbare === true) {
 } else {
   randomString = '/bare/';
 }
+
+app.get('/script/config.js', (req, res) => {
+  if (req.session.loggedin) {
+  res.setHeader('Content-Type', 'text/javascript');
+
+  // Send JavaScript content
+  res.send(func(randomString));
+  } else {
+    next()
+  }
+});
+
 app.get('/server', (req, res, next) => {
   if (!req.session.loggedin && config.password == "true") {
     next(); 
@@ -83,7 +96,7 @@ fs.watch('./src/logins.json', (eventType, filename) => {
     config.users = JSON.parse(fs.readFileSync('./src/logins.json', 'utf-8'));
   }
 });
-const bare = createServer(randomString);
+const bare = new Server(randomString);
 app.get(config.logouturl, (req, res, next) => {
   if (req.session.loggedin) {
     req.session.destroy(function(err) {
