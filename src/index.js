@@ -1,4 +1,4 @@
-import Server from "@tomphttp/bare-server-node";
+import { createBareServer } from "@tomphttp/bare-server-node";
 import { fileURLToPath } from "node:url";
 import http from 'http';
 import fs from 'fs';
@@ -52,15 +52,15 @@ app.use(session({
 const PORT = 8080
 const server = http.createServer();
 server.on("request", (req, res) => {
-  if (bare.route_request(req, res)) {
-    return;
+  if (bare.shouldRoute(req)) {
+    bare.routeRequest(req, res);
   } else {
     app(req, res);
   }
 });
 server.on("upgrade", (req, socket, head) => {
-  if (bare.route_upgrade(req, socket, head)) {
-    return;
+  if (bare.shouldRoute(req)) {
+    bare.routeUpgrade(req, socket, head);
   } else {
     socket.end();
   }
@@ -88,7 +88,7 @@ fs.watch('./src/logins.json', (eventType, filename) => {
     config.users = JSON.parse(fs.readFileSync('./src/logins.json', 'utf-8'));
   }
 });
-const bare = new Server(randomString);
+const bare = createBareServer(randomString);
 app.get(config.logouturl, (req, res, next) => {
   if (req.session.loggedin) {
     req.session.destroy(function(err) {
