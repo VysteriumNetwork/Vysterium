@@ -30,16 +30,58 @@ function readUsersFromFile() {
   return users;
 }  
 fs.readFile(path.join(__dirname, './blocklist.txt'), 'utf-8', (err, data) => { if (err) { console.error(err); return; } blacklisted.push(...data.split('\n')); });
-function restartServer() {
-  let child = spawn(process.argv.shift(), process.argv, {
-      detached: true,
-      stdio: 'inherit'
+
+
+
+let serverProcess = null
+
+function spawnServerProcess() {
+  const server = spawn('node', ['src/index.js'], {
+    stdio: 'inherit',
+    detached: false
   });
-  process.exit();
-} 
-if (config.autorestart == true) {
-setInterval(restartServer, 7200000)
+
+  server.on('exit', (code, signal) => {
+    if (signal) {
+      console.log(`Server process was killed by signal: ${signal}`);
+      serverProcess = null;
+    } else if (code !== 0) {
+      console.log(`Server process exited with error code ${code}, restarting in 5 seconds...`);
+      setTimeout(() => {
+        serverProcess = spawnServerProcess();
+      }, 5000); // Restart after a delay
+    } else {
+      console.log('Server process exited normally.');
+      serverProcess = null;
+    }
+  });
+
+  return server;
 }
+
+process.on('SIGINT', () => {
+  console.log('Received SIGINT. Shutting down gracefully...');
+  if (serverProcess) {
+    serverProcess.kill();
+  }
+  process.exit();
+});
+
+// Optional: Implement a way to trigger a manual restart
+process.stdin.on('data', (data) => {
+  const command = data.toString().trim();
+  if (command === 'restart') {
+    if (serverProcess) {
+      console.log('Server is already running.');
+    } else {
+      console.log('Restarting server...');
+      serverProcess = spawnServerProcess();
+    }
+  }
+});
+
+console.log('Restart manager started. Type "restart" to manually restart the server.');
+
 app.use(session({
   store: new FileStoreSession({ path: './tmp', ttl: 3600 }),
   secret: 'randomsecretkey',
