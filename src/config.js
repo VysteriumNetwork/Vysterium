@@ -5,7 +5,7 @@ export let config = {
     dynamicbare: true,
     cloak: true,
     password: "true",
-    loginloc: "/chin",
+    loginloc: "/goi",
     enableSessionExpiration: true,
     users: logins,
     edusite: edusites[Math.floor(Math.random()*edusites.length)], // serves random site in edusite list

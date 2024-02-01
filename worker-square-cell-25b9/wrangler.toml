@@ -1,0 +1,7 @@
+name = "worker-square-cell-25b9"
+main = "src/worker.js"
+compatibility_date = "2024-01-27"
+workers_dev = true
+
+[placement]
+mode = "smart"

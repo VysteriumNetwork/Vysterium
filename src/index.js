@@ -1,25 +1,25 @@
-import { createBareServer } from "@tomphttp/bare-server-node";
-import { fileURLToPath } from "node:url";
+import { createBareServer } from "./workerbare/index.js";
+import { fileURLToPath } from "url";
 import http from 'http';
 import fs from 'fs';
-import compression from 'express-compression'
-import rateLimit from 'express-rate-limit';
-import session from 'express-session';
+import compression from '../node_modules/compression/index.js'
+import rateLimit from '../node_modules/express-rate-limit/dist/index.mjs';
+import session from '../node_modules/express-session/index.js';
 import { config } from './config.js';
-import { createProxyMiddleware } from 'http-proxy-middleware'
-import express from 'express';
+import { createProxyMiddleware } from '../node_modules/http-proxy-middleware/dist/index.js'
+import express from '../node_modules/express/index.js';
 import { spawn, exec } from 'child_process'
 import { pagescript, adminscript} from './html.js'
 import crypto from 'crypto'
 import { func } from './uvconfig.js'
-
+import FileStore from '../node_modules/session-file-store/index.js';
 
 const app = express();
-import FileStore from 'session-file-store';
+
 const FileStoreSession = FileStore(session);
 import path from 'path';
 app.use(express.json());
-app.use(compression({ brotli: { enabled: true, zlib: { } } }))
+app.use(compression())
 app.use(express.urlencoded({ extended: true }));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
