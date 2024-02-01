@@ -1,16 +1,9 @@
 {
-  "adminaccount": {
+  "admin": {
     "password": "fd25ffd72d0dd172e8100004490c86177cd39adb9d6eaf1e2692d90b911e414ebb612723941072e8aceaa0f3971ddd556dcfdda85d102e401990176ec5d57f8f",
     "deleteuser": false,
     "salt": "adfb5da8ad6b8d31357d2d81c5ac412a",
     "maxAge": null,
     "secretCode": "7c1581fc2aebb994b48507f17bea28b1b3a5180bc9e2a239281bd7c27c517db84d8590398f567beec889c3e79dda3ce9ae5937ba5d2b1ca126e9ede86670e3c9"
-  },
-  "buyproxiesfrombenjaminchin": {
-    "password": "cce0cb0c6e0870486947c57c1a1caafe87d822dcc162cdc14a1ea2a1d2c3c2dfe0e73288c7a2a83591ce229e00ab55acda03f4db066bcf10e1171bef35da69e9",
-    "deleteuser": false,
-    "salt": "d7f2d219da82de3b47292405f1b9160a",
-    "maxAge": null,
-    "secretCode": "704643c2f7ba2d6c2263140154f9e6e49001621d46cb7131ac50c45098b6b5c12682443ea4b41347b68443566b41a9e218d45f1605436e2098dd2f7074c95d28"
   }
 }
