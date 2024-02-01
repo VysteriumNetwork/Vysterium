@@ -1,4 +1,4 @@
-import { createBareServer } from "./workerbare/index.js";
+import { createBareServer } from "@tomphttp/bare-server-node";
 import { fileURLToPath } from "url";
 import http from 'http';
 import fs from 'fs';
