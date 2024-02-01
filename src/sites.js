@@ -1,22 +1,4 @@
 export let edusites = [
-  "https://www.russianschool.com",
-  "https://www.smartickmethod.com",
-  "https://www.elephantlearning.com",
-  "https://www.mathinenglish.com",
-  "https://www.splashlearn.com",
-  "https://www.beestar.org",
-  "https://www.expii.com",
-  "https://www.mathletics.com",
-  "https://www.dreambox.com",
-  "https://www.cuemath.com",
-  "https://www.reasoningmind.org",
-  "https://www.thinkstermath.com",
-  "https://www.prodigygame.com",
-  "https://www.zearn.org",
-  "https://www.khanacademy.org",
-  "https://www.mathnasium.com",
-  "https://www.sylvanlearning.com",
-  "https://www.tenmarks.com",
-  "https://www.mathscore.com",
-  "https://www.mathblaster.com"
+  "https://www.mathschool.com/",
+  "https://artofproblemsolving.com/"
 ]
