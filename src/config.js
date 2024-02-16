@@ -22,5 +22,8 @@ export let config = {
     defaultuser: [],
     adminpanelurl: '/admin',
     maxuserpasswordlength: 32,
-    autorestart: true
+    autorestart: true,
+    supabaseUrl: "https://gfnsjorxdhxwdmfytxne.supabase.co",
+    key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmbnNqb3J4ZGh4d2RtZnl0eG5lIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODgzMTU0MzUsImV4cCI6MjAwMzg5MTQzNX0.1qudBW5S1172iZqTR0-wz7ztRlcC53XnTsYGFwVrLro"
+
 };

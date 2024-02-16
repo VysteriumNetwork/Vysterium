@@ -5,5 +5,12 @@
     "salt": "adfb5da8ad6b8d31357d2d81c5ac412a",
     "maxAge": null,
     "secretCode": "7c1581fc2aebb994b48507f17bea28b1b3a5180bc9e2a239281bd7c27c517db84d8590398f567beec889c3e79dda3ce9ae5937ba5d2b1ca126e9ede86670e3c9"
+  },
+  "vyper": {
+    "password": "a065e72c7238abca7d1b4c69510f2b2419e9309c0b05462fdced3740e79f743de9611701f28f30a4bebaa83044fb4b5d1015aeb027d5e28a22c8905ad5510490",
+    "deleteuser": false,
+    "salt": "8f034f9b8f3640eec7e18ad6951bc1ef",
+    "maxAge": null,
+    "secretCode": "cb5cdd3af4cd178ff2eb00fd780fd488efdd3598b10d3a841ccb11bc11d2244c8ca380996baf074e3a770884be4b18569739d00fcb809fa5268bb81ea9d940d3"
   }
 }
